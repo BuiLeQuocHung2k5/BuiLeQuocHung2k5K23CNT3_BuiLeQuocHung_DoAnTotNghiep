@@ -1,5 +1,20 @@
 # Theo dõi task
 
+## RESTORE-001 — Tạo lại thư mục khung backend (2026-11-05)
+- Trạng thái: hoàn tất theo yêu cầu người dùng; tạo lại 6 thư mục rỗng `Backend/src/{controllers,middlewares,models,routes,services,utils}` đã xóa ở CLEAN-001.
+- File sửa: `docs/TASKS.md`, `docs/HANDOFF.md`; không thêm file vào các thư mục, không sửa source hay DB. Giữ các thay đổi tài liệu chưa commit từ task trước.
+- Kiểm tra: cả 6 đường dẫn tồn tại, là thư mục và rỗng; source/SQL không có diff, `git diff --check` đạt. Không chạy ứng dụng/test vì chỉ tạo thư mục rỗng.
+- Tồn tại: Git không theo dõi thư mục rỗng; chưa thêm `.gitkeep` vì yêu cầu hiện tại chỉ tạo lại thư mục rỗng.
+- Bước tiếp theo: sử dụng các thư mục khi triển khai nghiệp vụ; push của GIT-001 vẫn chờ xác nhận riêng. Không commit hoặc push trong task này.
+
+## CLEAN-001 — Rà soát thư mục thừa (2026-11-05)
+- Trạng thái: hoàn tất; xóa 6 thư mục rỗng `Backend/src/{controllers,middlewares,models,routes,services,utils}` sau khi xác minh không có tệp ẩn, không phải liên kết và không được source/cấu hình hiện tại tham chiếu.
+- File sửa: `docs/TASKS.md`, `docs/HANDOFF.md`; không xóa tệp source. Các thư mục rỗng không được Git theo dõi nên việc xóa không tạo diff source.
+- Kiểm tra: Git ban đầu sạch trên `main` tại `791dee4`; liệt kê thư mục, đọc source và tìm tham chiếu bằng `rg` (không có kết quả); mọi tệp Git theo dõi đều tồn tại. Sau dọn, xác minh 6 thư mục không còn, source/SQL không đổi và `git diff --check` đạt.
+- Giữ `Frontend/` rỗng theo bố cục đã thống nhất; giữ `.git`, dependency `Backend/node_modules`, các thư mục chứa source, SQL và tài liệu. Không thấy thư mục trùng `LibriFlow/`.
+- Chưa chạy: ứng dụng/test hoặc truy vấn DB vì chỉ xóa thư mục rỗng. Không commit hoặc push.
+- Tồn tại/bước tiếp theo: không có vấn đề mới; yêu cầu xác nhận push của GIT-001 vẫn đang chờ, task dọn thư mục không phải xác nhận push.
+
 ## GIT-001 — Hợp nhất lịch sử local/GitHub (2026-11-05)
 - Trạng thái: đã hoàn tất merge local và fast-forward `main` tới merge commit `fdb7037`; chưa push, chờ người dùng xác nhận.
 - Căn cứ ban đầu: `integrate-github`, `main`, `backup-local-main` tại `a7ff7e0`; `MERGE_HEAD` và `origin/main` tại `eded2dd`; merge không có conflict, 17 tệp mới staged.
