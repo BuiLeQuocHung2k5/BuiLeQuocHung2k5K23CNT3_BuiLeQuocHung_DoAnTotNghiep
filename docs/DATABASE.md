@@ -42,3 +42,9 @@ Mỗi mục là `bảng.cột → bảng.cột`, đã xác minh qua `KEY_COLUMN_
 - Pool: tối đa 10 kết nối, hàng đợi 50, timeout kết nối 10 giây; `DB_PORT` được kiểm tra khoảng 1–65535. Health check dùng `SELECT 1`.
 - Quy tắc nghiệp vụ, dữ liệu seed, trigger/event/routine, hành vi cascade và tính đầy đủ của index/constraint: **Chưa xác minh**. Cần kiểm tra metadata liên quan trước task phụ thuộc các nội dung này.
 - Không chạy tệp tạo database hoặc thay đổi schema/dữ liệu trong đợt khảo sát này.
+
+## Tệp SQL từ GitHub — xác minh 2026-11-05
+- `libriflow_database.sql` có DDL 16 bảng, dùng tên bảng PascalCase; metadata DB lần khảo sát trước dùng tên chữ thường. Khả năng chạy trên môi trường phân biệt hoa/thường và mức tương đồng đầy đủ với DB thực tế: **Chưa xác minh**.
+- Có 5 câu `INSERT IGNORE`: tạo 3 vai trò, 11 quyền và gán quyền cho vai trò; không có lệnh chèn tài khoản/người dùng hay dữ liệu mượn trả. Cột `NguoiDung.password` là khai báo cấu trúc, không phải giá trị mật khẩu.
+- Đã đọc toàn tệp và rà các mẫu bí mật; không phát hiện mật khẩu, token, private key, URL chứa thông tin đăng nhập hoặc dữ liệu cá nhân. Đây là kết quả rà soát tĩnh, không phải kiểm thử SQL.
+- Giữ nguyên tệp, không thực thi; SHA-256: `8a2885e022ac8024f76a8ec64a7840fec41b7bdd499b6fd461d8a32e63fe5e40`. Nguồn lịch sử: `origin/main` tại `eded2dd`; tác giả/quy trình tạo schema thực tế vẫn **Chưa xác minh**.

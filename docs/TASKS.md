@@ -1,5 +1,15 @@
 # Theo dõi task
 
+## GIT-001 — Hợp nhất lịch sử local/GitHub (2026-11-05)
+- Trạng thái: đang hoàn tất merge local; chưa push, cần người dùng xác nhận trước khi push.
+- Căn cứ ban đầu: `integrate-github`, `main`, `backup-local-main` tại `a7ff7e0`; `MERGE_HEAD` và `origin/main` tại `eded2dd`; merge không có conflict, 17 tệp mới staged.
+- Đối chiếu: 16 tệp `LibriFlow/` có blob index giống bản gốc; nội dung working tree giống sau chuẩn hóa CRLF/LF, không có tệp phụ trong thư mục trùng. Giữ nguyên các tệp gốc và SQL.
+- File thay đổi dự kiến trong merge: thêm `.gitignore`, giữ thêm `libriflow_database.sql` từ GitHub; sửa `docs/PROJECT_CONTEXT.md`, `docs/DATABASE.md`, `docs/DECISIONS.md`, `docs/TASKS.md`, `docs/HANDOFF.md`; bỏ 16 bản sao `LibriFlow/` khỏi kết quả hợp nhất.
+- Kiểm tra đã chạy: status/remote/staged/refs/log; đọc toàn SQL (DDL và seed vai trò/quyền, không dữ liệu người dùng); rà 17 blob duy nhất trong lịch sử hai nhánh theo mẫu bí mật và đường dẫn nhạy cảm, không phát hiện vấn đề chưa xử lý. Mẫu mật khẩu trong README là placeholder. `.env` và `node_modules` local đã được ignore.
+- Chưa chạy: SQL, truy vấn DB và kiểm thử ứng dụng vì không sửa logic; chưa push. Kiểm tra kết quả commit/fast-forward ghi ở bàn giao khi hoàn tất.
+- Tồn tại: chưa đối chiếu đầy đủ SQL với DB thực tế; xác nhận push còn chờ người dùng.
+- Bước tiếp theo: hoàn tất kiểm tra cây Git và hai parent, fast-forward `main` local nếu hợp lệ; trình người dùng duyệt trước `git push origin main`, tuyệt đối không force.
+
 ## CTX-001 — Thiết lập chia sẻ ngữ cảnh (2026-11-04)
 - Trạng thái: đã tạo tài liệu, chờ người dùng duyệt; chưa được duyệt.
 - Phạm vi: khảo sát source/thư mục, đọc metadata database, tạo hướng dẫn và tài liệu bàn giao.

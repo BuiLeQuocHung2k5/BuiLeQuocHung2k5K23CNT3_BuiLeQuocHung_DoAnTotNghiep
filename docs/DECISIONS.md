@@ -11,3 +11,5 @@ Xác minh: 2026-11-04. Không suy diễn lý do thiết kế nếu chưa có b�
 Chưa có quyết định được xác minh về frontend, kiến trúc nghiệp vụ, cơ chế xác thực hoặc công cụ migration. Ghi **Chưa xác minh**, không coi các bảng đang tồn tại là bằng chứng tính năng đã triển khai.
 
 Khi thêm quyết định: ghi ngày, nội dung, căn cứ/source, trạng thái (đề xuất/được duyệt/đã hiện diện) và hệ quả cần theo dõi. Chỉ ghi lý do khi đã có nguồn.
+
+Ngày 2026-11-05, theo task đồng bộ Git của người dùng: giữ bố cục ở gốc, loại `LibriFlow/` sau khi xác minh 16 cặp Git blob giống nhau và nội dung working tree chỉ khác CRLF/LF; giữ nguyên SQL từ GitHub. Người dùng đã cho phép merge và fast-forward local, yêu cầu xác nhận riêng trước push; không viết lại lịch sử.

@@ -13,6 +13,7 @@ Xác minh: 2026-11-04, qua source và danh sách tệp/thư mục hiện tại.
 | `Backend/src/config/database.js` | Nạp `Backend/.env`, tạo MySQL pool; kiểm tra bằng `SELECT 1`. |
 | `Backend/src/scripts/check-db.js` | Kiểm tra kết nối, đóng pool, trả exit code 1 nếu thất bại. |
 | `Backend/sql/create-database.sql` | Chỉ tạo schema, không tạo bảng. Xem `DATABASE.md`. |
+| `libriflow_database.sql` | Tệp từ lịch sử GitHub, kiểm tra ngày 2026-11-05: DDL 16 bảng và seed vai trò/quyền; chưa chạy, chưa đối chiếu đầy đủ với DB thực tế. |
 
 API hiện có (`Backend/src/app.js`):
 - `GET /api/health`: HTTP 200, thông báo backend hoạt động.
