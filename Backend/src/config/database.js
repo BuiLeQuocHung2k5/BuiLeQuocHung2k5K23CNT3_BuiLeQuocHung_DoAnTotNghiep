@@ -24,6 +24,8 @@ const pool = mysql.createPool({
     connectTimeout: 10000,
     charset: "utf8mb4",
     enableKeepAlive: true,
+    supportBigNumbers: true,
+    bigNumberStrings: true,
 });
 
 export async function checkDatabaseConnection() {

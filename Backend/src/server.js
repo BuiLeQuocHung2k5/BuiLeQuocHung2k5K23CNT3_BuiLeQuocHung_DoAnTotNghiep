@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 try {
     await checkDatabaseConnection();
     console.log("MySQL connected successfully");
-    const server = app.listen(PORT, () => {
+    const server = app.listen(PORT, "127.0.0.1", () => {
         console.log(`LibriFlow API running at http://localhost:${PORT}`);
     });
     server.on("error", async (error) => {
