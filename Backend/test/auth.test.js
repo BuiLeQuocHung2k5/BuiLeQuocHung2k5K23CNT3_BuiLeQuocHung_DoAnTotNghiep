@@ -26,10 +26,11 @@ function context() {
         ["4", { user_id: "4", email: "inactive@example.test", status: "inactive", roles: ["admin"], permissions: ["book_delete"], password: passwordHash }],
         ["5", { user_id: "5", email: "locked@example.test", status: "locked", roles: [], permissions: [], password: passwordHash }],
     ]);
-    const state = { writes: 0, registrations: 0, readerExists: true, principalReads: 0 };
+    const state = { writes: 0, registrations: 0, readerExists: true, principalReads: 0, loginEvents: [] };
     const authModel = {
         async getPrincipal(id) { state.principalReads++; return users.get(id) ?? null; },
         async findCredentials(email) { return [...users.values()].find(user => user.email === email) ?? null; },
+        async recordLogin(id) { state.loginEvents.push(String(id)); },
         async registerReader(data, hash) {
             if (!state.readerExists) throw new HttpError(503, "REGISTRATION_NOT_CONFIGURED", "Missing reader fixture");
             if ([...users.values()].some(user => user.email === data.email)) throw new HttpError(409, "EMAIL_ALREADY_EXISTS", "Duplicate fixture email");

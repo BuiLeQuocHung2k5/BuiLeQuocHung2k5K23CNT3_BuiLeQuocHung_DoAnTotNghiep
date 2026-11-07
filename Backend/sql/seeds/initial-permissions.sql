@@ -16,14 +16,15 @@ INSERT IGNORE INTO QuyenHan (name, description) VALUES
 ('fine_manage','Quan ly tien phat'),
 ('user_manage','Quan ly nguoi dung'),
 ('report_view','Xem bao cao'),
-('forecast_view','Xem du bao tan suat');
+('forecast_view','Xem du bao tan suat'),
+('category_manage','Quan ly danh muc sach');
 
 INSERT IGNORE INTO VaiTro_QuyenHan (role_id, permission_id)
 SELECT r.role_id, p.permission_id FROM VaiTro r CROSS JOIN QuyenHan p WHERE r.name='admin';
 
 INSERT IGNORE INTO VaiTro_QuyenHan (role_id, permission_id)
 SELECT r.role_id, p.permission_id FROM VaiTro r JOIN QuyenHan p
-ON p.name IN ('book_view','book_create','book_update','copy_manage','borrow_manage','return_process','fine_manage','report_view','forecast_view')
+ON p.name IN ('book_view','book_create','book_update','copy_manage','borrow_manage','return_process','fine_manage','report_view','forecast_view','category_manage')
 WHERE r.name='librarian';
 
 INSERT IGNORE INTO VaiTro_QuyenHan (role_id, permission_id)

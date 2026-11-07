@@ -32,7 +32,9 @@ export function createAuthService(model, tokens) {
             try { valid = await bcrypt.compare(data.password, supportedHash ? hash : await getDummyHash()); } catch { /* Malformed/unsupported stored hashes never authenticate. */ }
             if (!credentials || !supportedHash || !valid) throw new HttpError(401, "INVALID_CREDENTIALS", "Email hoặc mật khẩu không đúng.");
             if (credentials.status !== "active") throw new HttpError(403, "ACCOUNT_INACTIVE", "Tài khoản không còn hoạt động.");
-            return { accessToken: tokens.issue(credentials.user_id), tokenType: "Bearer", expiresIn: tokenLifetimeSeconds };
+            const accessToken = tokens.issue(credentials.user_id); // Finish signing before recording an accepted login.
+            await model.recordLogin(credentials.user_id); // Fail closed if the event cannot be stored; never log token/password.
+            return { accessToken, tokenType: "Bearer", expiresIn: tokenLifetimeSeconds };
         },
         async principal(id) {
             const user = await model.getPrincipal(id);

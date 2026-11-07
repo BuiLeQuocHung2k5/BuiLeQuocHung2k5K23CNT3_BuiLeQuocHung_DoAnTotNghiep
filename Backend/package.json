@@ -8,7 +8,9 @@
     "dev": "nodemon src/server.js",
     "db:check": "node src/scripts/check-db.js",
     "db": "node src/scripts/check-db.js",
-    "test": "node --test"
+    "test": "node --test",
+    "test:integration": "node integration/run.mjs",
+    "test:integration:setup": "node integration/setup.mjs"
   },
   "keywords": [],
   "author": "",

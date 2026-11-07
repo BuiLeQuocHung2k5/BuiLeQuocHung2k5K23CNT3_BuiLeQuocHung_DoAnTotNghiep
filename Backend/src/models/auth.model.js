@@ -1,6 +1,9 @@
 import { HttpError } from "../utils/http-error.js";
+import { createUsageHistoryModel } from "./usage-history.model.js";
+import { createUsageHistoryService } from "../services/usage-history.service.js";
 
 export function createAuthModel(pool) {
+    const usage = createUsageHistoryService(createUsageHistoryModel(pool));
     async function getPrincipal(id, connection = pool) {
         const [rows] = await connection.execute(
             `SELECT u.user_id, u.name, u.email, u.phone, u.avatar, u.status, u.created_at, u.updated_at,
@@ -17,6 +20,7 @@ export function createAuthModel(pool) {
     }
     return {
         getPrincipal,
+        async recordLogin(id) { await usage.record({ user_id: id, copy_id: null, action_type: "login" }); },
         async findCredentials(email) {
             const [rows] = await pool.execute("SELECT user_id, password, status FROM NguoiDung WHERE email = ? LIMIT 1", [email]);
             return rows[0] ?? null;

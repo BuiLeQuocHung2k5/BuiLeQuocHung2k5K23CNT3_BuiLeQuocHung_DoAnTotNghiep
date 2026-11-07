@@ -130,3 +130,6 @@ MySQL chính chỉ được SELECT metadata và tên vai trò/quyền, không đ
 Chưa kiểm thử register/login thành công với người dùng thật hoặc database thử nghiệm độc lập, cạnh tranh email trùng thật, tải lớn, nhiều instance, email delivery hoặc production. Không tạo/sửa tài khoản, schema, seed, `.env`, remote hoặc lịch sử Git; chưa commit/push.
 
 `npm audit` báo 2 moderate ở chuỗi dev nodemon/minimatch (phiên bản đã có trong HEAD, không đổi bởi task này); `npm audit --omit=dev` không có cảnh báo ở lần kiểm tra. Không chạy audit fix --force. Cần xử lý dependency dev trong task riêng.
+## Cập nhật TASK-015 (2026-11-07)
+
+Login thành công ghi một event login vào LichSuSuDung trước khi trả token; chỉ user_id và JSON có cấu trúc, không token/password/email. Ký JWT hoặc xác thực thất bại không ghi event. Ghi event lỗi thì login thất bại và không trả token; không bỏ qua lỗi logging. Vì login giờ là thao tác ghi, chỉ kiểm thử thành công trên mock hoặc MySQL test độc lập. GET /me và logout không ghi usage. Chi tiết: [Lịch sử sử dụng](usage-history-api.md).
