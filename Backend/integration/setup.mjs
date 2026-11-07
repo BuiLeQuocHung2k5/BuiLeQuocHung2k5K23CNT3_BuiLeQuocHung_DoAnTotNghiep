@@ -1,13 +1,13 @@
-import { loadTestConfig, openTestDatabase, refuse } from "./safety.mjs";
+import { napCauHinhKiemThu, moCoSoDuLieuKiemThu, tuChoi } from "./an-toan.mjs";
 
-let database;
+let coSoDuLieu;
 try {
-    const config = loadTestConfig();
-    if (process.env.TEST_DB_SETUP_CONFIRM !== config.name) refuse("SETUP_CONFIRMATION_REQUIRED");
-    database = await openTestDatabase(config, { setup: true });
-    await database.prepare();
+    const cauHinh = napCauHinhKiemThu();
+    if (process.env.TEST_DB_SETUP_CONFIRM !== cauHinh.name) tuChoi("SETUP_CONFIRMATION_REQUIRED");
+    coSoDuLieu = await moCoSoDuLieuKiemThu(cauHinh, { setup: true });
+    await coSoDuLieu.chuanBi();
     console.log("Integration schema/seed prepared in the verified empty test database. Original SQL files unchanged.");
-} catch (error) {
-    console.error(`TEST SETUP REFUSED/FAILED: ${/^[A-Z0-9_]+$/.test(error.code ?? "") ? error.code : "SAFETY_CHECK_FAILED"}. No database was created or dropped; inspect partial test setup if applicable.`);
+} catch (loi) {
+    console.error(`TEST SETUP REFUSED/FAILED: ${/^[A-Z0-9_]+$/.test(loi.code ?? "") ? loi.code : "SAFETY_CHECK_FAILED"}. No database was created or dropped; inspect partial test setup if applicable.`);
     process.exitCode = 2;
-} finally { if (database) await database.end(); }
+} finally { if (coSoDuLieu) await coSoDuLieu.end(); }

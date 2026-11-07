@@ -1,17 +1,39 @@
 # Database
 
+## Xác minh MySQL thật — TASK-018, 2026-11-07
+
+- Main được nạp bằng cấu hình hiện có, chỉ SELECT metadata/aggregate, không đọc PII hoặc in secret. MySQL 8.0.40, DB libriflow; COUNT NguoiDung/Sach/PhieuMuon đều 0. QuyenHan chưa có category_manage, QuyDinhPhat active count 0. Không chạy migration/seed hoặc chuẩn bị user chính.
+- Runner Backend/integration/instance-isolee.mjs đã dựng instance từ datadir rỗng OS temp bằng binary MySQL cài sẵn, không dùng service/my.ini/dữ liệu chính. Xác minh UUID/datadir/cổng khác chính; loopback, database allowlist, test account chỉ quyền schema test. Setup từ schema/seed nguyên trạng với CREATE DATABASE/USE bị bỏ trong RAM; 16 bảng app + 2 bảng guard/run chỉ trong test. Root bootstrap chỉ dùng instance mới, test runtime không dùng root.
+- Run 2026-11-07 09:38:44–09:38:57 UTC: 21 scenario PASS, 0 skip; marker v1/fingerprint và run passed. Instance test đã SHUTDOWN/xác minh dừng; data/result ở OS temp giữ nguyên, không DROP/TRUNCATE/cleanup. Hash metadata cột và count 16 bảng main trước/sau không đổi (không phải checksum mọi giá trị). Nguồn/bằng chứng đầy đủ: Backend/docs/backend-final-report.md và kiem-thu-tich-hop.md.
+- Transaction/rollback header+usage, cạnh tranh hai request cùng copy, FK/UNIQUE, return/history/aggregate có dữ liệu khác 0 đã kiểm chứng MySQL riêng. QuyDinhPhat không có mức cấu hình nên chưa test thành công fine create/duplicate/payment thật; forecast chỉ insufficient_data/generate khóa, chưa có coverage/MAE/persistence thực. Không thay schema/seed/SQL gốc/.env hoặc dữ liệu chính.
+- Kết nối db-check/health-db và catalog SELECT chính đạt. JWT_SECRET chưa hợp lệ được xác nhận boolean riêng, không phải vấn đề kết nối MySQL. Trạng thái triển khai/bước được duyệt tiếp: Backend/docs/backend-known-issues.md; không tự chạy migration hay cấp staff.
+
+## Refactor tên — xác minh 2026-11-07 (TASK-017)
+
+- Chỉ đổi đường dẫn file/định danh/chú thích; cấu hình MySQL nay tại Backend/src/config/co-so-du-lieu.js, biến boKetNoi, hàm kiemTraKetNoiCoSoDuLieu. Không đổi biến môi trường, tên bảng/cột/ENUM, tham số hoặc nội dung câu SQL. Các đường dẫn lịch sử bên dưới đã cập nhật theo tên mới; bảng trước/sau tại Backend/docs/quy-uoc-dat-ten.md.
+- Hash package.json/package-lock.json và toàn bộ sql/ trùng working tree trước refactor, không chạy schema/seed/migration. Chỉ smoke đọc trên MySQL thật: health/health-db/books/categories/book-copies 200, auth/me/logout và forecasts/me thiếu JWT 401; login/register body rỗng 400 trước model. Smoke có chặn transaction và mọi SQL không SELECT, đã đóng server/pool; không login thành công hoặc ghi usage/dữ liệu chính.
+- Unit giữ 172 test, SQL/JSON/API/RBAC/JWT constants được đối chiếu AST và các test cũ; không có thay đổi dữ liệu/database mới cần suy diễn. Integration ghi vẫn chưa chạy vì chưa có DB test độc lập; giới hạn coverage/MAE/persistence TASK-016 giữ nguyên. Kiểm tra Linux chỉ là casing/import tĩnh, chưa chạy MySQL trên Linux.
+
+## Dự báo — xác minh 2026-11-07 (TASK-016)
+
+- Đọc schema và SELECT COLUMNS xác nhận NguoiDung, PhieuMuon, DuBaoTanSuat. Forecast có forecast_id PK/user_id FK, forecast_date DATE, predicted_count DECIMAL(12,2) CHECK >=0, model_version VARCHAR(50) nullable, created_at; chỉ mục user/date, không UNIQUE theo user/ngày/version hoặc metadata cutoff/coverage/run. FK/CHECK/chỉ mục căn cứ schema.sql và đối chiếu SQL-007, task này chỉ xác minh lại cột/quyền/aggregate.
+- SELECT toàn bộ tên quyền và liên kết role xác nhận forecast_view cho admin/librarian, không có quyền ghi/tạo dự báo hiện hữu. Không suy quyền xem thành quyền ghi hoặc thêm seed; POST generate chặn 503 sau JWT/forecast_view. GET là live preview từ SELECT PhieuMuon, không đọc forecast legacy chưa rõ đơn vị để giả thành baseline hiện tại và không ghi DuBaoTanSuat.
+- Baseline target borrow_receipts_per_user_per_day/model_version borrow_daily_sma7_v1. Đếm phiếu không cancelled trực tiếp, không JOIN copy/detail/login. Ngày trống chỉ là 0 khi có xác nhận coverage liên tục, đầy đủ, UTC và timezone ngày tạo user; provider cần file server audit gắn DATABASE()/server UUID/verified_at. FORECAST_COVERAGE_FILE hiện chưa cấu hình; không tự tạo biên bản hoặc file xác nhận. Schema không tự chứng minh coverage từ MIN/MAX dữ liệu.
+- SELECT count thật: 0 NguoiDung, 0 PhieuMuon không cancelled, 0 DuBaoTanSuat; không đọc tài khoản/secret. Hai SELECT nguồn probe WHERE 1=0 đạt, context DB/UTC hợp lệ (không in UUID/DB name); preview ID không tồn tại trả 404 thật. HTTP loopback health/db 200, 3 route dự báo thiếu JWT 401; đóng server/pool. Không test login hoặc ghi MySQL chính.
+- 172/172 unit/safety đạt, 72 file cú pháp/diff-check đạt. MAE chỉ có fixture, không có MAE/dataset đủ điều kiện thực tế. Chưa kiểm thử ready với dữ liệu MySQL độc lập, audit coverage, tải lớn hoặc persistence (chưa triển khai). Timestamp legacy/chỉnh sửa cancelled theo thời gian chưa có snapshot as-of; không tuyên bố độ chính xác vận hành. Nguồn: Backend/docs/{du-bao-api,thuat-toan-du-bao}.md.
+
 ## Usage/statistics — xác minh 2026-11-07 (TASK-015)
 
 - Schema.sql và SELECT COLUMNS hiện tại xác nhận LichSuSuDung có usage_id PK, user_id NOT NULL, copy_id nullable, action_type VARCHAR(50), action_date DATETIME, details JSON. Theo FK trong schema đã đối chiếu SQL-007: user CASCADE, copy SET NULL; không có cột actor hoặc FK borrow_id. DuBaoTanSuat/NhatKyHeThong chỉ khảo sát metadata, không đọc/ghi dữ liệu hoặc suy diễn đã có tính năng dự báo/audit.
 - Ứng dụng TASK-015 định nghĩa action_type login/borrow/return, details chỉ source/version/borrow_id do service tạo. Mượn/trả dùng connection/transaction cũ, lỗi history rollback toàn batch; login chỉ trả token sau INSERT thành công. GET không ghi event. Không tự backfill hoặc mở POST ghi sự kiện từ client; response không SELECT details JSON legacy.
 - SELECT tên role-permission xác nhận report_view/forecast_view cho admin/librarian. Dùng report_view xem toàn bộ history/thống kê, reader own theo SQL và /me luôn own. Không thêm quyền/seed. Stats user đếm activity chỉ event có cấu trúc source=libriflow-api/version=1; đếm phiếu từ PhieuMuon độc lập, không nhân chéo với event/copy.
 - Kiểm tra thực tế chỉ đọc: overview và borrow series trong range 2026-11-01..2026-11-07 trả tất cả count 0/0 bucket; 7 SELECT probe WHERE 1=0 kiểm tra usage count/page, user count/page và ba cách nhóm borrows đạt, không trả bản ghi nghiệp vụ. HTTP loopback health/health-db 200, năm endpoint mới thiếu JWT 401; đóng server/pool sau smoke. Không login thành công trên DB chính vì giờ login có ghi usage.
-- 150/150 unit/safety đạt, cú pháp 65 file/diff-check đạt; ghi log/transaction chỉ mock. Chưa xác minh số liệu khác 0/khóa/rollback/concurrency thật trên DB test độc lập. UTC legacy/coverage chưa xác minh; log không bất biến vì FK CASCADE/SET NULL, JSON borrow_id không có FK. COUNT/page riêng có thể lệch khi ghi đồng thời; chưa tối ưu chỉ mục hoặc chạy tải lớn. Nguồn và thiết kế dự báo: Backend/docs/{usage-history-api,statistics-api,forecast-data-design}.md.
+- 150/150 unit/safety đạt, cú pháp 65 file/diff-check đạt; ghi log/transaction chỉ mock. Chưa xác minh số liệu khác 0/khóa/rollback/concurrency thật trên DB test độc lập. UTC legacy/coverage chưa xác minh; log không bất biến vì FK CASCADE/SET NULL, JSON borrow_id không có FK. COUNT/page riêng có thể lệch khi ghi đồng thời; chưa tối ưu chỉ mục hoặc chạy tải lớn. Nguồn và thiết kế dự báo: Backend/docs/{lich-su-su-dung-api,thong-ke-api,thiet-ke-du-lieu-du-bao}.md.
 
 ## Quá hạn/tiền phạt — xác minh 2026-11-07 (TASK-014)
 
 - Đọc schema.sql và SELECT information_schema.COLUMNS xác nhận Phat: fine_id PK, borrow_detail_id FK bắt buộc, fine_rule_id FK nullable, fine_type late/damage/lost/other, amount DECIMAL(12,2), reason VARCHAR(255), assessed_at, payment_status unpaid/paid/waived, paid_at. QuyDinhPhat: rule_type late/damage/lost, amount DECIMAL(12,2), unit per_day/fixed, is_active. FK/CHECK/khóa của bản thiết kế tham chiếu schema.sql và lần đối chiếu SQL-007; TASK-014 chỉ xác minh lại metadata cột/quyền/cấu hình, không chạy DDL.
-- Schema không có UNIQUE(detail,type), tiền tệ, người thu hoặc audit thanh toán. API khóa parent → detail → rule → kiểm tra Phat bằng locking read trước INSERT; mọi writer phải tuân theo khóa detail. Payment khóa khoản phạt; không update lịch sử mượn/trả, không auto fine/overdue. Mức tiền lấy rule đang active, không mặc định trong source; công thức và giới hạn tại Backend/docs/fines-api.md, không suy diễn đây là ràng buộc SQL mới.
+- Schema không có UNIQUE(detail,type), tiền tệ, người thu hoặc audit thanh toán. API khóa parent → detail → rule → kiểm tra Phat bằng locking read trước INSERT; mọi writer phải tuân theo khóa detail. Payment khóa khoản phạt; không update lịch sử mượn/trả, không auto fine/overdue. Mức tiền lấy rule đang active, không mặc định trong source; công thức và giới hạn tại Backend/docs/tien-phat-api.md, không suy diễn đây là ràng buộc SQL mới.
 - SELECT role-permission chỉ lấy tên xác nhận admin/librarian có fine_manage và borrow_manage. SELECT GROUP BY loại/unit/active cho QuyDinhPhat trả 0 nhóm: hiện chưa có quy định, không tạo giả. Không đọc dữ liệu người dùng hoặc khoản phạt thật. Không thêm quyền hoặc cấu hình tiền phạt trên DB chính.
 - Đã probe 6 SELECT list/count/detail của fine/overdue bằng SELECT derived table WHERE 1=0, cú pháp MySQL đạt, không trả bản ghi nghiệp vụ. Đây không phải kiểm thử INSERT/UPDATE/transaction/khóa hay công thức trên DB thật. Mock/safety đạt 126/126; integration độc lập chưa có/chưa chạy. Múi giờ legacy chưa xác minh; không tự chuyển đổi. Schema, seed và SQL gốc giữ nguyên trong TASK-014.
 
@@ -21,7 +43,7 @@
 - Test chỉ nhận hai tên hardcoded libriflow_integration_test/libriflow_ci_test, loại trừ tên DB chính từ env/.env và libriflow; không fallback connection ứng dụng. Bắt buộc pin UUID test khác main do người vận hành xác nhận, rồi SELECT kiểm tra DATABASE()/UUID thực tế và SHOW GRANTS giới hạn test-schema. NODE_ENV không đủ để chạy. Marker setup có schema/seed fingerprint, không tự cập nhật.
 - Setup riêng chỉ được gọi thủ công trên database test đã tồn tại/trống, không CREATE/DROP DATABASE; bỏ CREATE DATABASE/USE khỏi source trong RAM, tạo 16 bảng app + 2 control tables chỉ trong DB test. SQL gốc/schema/seed không sửa. Marker/scope/privilege/query guard kiểm tra trước ghi; runtime cấm DELETE/DDL/cross-schema và nhiều statement.
 - Fixture theo prefix/run ID, kiểm tra ownership trước dùng lại; manifest chỉ ID/status trong control table. Không cleanup/xóa hoặc sửa dữ liệu run khác. Staff fixture chỉ được thêm librarian trên chính tài khoản mới tạo trong DB test, không có tác động DB chính.
-- 98/98 unit/safety đạt; không có lỗi nghiệp vụ mới được chứng minh bằng MySQL thật. App-factory refactor đảm bảo mọi model/health dùng pool được truyền; không đổi nghiệp vụ. Chạy schema/seed/setup/15 scenario và xác minh InnoDB thật còn **Chưa xác minh**. Hướng dẫn: Backend/docs/integration-tests.md.
+- 98/98 unit/safety đạt; không có lỗi nghiệp vụ mới được chứng minh bằng MySQL thật. App-factory refactor đảm bảo mọi model/health dùng pool được truyền; không đổi nghiệp vụ. Chạy schema/seed/setup/15 scenario và xác minh InnoDB thật còn **Chưa xác minh**. Hướng dẫn: Backend/docs/kiem-thu-tich-hop.md.
 
 ## Mượn/trả — xác minh 2026-11-06 (TASK-012)
 
@@ -37,7 +59,7 @@
 - Người dùng đã duyệt quyền category_manage cho admin/librarian, không gán reader. Seed được thêm đúng một quyền; quyền/role/reader grant cũ giữ nguyên. Schema 16 bảng và SQL gốc không sửa.
 - Căn cứ khóa: QuyenHan(permission_id PK auto, name VARCHAR(100) UNIQUE, description), VaiTro(role_id PK auto, name VARCHAR(50) UNIQUE), VaiTro_QuyenHan PK(role_id, permission_id) + FK. Migration 001 dùng hai INSERT IGNORE trong transaction, tra ID bằng name; không UPDATE/DELETE/DDL, không tạo role hoặc dùng ID cố định.
 - SELECT trước/sau smoke test trên DB chính xác nhận category_manage có 0 bản ghi, không có role liên kết; số bảng cơ sở vẫn 16. Không chạy migration/seed hoặc đọc dữ liệu tài khoản/hash. Role/permission từ SELECT thật kết hợp principal mô phỏng xác nhận API ghi 403 trước lấy transaction connection; thiếu token 401. Health và GET catalog thật vẫn 200.
-- Code thay chốt 503 TASK-010 bằng authorize(category_manage), fail-closed 403 khi DB chưa cài quyền/liên kết. API không tự cấp quyền. Validation/UNIQUE/FK/khóa chống xóa danh mục có sách giữ nguyên, HTTP đã test bằng mock.
+- Code thay chốt 503 TASK-010 bằng yeuCauQuyen(category_manage), fail-closed 403 khi DB chưa cài quyền/liên kết. API không tự cấp quyền. Validation/UNIQUE/FK/khóa chống xóa danh mục có sách giữ nguyên, HTTP đã test bằng mock.
 - Tính idempotent của migration mới được kiểm tra tĩnh theo UNIQUE(name), PK ghép và INSERT IGNORE; chạy migration hai lần/rollback lỗi trên MySQL độc lập: **Chưa xác minh** vì chưa có môi trường thử nghiệm được chỉ định. Hướng dẫn chọn schema/kiểm tra trước-sau tại Backend/sql/README.md.
 
 ## Danh mục/bản sao — xác minh 2026-11-06 (TASK-010)
@@ -88,7 +110,7 @@ Mỗi mục là `bảng.cột → bảng.cột`, đã xác minh qua `KEY_COLUMN_
 - `dubaotansuat.user_id → nguoidung.user_id`; `nhatkyhethong.user_id → nguoidung.user_id`.
 
 ## Kết nối và giới hạn
-- Nguồn: `Backend/src/config/database.js`. Biến cấu hình: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`; không lưu giá trị cấu hình thực tế ở đây.
+- Nguồn: `Backend/src/config/co-so-du-lieu.js`. Biến cấu hình: `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`; không lưu giá trị cấu hình thực tế ở đây.
 - Pool: tối đa 10 kết nối, hàng đợi 50, timeout kết nối 10 giây; `DB_PORT` được kiểm tra khoảng 1–65535. Health check dùng `SELECT 1`.
 - Từ BOOK-001 (2026-11-05), pool bật `supportBigNumbers`/`bigNumberStrings`; module sách trả ID dạng chuỗi để bảo toàn BIGINT UNSIGNED. Không thay đổi schema hoặc `.env`.
 - Quy tắc nghiệp vụ và bản ghi seed thực tế: **Chưa xác minh**. Metadata FK/cascade, index, CHECK, trigger/event/routine đã được kiểm tra lại ngày 2026-11-05 theo phần dưới.
@@ -111,7 +133,7 @@ Mỗi mục là `bảng.cột → bảng.cột`, đã xác minh qua `KEY_COLUMN_
 ## Module sách — xác minh 2026-11-05 (BOOK-001)
 
 - Nguồn cột/ràng buộc: `Backend/sql/schema.sql`, bảng Sach và BanSaoSach. Metadata KEY_COLUMN_USAGE hiện tại xác nhận `bansaosach.book_id` tham chiếu `sach`. Không sửa SQL hay schema.
-- API sách dùng title/author bắt buộc; category_id/series_id/publisher/description/publication_year có thể null. Sach không có UNIQUE/ENUM riêng. Validation chi tiết và giới hạn kiểm thử tại `Backend/docs/books-api.md`.
+- API sách dùng title/author bắt buộc; category_id/series_id/publisher/description/publication_year có thể null. Sach không có UNIQUE/ENUM riêng. Validation chi tiết và giới hạn kiểm thử tại `Backend/docs/sach-api.md`.
 - DELETE khóa Sach bằng SELECT FOR UPDATE trong transaction, kiểm tra BanSaoSach rồi chỉ DELETE Sach; FK RESTRICT là chốt chặn cuối. PUT cũng khóa sách, không dùng affectedRows=0 để suy ra 404.
 - Đợt kiểm thử đọc thật: bảng Sach không có bản ghi tại thời điểm kiểm tra; chỉ SELECT/GET, không in dữ liệu. POST/PUT/DELETE và cạnh tranh FK thực tế: **Chưa xác minh trên MySQL thật**, đã kiểm thử mô phỏng. Không đọc dữ liệu người dùng hoặc bản ghi phân quyền.
 

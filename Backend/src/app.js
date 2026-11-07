@@ -1,8 +1,8 @@
-import pool from "./config/database.js";
-import { buildApp } from "./app-factory.js";
+import boKetNoi from "./config/co-so-du-lieu.js";
+import { dungUngDung } from "./app-factory.js";
 
-export function createApp(overrides = {}) {
-    return buildApp({ database: pool, ...overrides });
+export function taoUngDung(cauHinhThayThe = {}) {
+    return dungUngDung({ database: boKetNoi, ...cauHinhThayThe });
 }
 
-export default createApp();
+export default taoUngDung();

@@ -1,11 +1,11 @@
-import pool, { checkDatabaseConnection, databaseErrorMessage } from "../config/database.js";
+import boKetNoi, { kiemTraKetNoiCoSoDuLieu, taoThongBaoLoiCoSoDuLieu } from "../config/co-so-du-lieu.js";
 
 try {
-    await checkDatabaseConnection();
+    await kiemTraKetNoiCoSoDuLieu();
     console.log("MySQL connected successfully");
-} catch (error) {
-    console.error(databaseErrorMessage(error));
+} catch (loi) {
+    console.error(taoThongBaoLoiCoSoDuLieu(loi));
     process.exitCode = 1;
 } finally {
-    await pool.end();
+    await boKetNoi.end();
 }

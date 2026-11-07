@@ -1,37 +1,37 @@
 import jwt from "jsonwebtoken";
-import { HttpError } from "./http-error.js";
+import { LoiHttp } from "./loi-http.js";
 
-const issuer = "libriflow-api";
-const audience = "libriflow-client";
-export const tokenLifetimeSeconds = 15 * 60;
+const BEN_PHAT_HANH = "libriflow-api";
+const DOI_TUONG_TOKEN = "libriflow-client";
+export const THOI_HAN_TOKEN_GIAY = 15 * 60;
 
-export function createJwtService({ getSecret = () => process.env.JWT_SECRET } = {}) {
-    function secret() {
-        const value = getSecret();
-        if (typeof value !== "string" || Buffer.byteLength(value.trim(), "utf8") < 32) {
-            throw new HttpError(503, "JWT_NOT_CONFIGURED", "Xác thực chưa sẵn sàng: cấu hình JWT_SECRET ngẫu nhiên tối thiểu 32 byte trong môi trường server.");
+export function taoDichVuJwt({ getSecret: layKhoaTuCauHinh = () => process.env.JWT_SECRET } = {}) {
+    function layKhoaBiMat() {
+        const giaTri = layKhoaTuCauHinh();
+        if (typeof giaTri !== "string" || Buffer.byteLength(giaTri.trim(), "utf8") < 32) {
+            throw new LoiHttp(503, "JWT_NOT_CONFIGURED", "Xác thực chưa sẵn sàng: cấu hình JWT_SECRET ngẫu nhiên tối thiểu 32 byte trong môi trường server.");
         }
-        return value;
+        return giaTri;
     }
     return {
-        assertConfigured() { secret(); },
-        issue(userId) {
-            return jwt.sign({}, secret(), { algorithm: "HS256", subject: String(userId), expiresIn: tokenLifetimeSeconds, issuer, audience });
+        kiemTraDaCauHinh() { layKhoaBiMat(); },
+        phatHanhToken(maNguoiDung) {
+            return jwt.sign({}, layKhoaBiMat(), { algorithm: "HS256", subject: String(maNguoiDung), expiresIn: THOI_HAN_TOKEN_GIAY, issuer: BEN_PHAT_HANH, audience: DOI_TUONG_TOKEN });
         },
-        verify(token) {
-            const key = secret(); // Configuration failures stay 503, never become an auth bypass.
-            let payload;
+        xacMinhToken(tokenTruyCapMau) {
+            const khoa = layKhoaBiMat(); // Lỗi cấu hình vẫn trả 503, không trở thành đường bỏ qua xác thực.
+            let noiDungToken;
             try {
-                payload = jwt.verify(token, key, { algorithms: ["HS256"], issuer, audience, maxAge: tokenLifetimeSeconds });
-            } catch (error) {
-                throw new HttpError(401, error.name === "TokenExpiredError" ? "TOKEN_EXPIRED" : "INVALID_TOKEN", "Bearer token không hợp lệ hoặc đã hết hạn.");
+                noiDungToken = jwt.verify(tokenTruyCapMau, khoa, { algorithms: ["HS256"], issuer: BEN_PHAT_HANH, audience: DOI_TUONG_TOKEN, maxAge: THOI_HAN_TOKEN_GIAY });
+            } catch (loi) {
+                throw new LoiHttp(401, loi.name === "TokenExpiredError" ? "TOKEN_EXPIRED" : "INVALID_TOKEN", "Bearer token không hợp lệ hoặc đã hết hạn.");
             }
-            if (typeof payload !== "object" || typeof payload.sub !== "string" || !/^[1-9]\d{0,19}$/.test(payload.sub) ||
-                BigInt(payload.sub) > 18446744073709551615n || !Number.isInteger(payload.iat) || !Number.isInteger(payload.exp) ||
-                payload.iat > Math.floor(Date.now() / 1000) || payload.exp <= payload.iat || payload.exp - payload.iat > tokenLifetimeSeconds) {
-                throw new HttpError(401, "INVALID_TOKEN", "Bearer token không hợp lệ hoặc đã hết hạn.");
+            if (typeof noiDungToken !== "object" || typeof noiDungToken.sub !== "string" || !/^[1-9]\d{0,19}$/.test(noiDungToken.sub) ||
+                BigInt(noiDungToken.sub) > 18446744073709551615n || !Number.isInteger(noiDungToken.iat) || !Number.isInteger(noiDungToken.exp) ||
+                noiDungToken.iat > Math.floor(Date.now() / 1000) || noiDungToken.exp <= noiDungToken.iat || noiDungToken.exp - noiDungToken.iat > THOI_HAN_TOKEN_GIAY) {
+                throw new LoiHttp(401, "INVALID_TOKEN", "Bearer token không hợp lệ hoặc đã hết hạn.");
             }
-            return payload.sub;
+            return noiDungToken.sub;
         },
     };
 }
