@@ -1,5 +1,47 @@
 # Theo dõi task
 
+## FE-03 — Warm Wooden Library Design System và UI Components (2026-11-19)
+
+- Kiểm tra cuối: lint/build exit0,78/78 test/6file/0fail/không unhandled errors; production route200 và27/27 assets200(gồm24font files);43link nội bộ README/docs mới hợp lệ. Hash Backend/docs FE-01/FE-02/tests cũ không đổi; diff-check/secret-pattern scan đạt(giới hạn mẫu). Preview4173 dừng, dev5173 giữ cho người dùng. Chi tiết và các mục browser/responsive chưa xác minh trong FE03_TEST_REPORT.
+
+- Trạng thái: hoàn tất code/styles/tests/docs trong phạm vi; chờ nghiệm thu, browser UI/responsive thực còn chưa xác minh do native pipe/browser host không khả dụng. Đã đọc yêu cầu FE-03, README/5 docs FE-02, tài liệu dự án bắt buộc, source/Git/packages/tests; giữ mọi thay đổi FE-01/FE-02 có trước, không reset/stash/stage/commit/push.
+- Tạo28 file Frontend:16 component/helper JSX + component test,3 CSS token/component/preview, contrast test, preview page/test và5 docs FE03. Sửa7 file Frontend có trước: package/lock,README,index.css,AppProviders,AppRoutes,FoundationPage(chỉ Link). Sửa docs/PROJECT_CONTEXT,DECISIONS,TASKS,HANDOFF; danh sách đầy đủ ở [FE03_HANDOFF](../Frontend/docs/FE03_HANDOFF.md). Không sửa Backend/SQL/DB/env/contract/docs FE-01/docs hoặc tests FE-02.
+- Kết quả:15 nhóm UI thuần,7 palette màu +semantic/status tokens,Be Vietnam Pro/Lora tự host,spacing4px,radius/shadow/focus/reduced motion/light mode; Radix Dialog và Sonner/Lucide. Lazy /design-system, không màn hình nghiệp vụ/FE-04/API/JWT mock. QueryClient/HTTP policy không đổi.
+- Kiểm tra: baseline22/22 đạt; regression78/78 tại6file(22cũ+56mới), lint và build đạt. New tests29component+24contrast+3preview; Dialog keyboard/focus/Escape, native controls, table/empty/loading,Toast click/close. Lần test đầu có unhandled missing setPointerCapture của jsdom exit1, không tính pass; đã bổ sung pointer-capture shim chỉ trong test mới và chạy sạch exit0. Không nới/sửa test cũ.
+- Dependency cài5 package exact, npm ls sạch và audit cài báo0 vulnerabilities. Build lazy preview và font local. Dev root/design-system/module/CSS200, fontVietnamese400200; browser inventory rỗng/native pipe+browser host unavailable. Review CSS375/768/1280 không thay kiểm browser thực; checklist manual trong test report. Health Backend chưa kết nối không sửa trong FE-03.
+- Đối chiếu SHA-256 trước/sau cho Backend/tài liệu FE-01/FE-02/tests cũ giữ nguyên; diff/link/secret/whitespace và preview assets kiểm tra cuối ở bàn giao. Server dev hiện hữu giữ cho người dùng xem; preview tạm dừng sau kiểm tra.
+- Tồn tại/bước tiếp: người dùng kiểm browser responsive/zoom/reduced motion/AT rồi nghiệm thu; chỉ giao FE-04 sau đó. Backend dependencies theo phương án C giữ riêng, DB không kiểm lại; inventory FE-01 lỗi mã hóa giữ nguyên. Không tự mở nhiệm vụ tiếp theo.
+
+## FE-02-RUN — Chạy thử Frontend (2026-11-19)
+
+- Trạng thái: Vite dev đang chạy tại http://127.0.0.1:5173 theo yêu cầu người dùng; giữ server để người dùng mở thử. Lệnh: `npm.cmd run dev` tại Frontend, VITE_API_BASE_URL=http://127.0.0.1:3000 chỉ đặt trong process, không tạo/sửa env file.
+- Kiểm tra: GET root, src/main.jsx và src/styles/index.css đều200; chưa quan sát browser UI hoặc kiểm Backend/health thật. Không sửa source/dependency/Backend/database. Chỉ cập nhật docs/TASKS.md và docs/HANDOFF.md.
+- Bước tiếp: người dùng mở URL kiểm tra trang kỹ thuật FE-02; dừng bằng Ctrl+C ở phiên chạy Vite hoặc yêu cầu dừng. Không triển khai FE-03.
+
+## FE-02 — Khởi tạo React + Vite và nền tảng Frontend (2026-11-19)
+
+- Xác minh cuối: 28 file Frontend mới (15 source/test, 7 config/entry/package, 6 README/docs), 51 liên kết nội bộ hợp lệ, không lỗi encoding/whitespace hoặc mẫu secret thật trong file mới. 107 hash Backend + FE-01 không đổi; 20 dependency trực tiếp khớp lockfile, npm ci/npm ls sạch. Preview root/assets/deep-link200; dev5173 và preview4173 đã xác nhận dừng. Các kết quả lint/22 test/build sau ci đều đạt; browser UI vẫn chưa xác minh.
+
+- Trạng thái: hoàn tất code/config/test/docs nền tảng, chờ nghiệm thu; browser UI thực chưa xác minh do browser access host không khả dụng; chưa FE-03. Đã đọc yêu cầu FE-02, 6 tài liệu FE-01, 5 tài liệu dự án bắt buộc, source/config/naming/Git; Node24.20.0/npm11.19.0, ban đầu Frontend chỉ có docs. Giữ thay đổi FE-01 có sẵn tại baseline Git3a4c69e; không reset/stash/stage/commit.
+- Tạo source Frontend/src gồm App/providers/router, feature foundation/health, config env, Axios/QueryClient, fallback/CSS, 3 test file + setup; config package/lock/env.example/gitignore/index/Vite/ESLint, README và 5 FE02_*.md. Sửa docs/PROJECT_CONTEXT, DECISIONS, TASKS, HANDOFF. Danh sách file ở [FE02_HANDOFF](../Frontend/docs/FE02_HANDOFF.md). Không sửa 6 tài liệu FE-01/Backend/SQL/env/test/package Backend hoặc dữ liệu DB.
+- Scaffold create-vite9.3.4 template React JavaScript trong thư mục tạm được kiểm tra/dọn đúng path, không ghi đè docs cũ. React19.3.1/Vite8.3.6, React Router8.5.2, Axios1.21.1, TanStack Query5.108.0, Tailwind4.3.5. Không thư viện/store/provider dư; không chức năng nghiệp vụ/mock auth/Design System.
+- Kiểm tra: npm install và npm ci đạt, npm ls --depth=0 sau ci không missing/invalid/extraneous; audit cài báo0 vulnerabilities. Lint đạt; 22/22 test, 3/3 file đạt; build đạt. Dev loopback5173 ready, GET root/fallback/main/CSS/Vite client200, utility Tailwind có trong dev và CSS production. Server thử đã dừng; chưa browser thật/Backend health thật/auth/ghi DB trong FE-02. Không tải browser binaries.
+- Bảo toàn: đối chiếu SHA-256 các file Backend và 6 tài liệu FE-01 so với đầu FE-02; link/secret/whitespace/Git được kiểm tra trong bàn giao cuối. Docs/DATABASE.md modified từ FE-01 được giữ nguyên, không phát sinh khảo sát DB ở FE-02.
+- Tồn tại: inventory FE-01 lỗi mã hóa/contract trống được ghi nhận, không sửa; chỉ guide05 + health source được dùng, service nghiệp vụ phụ thuộc chưa làm. Backend JWT/user/grants/rules/lookup/profile/upload/copy note/forecast là task riêng theo phương án C; trạng thái DB lấy snapshot FE-01, không khẳng định đã kiểm lại.
+- Tiếp theo: người dùng nghiệm thu FE-02, kiểm browser thủ công khi khả dụng, rồi giao FE-03 nếu muốn. Không tự triển khai nhiệm vụ tiếp theo.
+
+## FE-01 ? R? so?t Backend v? API Contract (2026-11-19)
+
+- Tr?ng th?i: ho?n t?t ph?n t?ch/t?i li?u, ch? nghi?m thu; kh?ng tri?n khai FE-02. Tr??c task ??c y?u c?u ??nh k?m, AGENTS, 5 t?i li?u context/database/decisions/tasks/handoff, c?y source v? Git; baseline 3a4c69e, working tree s?ch.
+- T?o 6 file Frontend/docs/{01_BACKEND_API_INVENTORY,02_AUTHORIZATION_MATRIX,03_FRONTEND_API_MAPPING,04_API_GAPS_AND_RISKS,05_FRONTEND_INTEGRATION_GUIDE,FE01_HANDOFF}.md; s?a docs/{DATABASE,PROJECT_CONTEXT,TASKS,HANDOFF}.md. Ch? t?i li?u, kh?ng s?a source/test/config/package/SQL/env/Git metadata; kh?ng c?i package/t?o Vite/schema/seed/migration/ghi DB/commit/push.
+- K?t qu?: 10 module nghi?p v? + health, 40 endpoint source/runtime (29 JWT, 11 public), 3 role DB; trace route/middleware/controller/service/model/validation/test, DTO/body/error/scope/mapping v? gaps. Generate c? route kh?a ghi 503; fine/category thi?u rule/grant; user CRUD/lookup v? m?t s? lu?ng FE c?n thi?u. Kh?ng kh?ng ??nh source-only endpoint ?? ch?y th?t.
+- Ki?m tra m?i: SELECT metadata 16 b?ng/96 c?t/16 PK/16 FK/6 UNIQUE/3 CHECK; 96 t?n/ki?u/NULL kh?p DDL, c?t FK/tham chi?u kh?p quan s?t; ch?a so l?i ??y ?? default/index/collation/cascade/CHECK expression. SELECT grant/COUNT: user=0, active rules=0, thi?u category_manage; boolean JWT ch?a h?p l?, ch?a c?u h?nh coverage path. Kh?ng ??c PII/in secret.
+- Smoke loopback c?ng t?m v?i wrapper ch? SELECT/c?m transaction: health/health-db/books/categories/book-copies 200; auth/me, forecasts/me thi?u JWT 401; CORS *, 7 SELECT qua wrapper; pool/server ??ng. Ki?m tra 40 c?p method/path duy nh?t, link/line, whitespace, m?u b? m?t v? ph?m vi thay ??i t?i li?u.
+- Ch?a ch?y: unit/integration ghi m?i (task kh?ng ??i logic v? kh?ng cho ph?p chu?n b? d? li?u), React/Vite/browser/preflight, auth th?nh c?ng hi?n t?i, fine lifecycle/forecast ready th?t, t?i l?n/Linux/audit dependency. 172 unit v? 21 scenario TASK-018 l? l?ch s? 2026-11-07, kh?ng t?nh l? test FE-01.
+- T?n t?i/b??c ti?p: JWT/account/m?i tr??ng dev, category grant, ch?nh s?ch/rule ph?t, coverage/generate, borrower/user/series lookup, copy note khi PUT. ?? xu?t ch?a duy?t; d?ng ch? nghi?m thu v? task FE-02 ri?ng. Chi ti?t: [FE01_HANDOFF](../Frontend/docs/FE01_HANDOFF.md).
+
+- Ki?m tra b?n giao cu?i FE-01: 6 file/323 link n?i b? v? line h?p l?; 40 route t?i li?u kh?p runtime, kh?ng thi?u/tr?ng; whitespace/secret-pattern scan kh?ng ph?t hi?n v?n ??; git diff --check v? git diff --exit-code -- Backend ??t. Ch? 6 Markdown m?i v? 4 t?i li?u root thay ??i.
+
 ## TASK-018 — Kiểm thử tổng thể và bàn giao Backend (2026-11-07)
 
 - Trạng thái: hoàn tất kiểm tra/sửa lỗi integration/bàn giao; Backend còn blocker cấu hình auth trước nghiệm thu kết nối. Không mở rộng tính năng. Trước task đã đọc context/database/decisions/tasks/handoff, source, safety/schema/seed và Git status; giữ thay đổi TASK-017 chưa commit, không reset/stash/stage.

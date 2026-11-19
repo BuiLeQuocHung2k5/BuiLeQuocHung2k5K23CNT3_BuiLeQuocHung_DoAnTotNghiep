@@ -1,5 +1,12 @@
 # Database
 
+## X?c minh ch? ??c ? FE-01, 2026-11-19
+
+- SELECT information_schema.COLUMNS/TABLE_CONSTRAINTS/KEY_COLUMN_USAGE qua pool hi?n c?: 16 b?ng, 96 c?t, 16 PK, 16 FK, 6 UNIQUE, 3 CHECK. ??i chi?u 96 t?n/ki?u/NULL v?i Backend/sql/schema.sql kh?ng sai kh?c; c?t FK v? b?ng/c?t tham chi?u quan s?t kh?p DDL. Ch?a so l?i default/index/collation/cascade/CHECK expression; kh?ng suy count th?nh to?n schema kh?p.
+- SELECT grant theo t?n role/quy?n x?c nh?n admin/librarian/reader, category_manage ch?a c?; COUNT NguoiDung=0, QuyDinhPhat active=0. Kh?ng ??c h? s?/hash/PII, kh?ng ghi DB/schema/seed/migration. Ch? ki?m boolean JWT ch?a h?p l? v? ch?a c?u h?nh ???ng d?n coverage, kh?ng c?ng b? gi? tr? env.
+- Smoke qua app-factory + wrapper ch? SELECT/c?m transaction: health/health-db/books/categories/book-copies 200; auth/me, forecasts/me thi?u JWT 401; 7 SELECT qua wrapper; server/pool ??ng. Kh?ng th? auth th?nh c?ng/ghi. B?ng ch?ng integration 2026-11-07 b?n d??i l? l?ch s?.
+- Contract MySQL ? JSON, FK/ENUM/null/date/decimal: [FE-01 inventory](../Frontend/docs/01_BACKEND_API_INVENTORY.md); c?ch ki?m tra v? gi?i h?n: [FE01_HANDOFF](../Frontend/docs/FE01_HANDOFF.md).
+
 ## Xác minh MySQL thật — TASK-018, 2026-11-07
 
 - Main được nạp bằng cấu hình hiện có, chỉ SELECT metadata/aggregate, không đọc PII hoặc in secret. MySQL 8.0.40, DB libriflow; COUNT NguoiDung/Sach/PhieuMuon đều 0. QuyenHan chưa có category_manage, QuyDinhPhat active count 0. Không chạy migration/seed hoặc chuẩn bị user chính.
