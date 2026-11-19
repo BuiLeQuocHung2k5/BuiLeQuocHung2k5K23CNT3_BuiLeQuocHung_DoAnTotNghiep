@@ -1,0 +1,1879 @@
+{
+  "verifiedDate": "2026-11-19",
+  "files": [
+    {
+      "file": "Backend/src/app-factory.js",
+      "lines": 71,
+      "sha256": "cafd1251277a304c5a54d7839ff68b72882e401131a7105f66274ab08be5c352"
+    },
+    {
+      "file": "Backend/src/app.js",
+      "lines": 9,
+      "sha256": "ddad0aac5aeb2a3727fb89bfb0070ef53eddce53ff1502c84fd7b3b4ba24d553"
+    },
+    {
+      "file": "Backend/src/config/co-so-du-lieu.js",
+      "lines": 47,
+      "sha256": "d16ce29feae095679ce0fbceab5caf8aae2b9b50bd44782eb15163af72e5a39e"
+    },
+    {
+      "file": "Backend/src/config/do-phu-du-bao.js",
+      "lines": 33,
+      "sha256": "94078dabbb7cd1de4c0d53405f107c086b4462fc72f0710ed085690a6f652eda"
+    },
+    {
+      "file": "Backend/src/controllers/ban-sao-sach.controller.js",
+      "lines": 22,
+      "sha256": "d9db8d769eee5b98e8ef97e2ec5774420485bed5e08dcf1311b9cd7be6a3e627"
+    },
+    {
+      "file": "Backend/src/controllers/danh-muc.controller.js",
+      "lines": 13,
+      "sha256": "ee7c8914ec7c806d7cbd3df6015bbad92829bec6959594f0101160d60d1195f2"
+    },
+    {
+      "file": "Backend/src/controllers/du-bao.controller.js",
+      "lines": 12,
+      "sha256": "0bb3db9a8bb2462d8d3687e138dee2c9c808cf84909ec3aebd85324d1d30f8e6"
+    },
+    {
+      "file": "Backend/src/controllers/lich-su-su-dung.controller.js",
+      "lines": 10,
+      "sha256": "574e7c87f8a2b984e01c8685ea713259b0063d4add83d89127ae90dab40ddf99"
+    },
+    {
+      "file": "Backend/src/controllers/phieu-muon.controller.js",
+      "lines": 13,
+      "sha256": "50b91862a1b4a053601b5cfbe1bdcb41ed17ee6375dc264a27d86cec69ccc851"
+    },
+    {
+      "file": "Backend/src/controllers/qua-han.controller.js",
+      "lines": 15,
+      "sha256": "dc92d35bcc12c20f44b37545b1dfbd4424aab7ffb8c0d7d837493f78c4b1ed51"
+    },
+    {
+      "file": "Backend/src/controllers/sach.controller.js",
+      "lines": 27,
+      "sha256": "7a5cc0ae7c151bef0bbb3380624d7e4e5d975c7f2feb25988095c6990adffaea"
+    },
+    {
+      "file": "Backend/src/controllers/thong-ke.controller.js",
+      "lines": 11,
+      "sha256": "5853126ed57cca8313e0bef7353cf517cefe7ccd9047d9a4c9e0e0837ce26b3f"
+    },
+    {
+      "file": "Backend/src/controllers/tien-phat.controller.js",
+      "lines": 13,
+      "sha256": "68c84d0e2edb34de0a69bbaa889c4b7401a31b4f13341cc4c691bf089497611f"
+    },
+    {
+      "file": "Backend/src/controllers/xac-thuc.controller.js",
+      "lines": 22,
+      "sha256": "85a117b62c6306169a96f237dd4d4a02b59ff01dcd0ae3a3b465f6fd4de6455b"
+    },
+    {
+      "file": "Backend/src/middlewares/xac-thuc.js",
+      "lines": 22,
+      "sha256": "56cab70fb7ee81361f2389f6288c74765cd4ee316f4afcb706e6a69da30ec245"
+    },
+    {
+      "file": "Backend/src/middlewares/xu-ly-loi.js",
+      "lines": 37,
+      "sha256": "f625dcaf65dac6ff54c88e0e9e9ec49e11ae475761ee047d1286471e197e2771"
+    },
+    {
+      "file": "Backend/src/models/ban-sao-sach.model.js",
+      "lines": 67,
+      "sha256": "2774d7f9a84ae13be22532218885369fb4708ecc43c399d29fddcc3f96d969dd"
+    },
+    {
+      "file": "Backend/src/models/danh-muc.model.js",
+      "lines": 45,
+      "sha256": "7927638f9e72f6546f0187ebafdddae655e579bd9ed9b838fde5ce3cf6f7dee0"
+    },
+    {
+      "file": "Backend/src/models/du-bao.model.js",
+      "lines": 20,
+      "sha256": "f1e9c46a4925a28e41728f726e4902a2a105bc47f2723f81138597620c1ad9f4"
+    },
+    {
+      "file": "Backend/src/models/lich-su-su-dung.model.js",
+      "lines": 21,
+      "sha256": "e8069e0a29a16dc8fef148bab2c7d9586ac487c93a66ecb08f0a23a3a4b01d46"
+    },
+    {
+      "file": "Backend/src/models/phieu-muon.model.js",
+      "lines": 112,
+      "sha256": "ed2b4faca8d6a65ba6ffc21e055ad87777d753364f23f920195f1310519f8051"
+    },
+    {
+      "file": "Backend/src/models/qua-han.model.js",
+      "lines": 46,
+      "sha256": "1bae7983277742cb5e814fe5bbf9a8ccb6a8cee60774e93399b46f6b2c2bfd05"
+    },
+    {
+      "file": "Backend/src/models/sach.model.js",
+      "lines": 78,
+      "sha256": "da585f6066ea2cb996647f145f12c947baffa711cee5f2574f1ca134ef658b50"
+    },
+    {
+      "file": "Backend/src/models/thong-ke.model.js",
+      "lines": 65,
+      "sha256": "138cf9b0d1f83b98678bb9813d0504c668e19325589249aa7adf0bf054d01f80"
+    },
+    {
+      "file": "Backend/src/models/tien-phat.model.js",
+      "lines": 64,
+      "sha256": "2b933caafe19a42cb2a0cc9bdaff946db05320749dbbede9b77da198ba03ee60"
+    },
+    {
+      "file": "Backend/src/models/xac-thuc.model.js",
+      "lines": 53,
+      "sha256": "e46a54fb003ad44e4d0762bb1b50cdeac064704b6d338155cb7941c76176c9e1"
+    },
+    {
+      "file": "Backend/src/routes/ban-sao-sach.routes.js",
+      "lines": 22,
+      "sha256": "03b746c5f7336b70a73ac8051e960a7d289b6808d1788c7a88d2c27137acd6b3"
+    },
+    {
+      "file": "Backend/src/routes/danh-muc.routes.js",
+      "lines": 16,
+      "sha256": "7bf139af0249ef67af413f39312ee89eaf2dcce1e36b4d38196b8cd50d897487"
+    },
+    {
+      "file": "Backend/src/routes/du-bao.routes.js",
+      "lines": 16,
+      "sha256": "2ecd1aba80b6f1a442947134d53f5810eda279d4992ef0995306df4976414bfb"
+    },
+    {
+      "file": "Backend/src/routes/lich-su-su-dung.routes.js",
+      "lines": 13,
+      "sha256": "7cd2af16b37c6028e88813e7c8b9b4a31c1f26ecf5bf6c6d74f87b120d24781c"
+    },
+    {
+      "file": "Backend/src/routes/phieu-muon.routes.js",
+      "lines": 16,
+      "sha256": "0d0f413811bc68a8305b79ea913c63b4ec2f09802cb864a7a44e82ab742d8636"
+    },
+    {
+      "file": "Backend/src/routes/qua-han.routes.js",
+      "lines": 11,
+      "sha256": "df32b80ca9982d8b0e13db98f6cde63c8848061d0f0daa7f84ca968f1edb2bef"
+    },
+    {
+      "file": "Backend/src/routes/sach.routes.js",
+      "lines": 17,
+      "sha256": "029e17cc5261f14635796ab92fec800d522b57d1788b8fbe0ca847cc0a44ad00"
+    },
+    {
+      "file": "Backend/src/routes/thong-ke.routes.js",
+      "lines": 15,
+      "sha256": "3c72d007c76c8602188bc9125ed67cf73f43fea604e474d38c4e4bd7acc92d70"
+    },
+    {
+      "file": "Backend/src/routes/tien-phat.routes.js",
+      "lines": 15,
+      "sha256": "b8ba185b41b9b671268ef617bde875015974a793d9b63c418416a36fa751bd11"
+    },
+    {
+      "file": "Backend/src/routes/xac-thuc.routes.js",
+      "lines": 20,
+      "sha256": "7e2e6d1781379d2e8c6a4f1f50fa5558f8d1f3d64f68ea4d9489e30e3b123904"
+    },
+    {
+      "file": "Backend/src/scripts/check-db.js",
+      "lines": 12,
+      "sha256": "73c2ec731fdaa896addc6501017a256749e24c569559bd94246f85551397bda8"
+    },
+    {
+      "file": "Backend/src/server.js",
+      "lines": 22,
+      "sha256": "1590d7abb7cfd838b91deee9a76fa3af459f109de149ac140d0544761fe5fff9"
+    },
+    {
+      "file": "Backend/src/services/ban-sao-sach.service.js",
+      "lines": 26,
+      "sha256": "611d0875205a21e2a4acf5c611c599536844d2760152de37f0fc08852dabea77"
+    },
+    {
+      "file": "Backend/src/services/danh-muc.service.js",
+      "lines": 19,
+      "sha256": "caebcb818af3e6d9e382a33f7cb0b204e6866dddbd415857aad9c0f727485fdf"
+    },
+    {
+      "file": "Backend/src/services/du-bao.service.js",
+      "lines": 21,
+      "sha256": "7b705e687a675aa8d3334a14789b340736685329204a996a9c33354b0cbf2aa8"
+    },
+    {
+      "file": "Backend/src/services/lich-su-su-dung.service.js",
+      "lines": 10,
+      "sha256": "c7fd8fefd0556d14046595cf6ce2f07ef8bcee0e5f4155a206a5fa9d96bc78a6"
+    },
+    {
+      "file": "Backend/src/services/phieu-muon.service.js",
+      "lines": 12,
+      "sha256": "c22750d21d6f2b98c1483271079c2c89b02afa13c6344443dedc84808658d961"
+    },
+    {
+      "file": "Backend/src/services/qua-han.service.js",
+      "lines": 10,
+      "sha256": "09497215192bdb28fbaf7680d3f38df0342a586ab5dd44414e97d20368440b04"
+    },
+    {
+      "file": "Backend/src/services/sach.service.js",
+      "lines": 23,
+      "sha256": "aaaf19eb129ec1b7ee6a9831d5041d98ece9284d352e7fbfb29c141f661609ef"
+    },
+    {
+      "file": "Backend/src/services/thong-ke.service.js",
+      "lines": 10,
+      "sha256": "63463c02e233837d94f399a71fe7006f17c9a4ca009818c4d0d2d64cfdafd3b2"
+    },
+    {
+      "file": "Backend/src/services/tien-phat.service.js",
+      "lines": 20,
+      "sha256": "3e494a5559786fe5abd65416da17a74bef035ad5d3873b2bfddec87217f66854"
+    },
+    {
+      "file": "Backend/src/services/xac-thuc.service.js",
+      "lines": 47,
+      "sha256": "bb34b9363c63ec0812e7ba66365b98eac01d4fb505413ca19c32ee598b1f98a7"
+    },
+    {
+      "file": "Backend/src/utils/jwt.js",
+      "lines": 38,
+      "sha256": "1a63d6c0041395d46e15c83b5d0703535fcf662cd16c9345aef24b3b3c538f55"
+    },
+    {
+      "file": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js",
+      "lines": 71,
+      "sha256": "a56f72ccd49fd5ae596d3290ec6854bc180afd61685abf35a80aa56dbdc949d5"
+    },
+    {
+      "file": "Backend/src/utils/kiem-tra-phieu-muon.js",
+      "lines": 60,
+      "sha256": "fce4ea304c911af94eeadea928f9e126219e8158a02d01209436cfce37adcc0e"
+    },
+    {
+      "file": "Backend/src/utils/kiem-tra-sach.js",
+      "lines": 78,
+      "sha256": "8f4c2d8a6b07efb2868cd914fd673dafecdbfc6d1fe79bcca49a50ed248d781e"
+    },
+    {
+      "file": "Backend/src/utils/kiem-tra-thong-ke.js",
+      "lines": 63,
+      "sha256": "739690d1a6e9b8ddcb40b1c357a9d903855ae6b3185d297be223c7916eda3344"
+    },
+    {
+      "file": "Backend/src/utils/kiem-tra-tien-phat.js",
+      "lines": 41,
+      "sha256": "47d478a0f5bb9a2cc3e7016d3fbbf2efb3c78888e788a764e418da3cfaa0c135"
+    },
+    {
+      "file": "Backend/src/utils/kiem-tra-xac-thuc.js",
+      "lines": 42,
+      "sha256": "c46f749b5bb91a6c075f54740caf79737c747135c71f3ce338698fc8a6e4c02c"
+    },
+    {
+      "file": "Backend/src/utils/loi-http.js",
+      "lines": 10,
+      "sha256": "148550871d952391e8e6401e6021b87bd42470d7b652bca1329a5bbaa0526951"
+    },
+    {
+      "file": "Backend/src/utils/quy-tac-tien-phat.js",
+      "lines": 28,
+      "sha256": "46aff03d11dfcef100ccc003e2c41ba4bba7580d1cac95a5db5548c9250c1a7c"
+    },
+    {
+      "file": "Backend/src/utils/thuat-toan-du-bao.js",
+      "lines": 64,
+      "sha256": "6bc1b89c0022441c1b53ec65442900b1e52d5c78f2e35e878906a8c6a2c84898"
+    },
+    {
+      "file": "Backend/src/utils/truy-van-danh-muc.js",
+      "lines": 37,
+      "sha256": "6e71e3ac7276494b49566013684243a03b4c8782e1d576319766230bb3926cf6"
+    },
+    {
+      "file": "Backend/test/an-toan-tich-hop.test.js",
+      "lines": 74,
+      "sha256": "0437789690f403f34500af5260f9f2266cf0a7e330604b9b128d01a7438e09ce"
+    },
+    {
+      "file": "Backend/test/danh-muc-ban-sao-sach.test.js",
+      "lines": 346,
+      "sha256": "d794e083ebcc9cfe036c4dc7c32247a5ef1c54d5767a0737e90539d9111939af"
+    },
+    {
+      "file": "Backend/test/du-bao.test.js",
+      "lines": 195,
+      "sha256": "075bb616f2f061037d71266751ab970652ef64476733db6c936e7c6106430ee0"
+    },
+    {
+      "file": "Backend/test/lich-su-thong-ke.test.js",
+      "lines": 261,
+      "sha256": "56aec85e4d0076b2c93a690db793bbfba6d3b246fb4eaf07b2ea44cf860d2974"
+    },
+    {
+      "file": "Backend/test/phieu-muon.test.js",
+      "lines": 294,
+      "sha256": "a0261ef2fa11b870e4f653f486112c437ee544b908f8b28f29f406f07965dfb3"
+    },
+    {
+      "file": "Backend/test/quyen-danh-muc-sql.test.js",
+      "lines": 41,
+      "sha256": "c5563cfdd7676ac20d1c4bd507e73162133ccc495b3b3cfb8e57b18f3dd190a6"
+    },
+    {
+      "file": "Backend/test/sach.test.js",
+      "lines": 211,
+      "sha256": "4a9781669466336637eed8d6c5f4215052eeacf60d19de3aa97d39c0f8ad5156"
+    },
+    {
+      "file": "Backend/test/tien-phat-qua-han.test.js",
+      "lines": 322,
+      "sha256": "9aff2a822dee1dd69115ac0588ea8142b2121fdbd6504e50ee547dc90702f875"
+    },
+    {
+      "file": "Backend/test/xac-thuc.test.js",
+      "lines": 308,
+      "sha256": "2645af31e15e3a73b187817feed52367a59539464f0345c5aa92643782a3158e"
+    },
+    {
+      "file": "Backend/integration/an-toan.mjs",
+      "lines": 155,
+      "sha256": "9983cc7cfd59c4a84e81d8a5c0c14b4dfb905eb180973ab3e7ab867a492b6356"
+    },
+    {
+      "file": "Backend/integration/instance-isolee.mjs",
+      "lines": 113,
+      "sha256": "a66baafc7ebf18af04039d491a4e6a2e6b0f72f37f15355ecbd6d7bbf4b0569e"
+    },
+    {
+      "file": "Backend/integration/kich-ban.mjs",
+      "lines": 292,
+      "sha256": "9168d9cfa122ec6ebcddd2a46f3f9f4736b33d158b0310846e502b7d4486573b"
+    },
+    {
+      "file": "Backend/integration/run.mjs",
+      "lines": 16,
+      "sha256": "5dfdb9587fedb0dc69cfd35c3d8a9461d8194a454149180715809d3397b81be0"
+    },
+    {
+      "file": "Backend/integration/setup.mjs",
+      "lines": 14,
+      "sha256": "04a839d2e69917a89a0d447ce3db8a4c0076c92b0f7e42374a8e2b0131e61556"
+    },
+    {
+      "file": "Frontend/src/app/App.jsx",
+      "lines": 14,
+      "sha256": "1f6267a76205685566d5a60b6a0746bc1b6ee4832cafc7af85594f8a82caa4a5"
+    },
+    {
+      "file": "Frontend/src/app/App.test.jsx",
+      "lines": 68,
+      "sha256": "c114c47508184dae073d39045757f9f3dba431d9bb1a191bc714c95834579b49"
+    },
+    {
+      "file": "Frontend/src/app/providers/AppProviders.jsx",
+      "lines": 10,
+      "sha256": "a323ee305fec186964d0b078bb0709c59faf91615de183027f847ea34abe6bbb"
+    },
+    {
+      "file": "Frontend/src/app/router/AppRoutes.jsx",
+      "lines": 18,
+      "sha256": "74b97d34341010a477847007d4b78b216638f5e269dc41e6f0067d89f541b47e"
+    },
+    {
+      "file": "Frontend/src/components/ui/Alert.jsx",
+      "lines": 14,
+      "sha256": "e0ff7c13b6cb9b738f587b0c159942ac3ad46332a087a7b0266999f520f2daa5"
+    },
+    {
+      "file": "Frontend/src/components/ui/Badge.jsx",
+      "lines": 4,
+      "sha256": "506c9274aebbd8127a60b157af3706c20e3c5143631fe923f76768caf73df13d"
+    },
+    {
+      "file": "Frontend/src/components/ui/Button.jsx",
+      "lines": 20,
+      "sha256": "e1b80f011fb8edb509d32c6fedff967acda44c86b40ca12569a353e59bded707"
+    },
+    {
+      "file": "Frontend/src/components/ui/Card.jsx",
+      "lines": 19,
+      "sha256": "233211509e8835259d0358cfd1dd04c5f5fb9646ae2ad077286e94214319154a"
+    },
+    {
+      "file": "Frontend/src/components/ui/Checkbox.jsx",
+      "lines": 12,
+      "sha256": "8931665c3601dbfb542824da652168f25bac03b43e06c3fc8c68553ed9db2064"
+    },
+    {
+      "file": "Frontend/src/components/ui/Dialog.jsx",
+      "lines": 28,
+      "sha256": "a26bbd44824f870161e1230348196830be83f6e793a36af5458c74158922f764"
+    },
+    {
+      "file": "Frontend/src/components/ui/EmptyState.jsx",
+      "lines": 11,
+      "sha256": "1f2ae3ec7620b4c8560b9b88d1a5ad17a70f237458815b94272c16c17d17f1fd"
+    },
+    {
+      "file": "Frontend/src/components/ui/Field.jsx",
+      "lines": 13,
+      "sha256": "3718a46f55918fd91f708f7f5f28eb884d4f2c3197861956cc04e0f5c15ab095"
+    },
+    {
+      "file": "Frontend/src/components/ui/Icon.jsx",
+      "lines": 15,
+      "sha256": "3941c917a59c059f8d8a49489e8254ab854c00fa65cc6cacc481713cbdb0e4dd"
+    },
+    {
+      "file": "Frontend/src/components/ui/Input.jsx",
+      "lines": 15,
+      "sha256": "2c528735296d42f4a8a56ee8995cfab8e495ed1307beaeb281ee896b077aaf5c"
+    },
+    {
+      "file": "Frontend/src/components/ui/Select.jsx",
+      "lines": 19,
+      "sha256": "2a3fedd7e822a72a9d314d66e6ada1497d8d2f1da50e78549aa2b2823cf75a7d"
+    },
+    {
+      "file": "Frontend/src/components/ui/Skeleton.jsx",
+      "lines": 4,
+      "sha256": "98395fa614e76211a101672212502d5f9d8353f48af49b5f733769c88c8eee4a"
+    },
+    {
+      "file": "Frontend/src/components/ui/Spinner.jsx",
+      "lines": 9,
+      "sha256": "e524cb3f23e3c2f9fcae83216d8c204dc880c073ec35a2014e95282fe12c8a23"
+    },
+    {
+      "file": "Frontend/src/components/ui/Table.jsx",
+      "lines": 22,
+      "sha256": "12ed89fcbeb0410aefd294b81c88d1d62f3b65dfe09db5f30acbe95aa3629a95"
+    },
+    {
+      "file": "Frontend/src/components/ui/Textarea.jsx",
+      "lines": 15,
+      "sha256": "b6e1d5101e47007d9e6661242583f18c3707707813d1aa288cc4d5961826b933"
+    },
+    {
+      "file": "Frontend/src/components/ui/Toaster.jsx",
+      "lines": 24,
+      "sha256": "c540d9650a11e592ccc02225a268426a59c88493ae9912a5e0fb84a24a1bf913"
+    },
+    {
+      "file": "Frontend/src/components/ui/ui-components.test.jsx",
+      "lines": 190,
+      "sha256": "5f83a3dd52437a57087a11b5d475d496a3c0ec06eec9c33206be3d1906ec265e"
+    },
+    {
+      "file": "Frontend/src/config/environment.js",
+      "lines": 20,
+      "sha256": "4a615cf6901088ea8ffd1679a2c77cf4c87efc2f3e9e561b61df48d130fae386"
+    },
+    {
+      "file": "Frontend/src/config/environment.test.js",
+      "lines": 27,
+      "sha256": "199449150bcba81a36fa3b0f3dc8d465353440fe6246daec26b7d91e30d8ee50"
+    },
+    {
+      "file": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "lines": 225,
+      "sha256": "f5fce0491c4251fc45c24da82a6350118db30c0ad94669bdcab4b0cc755fa257"
+    },
+    {
+      "file": "Frontend/src/features/design-system/DesignSystemPage.test.jsx",
+      "lines": 74,
+      "sha256": "434212110567cf3d734920c2783af2e37e9adbcfab02d97d85d44ceae48f8f0b"
+    },
+    {
+      "file": "Frontend/src/features/foundation/FoundationPage.jsx",
+      "lines": 48,
+      "sha256": "401706c835a0178d0e5c182a8fa016f808af05197fa74c4c42f096483fcebeb3"
+    },
+    {
+      "file": "Frontend/src/features/foundation/health-api.js",
+      "lines": 6,
+      "sha256": "33b2acf6a58167f494358fcda4123f4063f3b99bef6b96f0c4f6fdf853c96892"
+    },
+    {
+      "file": "Frontend/src/lib/api/http-client.js",
+      "lines": 19,
+      "sha256": "113450eeda3f834b40ab260942da561cc8599e8a4ec490c6a2bf65d2478b7417"
+    },
+    {
+      "file": "Frontend/src/lib/api/http-client.test.js",
+      "lines": 66,
+      "sha256": "4469ab126546a60cc5ff713a0fa22764189cc5b39f22c78853251ab2a314c5c4"
+    },
+    {
+      "file": "Frontend/src/lib/query-client.js",
+      "lines": 15,
+      "sha256": "2d9a145f44fb798ac6e8734d0a86735c3683b4c0a9a765f83bb6ceec81fe3203"
+    },
+    {
+      "file": "Frontend/src/main.jsx",
+      "lines": 11,
+      "sha256": "23dcd65e6fe714715b875dbe3d84bcc9b520a32daea6206c64e5246db91c1092"
+    },
+    {
+      "file": "Frontend/src/pages/NotFoundPage.jsx",
+      "lines": 12,
+      "sha256": "1c8b1a79ebceb7b88d8a9576282a6f97287fe41dba751f53fd2e830759b654bc"
+    },
+    {
+      "file": "Frontend/src/styles/contrast.test.js",
+      "lines": 43,
+      "sha256": "ce5eacb62691f1f8284b851dcac3ae224c87d84b38f4c6a44701cc1eb1beb8d8"
+    },
+    {
+      "file": "Frontend/src/test/setup.js",
+      "lines": 6,
+      "sha256": "e20f6c79ce7842f29f0dd93957e8230a5cbb3b5f6ee691fef96d4f393b964cb3"
+    }
+  ],
+  "edges": [
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/models/sach.model.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/routes/sach.routes.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/middlewares/xu-ly-loi.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/models/xac-thuc.model.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/services/xac-thuc.service.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/utils/jwt.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/middlewares/xac-thuc.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/routes/xac-thuc.routes.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/models/danh-muc.model.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/models/ban-sao-sach.model.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/routes/danh-muc.routes.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/routes/ban-sao-sach.routes.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/models/phieu-muon.model.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/routes/phieu-muon.routes.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/models/tien-phat.model.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/routes/tien-phat.routes.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/models/qua-han.model.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/routes/qua-han.routes.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/models/lich-su-su-dung.model.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/routes/lich-su-su-dung.routes.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/models/thong-ke.model.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/routes/thong-ke.routes.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/models/du-bao.model.js"
+    },
+    {
+      "from": "Backend/src/app-factory.js",
+      "to": "Backend/src/routes/du-bao.routes.js"
+    },
+    {
+      "from": "Backend/src/app.js",
+      "to": "Backend/src/config/co-so-du-lieu.js"
+    },
+    {
+      "from": "Backend/src/app.js",
+      "to": "Backend/src/app-factory.js"
+    },
+    {
+      "from": "Backend/src/config/do-phu-du-bao.js",
+      "to": "Backend/src/utils/thuat-toan-du-bao.js"
+    },
+    {
+      "from": "Backend/src/controllers/ban-sao-sach.controller.js",
+      "to": "Backend/src/utils/kiem-tra-sach.js"
+    },
+    {
+      "from": "Backend/src/controllers/ban-sao-sach.controller.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/controllers/danh-muc.controller.js",
+      "to": "Backend/src/utils/kiem-tra-sach.js"
+    },
+    {
+      "from": "Backend/src/controllers/danh-muc.controller.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/controllers/du-bao.controller.js",
+      "to": "Backend/src/utils/kiem-tra-sach.js"
+    },
+    {
+      "from": "Backend/src/controllers/du-bao.controller.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/controllers/lich-su-su-dung.controller.js",
+      "to": "Backend/src/utils/kiem-tra-thong-ke.js"
+    },
+    {
+      "from": "Backend/src/controllers/phieu-muon.controller.js",
+      "to": "Backend/src/utils/kiem-tra-sach.js"
+    },
+    {
+      "from": "Backend/src/controllers/phieu-muon.controller.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/controllers/phieu-muon.controller.js",
+      "to": "Backend/src/utils/kiem-tra-phieu-muon.js"
+    },
+    {
+      "from": "Backend/src/controllers/qua-han.controller.js",
+      "to": "Backend/src/utils/kiem-tra-sach.js"
+    },
+    {
+      "from": "Backend/src/controllers/qua-han.controller.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/controllers/qua-han.controller.js",
+      "to": "Backend/src/utils/kiem-tra-tien-phat.js"
+    },
+    {
+      "from": "Backend/src/controllers/sach.controller.js",
+      "to": "Backend/src/utils/kiem-tra-sach.js"
+    },
+    {
+      "from": "Backend/src/controllers/sach.controller.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/controllers/thong-ke.controller.js",
+      "to": "Backend/src/utils/kiem-tra-thong-ke.js"
+    },
+    {
+      "from": "Backend/src/controllers/tien-phat.controller.js",
+      "to": "Backend/src/utils/kiem-tra-sach.js"
+    },
+    {
+      "from": "Backend/src/controllers/tien-phat.controller.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/controllers/tien-phat.controller.js",
+      "to": "Backend/src/utils/kiem-tra-tien-phat.js"
+    },
+    {
+      "from": "Backend/src/controllers/xac-thuc.controller.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/controllers/xac-thuc.controller.js",
+      "to": "Backend/src/utils/kiem-tra-xac-thuc.js"
+    },
+    {
+      "from": "Backend/src/middlewares/xac-thuc.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/middlewares/xu-ly-loi.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/models/ban-sao-sach.model.js",
+      "to": "Backend/src/utils/truy-van-danh-muc.js"
+    },
+    {
+      "from": "Backend/src/models/ban-sao-sach.model.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/models/danh-muc.model.js",
+      "to": "Backend/src/utils/truy-van-danh-muc.js"
+    },
+    {
+      "from": "Backend/src/models/danh-muc.model.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/models/lich-su-su-dung.model.js",
+      "to": "Backend/src/utils/truy-van-danh-muc.js"
+    },
+    {
+      "from": "Backend/src/models/phieu-muon.model.js",
+      "to": "Backend/src/utils/truy-van-danh-muc.js"
+    },
+    {
+      "from": "Backend/src/models/phieu-muon.model.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/models/phieu-muon.model.js",
+      "to": "Backend/src/utils/kiem-tra-phieu-muon.js"
+    },
+    {
+      "from": "Backend/src/models/phieu-muon.model.js",
+      "to": "Backend/src/models/lich-su-su-dung.model.js"
+    },
+    {
+      "from": "Backend/src/models/phieu-muon.model.js",
+      "to": "Backend/src/services/lich-su-su-dung.service.js"
+    },
+    {
+      "from": "Backend/src/models/thong-ke.model.js",
+      "to": "Backend/src/utils/truy-van-danh-muc.js"
+    },
+    {
+      "from": "Backend/src/models/tien-phat.model.js",
+      "to": "Backend/src/utils/truy-van-danh-muc.js"
+    },
+    {
+      "from": "Backend/src/models/tien-phat.model.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/models/tien-phat.model.js",
+      "to": "Backend/src/utils/quy-tac-tien-phat.js"
+    },
+    {
+      "from": "Backend/src/models/xac-thuc.model.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/models/xac-thuc.model.js",
+      "to": "Backend/src/models/lich-su-su-dung.model.js"
+    },
+    {
+      "from": "Backend/src/models/xac-thuc.model.js",
+      "to": "Backend/src/services/lich-su-su-dung.service.js"
+    },
+    {
+      "from": "Backend/src/routes/ban-sao-sach.routes.js",
+      "to": "Backend/src/middlewares/xac-thuc.js"
+    },
+    {
+      "from": "Backend/src/routes/ban-sao-sach.routes.js",
+      "to": "Backend/src/controllers/ban-sao-sach.controller.js"
+    },
+    {
+      "from": "Backend/src/routes/ban-sao-sach.routes.js",
+      "to": "Backend/src/services/ban-sao-sach.service.js"
+    },
+    {
+      "from": "Backend/src/routes/danh-muc.routes.js",
+      "to": "Backend/src/controllers/danh-muc.controller.js"
+    },
+    {
+      "from": "Backend/src/routes/danh-muc.routes.js",
+      "to": "Backend/src/services/danh-muc.service.js"
+    },
+    {
+      "from": "Backend/src/routes/danh-muc.routes.js",
+      "to": "Backend/src/middlewares/xac-thuc.js"
+    },
+    {
+      "from": "Backend/src/routes/du-bao.routes.js",
+      "to": "Backend/src/middlewares/xac-thuc.js"
+    },
+    {
+      "from": "Backend/src/routes/du-bao.routes.js",
+      "to": "Backend/src/services/du-bao.service.js"
+    },
+    {
+      "from": "Backend/src/routes/du-bao.routes.js",
+      "to": "Backend/src/controllers/du-bao.controller.js"
+    },
+    {
+      "from": "Backend/src/routes/lich-su-su-dung.routes.js",
+      "to": "Backend/src/services/lich-su-su-dung.service.js"
+    },
+    {
+      "from": "Backend/src/routes/lich-su-su-dung.routes.js",
+      "to": "Backend/src/controllers/lich-su-su-dung.controller.js"
+    },
+    {
+      "from": "Backend/src/routes/phieu-muon.routes.js",
+      "to": "Backend/src/middlewares/xac-thuc.js"
+    },
+    {
+      "from": "Backend/src/routes/phieu-muon.routes.js",
+      "to": "Backend/src/services/phieu-muon.service.js"
+    },
+    {
+      "from": "Backend/src/routes/phieu-muon.routes.js",
+      "to": "Backend/src/controllers/phieu-muon.controller.js"
+    },
+    {
+      "from": "Backend/src/routes/qua-han.routes.js",
+      "to": "Backend/src/services/qua-han.service.js"
+    },
+    {
+      "from": "Backend/src/routes/qua-han.routes.js",
+      "to": "Backend/src/controllers/qua-han.controller.js"
+    },
+    {
+      "from": "Backend/src/routes/sach.routes.js",
+      "to": "Backend/src/controllers/sach.controller.js"
+    },
+    {
+      "from": "Backend/src/routes/sach.routes.js",
+      "to": "Backend/src/services/sach.service.js"
+    },
+    {
+      "from": "Backend/src/routes/sach.routes.js",
+      "to": "Backend/src/middlewares/xac-thuc.js"
+    },
+    {
+      "from": "Backend/src/routes/thong-ke.routes.js",
+      "to": "Backend/src/middlewares/xac-thuc.js"
+    },
+    {
+      "from": "Backend/src/routes/thong-ke.routes.js",
+      "to": "Backend/src/services/thong-ke.service.js"
+    },
+    {
+      "from": "Backend/src/routes/thong-ke.routes.js",
+      "to": "Backend/src/controllers/thong-ke.controller.js"
+    },
+    {
+      "from": "Backend/src/routes/tien-phat.routes.js",
+      "to": "Backend/src/middlewares/xac-thuc.js"
+    },
+    {
+      "from": "Backend/src/routes/tien-phat.routes.js",
+      "to": "Backend/src/services/tien-phat.service.js"
+    },
+    {
+      "from": "Backend/src/routes/tien-phat.routes.js",
+      "to": "Backend/src/controllers/tien-phat.controller.js"
+    },
+    {
+      "from": "Backend/src/routes/xac-thuc.routes.js",
+      "to": "Backend/src/controllers/xac-thuc.controller.js"
+    },
+    {
+      "from": "Backend/src/routes/xac-thuc.routes.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/scripts/check-db.js",
+      "to": "Backend/src/config/co-so-du-lieu.js"
+    },
+    {
+      "from": "Backend/src/server.js",
+      "to": "Backend/src/app.js"
+    },
+    {
+      "from": "Backend/src/server.js",
+      "to": "Backend/src/config/co-so-du-lieu.js"
+    },
+    {
+      "from": "Backend/src/services/ban-sao-sach.service.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/services/ban-sao-sach.service.js",
+      "to": "Backend/src/utils/truy-van-danh-muc.js"
+    },
+    {
+      "from": "Backend/src/services/ban-sao-sach.service.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/services/danh-muc.service.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/services/danh-muc.service.js",
+      "to": "Backend/src/utils/truy-van-danh-muc.js"
+    },
+    {
+      "from": "Backend/src/services/danh-muc.service.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/services/du-bao.service.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/services/du-bao.service.js",
+      "to": "Backend/src/config/do-phu-du-bao.js"
+    },
+    {
+      "from": "Backend/src/services/du-bao.service.js",
+      "to": "Backend/src/utils/thuat-toan-du-bao.js"
+    },
+    {
+      "from": "Backend/src/services/lich-su-su-dung.service.js",
+      "to": "Backend/src/utils/kiem-tra-thong-ke.js"
+    },
+    {
+      "from": "Backend/src/services/lich-su-su-dung.service.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/services/phieu-muon.service.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/services/phieu-muon.service.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/services/qua-han.service.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/services/qua-han.service.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/services/sach.service.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/services/thong-ke.service.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/services/tien-phat.service.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/services/tien-phat.service.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/services/xac-thuc.service.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/services/xac-thuc.service.js",
+      "to": "Backend/src/utils/jwt.js"
+    },
+    {
+      "from": "Backend/src/utils/jwt.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js",
+      "to": "Backend/src/utils/kiem-tra-sach.js"
+    },
+    {
+      "from": "Backend/src/utils/kiem-tra-phieu-muon.js",
+      "to": "Backend/src/utils/kiem-tra-sach.js"
+    },
+    {
+      "from": "Backend/src/utils/kiem-tra-phieu-muon.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/utils/kiem-tra-phieu-muon.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/utils/kiem-tra-sach.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/utils/kiem-tra-thong-ke.js",
+      "to": "Backend/src/utils/kiem-tra-sach.js"
+    },
+    {
+      "from": "Backend/src/utils/kiem-tra-thong-ke.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/utils/kiem-tra-thong-ke.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/utils/kiem-tra-tien-phat.js",
+      "to": "Backend/src/utils/kiem-tra-sach.js"
+    },
+    {
+      "from": "Backend/src/utils/kiem-tra-tien-phat.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/src/utils/kiem-tra-tien-phat.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/utils/kiem-tra-xac-thuc.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/utils/quy-tac-tien-phat.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/src/utils/truy-van-danh-muc.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/test/an-toan-tich-hop.test.js",
+      "to": "Backend/integration/an-toan.mjs"
+    },
+    {
+      "from": "Backend/test/an-toan-tich-hop.test.js",
+      "to": "Backend/src/app-factory.js"
+    },
+    {
+      "from": "Backend/test/danh-muc-ban-sao-sach.test.js",
+      "to": "Backend/src/app.js"
+    },
+    {
+      "from": "Backend/test/danh-muc-ban-sao-sach.test.js",
+      "to": "Backend/src/config/co-so-du-lieu.js"
+    },
+    {
+      "from": "Backend/test/danh-muc-ban-sao-sach.test.js",
+      "to": "Backend/src/utils/jwt.js"
+    },
+    {
+      "from": "Backend/test/danh-muc-ban-sao-sach.test.js",
+      "to": "Backend/src/models/danh-muc.model.js"
+    },
+    {
+      "from": "Backend/test/danh-muc-ban-sao-sach.test.js",
+      "to": "Backend/src/models/ban-sao-sach.model.js"
+    },
+    {
+      "from": "Backend/test/danh-muc-ban-sao-sach.test.js",
+      "to": "Backend/src/services/danh-muc.service.js"
+    },
+    {
+      "from": "Backend/test/danh-muc-ban-sao-sach.test.js",
+      "to": "Backend/src/services/ban-sao-sach.service.js"
+    },
+    {
+      "from": "Backend/test/danh-muc-ban-sao-sach.test.js",
+      "to": "Backend/src/utils/kiem-tra-danh-muc-ban-sao.js"
+    },
+    {
+      "from": "Backend/test/danh-muc-ban-sao-sach.test.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/test/du-bao.test.js",
+      "to": "Backend/src/app-factory.js"
+    },
+    {
+      "from": "Backend/test/du-bao.test.js",
+      "to": "Backend/src/utils/jwt.js"
+    },
+    {
+      "from": "Backend/test/du-bao.test.js",
+      "to": "Backend/src/utils/thuat-toan-du-bao.js"
+    },
+    {
+      "from": "Backend/test/du-bao.test.js",
+      "to": "Backend/src/config/do-phu-du-bao.js"
+    },
+    {
+      "from": "Backend/test/du-bao.test.js",
+      "to": "Backend/src/services/du-bao.service.js"
+    },
+    {
+      "from": "Backend/test/du-bao.test.js",
+      "to": "Backend/src/models/du-bao.model.js"
+    },
+    {
+      "from": "Backend/test/lich-su-thong-ke.test.js",
+      "to": "Backend/src/app-factory.js"
+    },
+    {
+      "from": "Backend/test/lich-su-thong-ke.test.js",
+      "to": "Backend/src/utils/jwt.js"
+    },
+    {
+      "from": "Backend/test/lich-su-thong-ke.test.js",
+      "to": "Backend/src/utils/kiem-tra-thong-ke.js"
+    },
+    {
+      "from": "Backend/test/lich-su-thong-ke.test.js",
+      "to": "Backend/src/services/lich-su-su-dung.service.js"
+    },
+    {
+      "from": "Backend/test/lich-su-thong-ke.test.js",
+      "to": "Backend/src/models/lich-su-su-dung.model.js"
+    },
+    {
+      "from": "Backend/test/lich-su-thong-ke.test.js",
+      "to": "Backend/src/models/thong-ke.model.js"
+    },
+    {
+      "from": "Backend/test/lich-su-thong-ke.test.js",
+      "to": "Backend/src/services/xac-thuc.service.js"
+    },
+    {
+      "from": "Backend/test/lich-su-thong-ke.test.js",
+      "to": "Backend/src/models/xac-thuc.model.js"
+    },
+    {
+      "from": "Backend/test/lich-su-thong-ke.test.js",
+      "to": "Backend/src/models/phieu-muon.model.js"
+    },
+    {
+      "from": "Backend/test/phieu-muon.test.js",
+      "to": "Backend/src/app.js"
+    },
+    {
+      "from": "Backend/test/phieu-muon.test.js",
+      "to": "Backend/src/config/co-so-du-lieu.js"
+    },
+    {
+      "from": "Backend/test/phieu-muon.test.js",
+      "to": "Backend/src/utils/jwt.js"
+    },
+    {
+      "from": "Backend/test/phieu-muon.test.js",
+      "to": "Backend/src/models/phieu-muon.model.js"
+    },
+    {
+      "from": "Backend/test/phieu-muon.test.js",
+      "to": "Backend/src/utils/kiem-tra-phieu-muon.js"
+    },
+    {
+      "from": "Backend/test/sach.test.js",
+      "to": "Backend/src/app.js"
+    },
+    {
+      "from": "Backend/test/sach.test.js",
+      "to": "Backend/src/config/co-so-du-lieu.js"
+    },
+    {
+      "from": "Backend/test/sach.test.js",
+      "to": "Backend/src/models/sach.model.js"
+    },
+    {
+      "from": "Backend/test/sach.test.js",
+      "to": "Backend/src/utils/kiem-tra-sach.js"
+    },
+    {
+      "from": "Backend/test/sach.test.js",
+      "to": "Backend/src/utils/jwt.js"
+    },
+    {
+      "from": "Backend/test/tien-phat-qua-han.test.js",
+      "to": "Backend/src/app-factory.js"
+    },
+    {
+      "from": "Backend/test/tien-phat-qua-han.test.js",
+      "to": "Backend/src/utils/jwt.js"
+    },
+    {
+      "from": "Backend/test/tien-phat-qua-han.test.js",
+      "to": "Backend/src/models/tien-phat.model.js"
+    },
+    {
+      "from": "Backend/test/tien-phat-qua-han.test.js",
+      "to": "Backend/src/models/qua-han.model.js"
+    },
+    {
+      "from": "Backend/test/tien-phat-qua-han.test.js",
+      "to": "Backend/src/utils/quy-tac-tien-phat.js"
+    },
+    {
+      "from": "Backend/test/tien-phat-qua-han.test.js",
+      "to": "Backend/src/utils/kiem-tra-tien-phat.js"
+    },
+    {
+      "from": "Backend/test/xac-thuc.test.js",
+      "to": "Backend/src/app.js"
+    },
+    {
+      "from": "Backend/test/xac-thuc.test.js",
+      "to": "Backend/src/config/co-so-du-lieu.js"
+    },
+    {
+      "from": "Backend/test/xac-thuc.test.js",
+      "to": "Backend/src/utils/jwt.js"
+    },
+    {
+      "from": "Backend/test/xac-thuc.test.js",
+      "to": "Backend/src/utils/loi-http.js"
+    },
+    {
+      "from": "Backend/test/xac-thuc.test.js",
+      "to": "Backend/src/models/xac-thuc.model.js"
+    },
+    {
+      "from": "Backend/test/xac-thuc.test.js",
+      "to": "Backend/src/utils/kiem-tra-xac-thuc.js"
+    },
+    {
+      "from": "Backend/integration/instance-isolee.mjs",
+      "to": "Backend/src/config/co-so-du-lieu.js"
+    },
+    {
+      "from": "Backend/integration/instance-isolee.mjs",
+      "to": "Backend/integration/an-toan.mjs"
+    },
+    {
+      "from": "Backend/integration/kich-ban.mjs",
+      "to": "Backend/integration/an-toan.mjs"
+    },
+    {
+      "from": "Backend/integration/kich-ban.mjs",
+      "to": "Backend/src/app-factory.js"
+    },
+    {
+      "from": "Backend/integration/kich-ban.mjs",
+      "to": "Backend/src/utils/jwt.js"
+    },
+    {
+      "from": "Backend/integration/kich-ban.mjs",
+      "to": "Backend/src/utils/truy-van-danh-muc.js"
+    },
+    {
+      "from": "Backend/integration/kich-ban.mjs",
+      "to": "Backend/src/models/lich-su-su-dung.model.js"
+    },
+    {
+      "from": "Backend/integration/kich-ban.mjs",
+      "to": "Backend/src/services/lich-su-su-dung.service.js"
+    },
+    {
+      "from": "Backend/integration/run.mjs",
+      "to": "Backend/integration/an-toan.mjs"
+    },
+    {
+      "from": "Backend/integration/setup.mjs",
+      "to": "Backend/integration/an-toan.mjs"
+    },
+    {
+      "from": "Frontend/src/app/App.jsx",
+      "to": "Frontend/src/app/providers/AppProviders.jsx"
+    },
+    {
+      "from": "Frontend/src/app/App.jsx",
+      "to": "Frontend/src/app/router/AppRoutes.jsx"
+    },
+    {
+      "from": "Frontend/src/app/App.test.jsx",
+      "to": "Frontend/src/app/App.jsx"
+    },
+    {
+      "from": "Frontend/src/app/App.test.jsx",
+      "to": "Frontend/src/features/foundation/health-api.js"
+    },
+    {
+      "from": "Frontend/src/app/App.test.jsx",
+      "to": "Frontend/src/config/environment.js"
+    },
+    {
+      "from": "Frontend/src/app/providers/AppProviders.jsx",
+      "to": "Frontend/src/lib/query-client.js"
+    },
+    {
+      "from": "Frontend/src/app/providers/AppProviders.jsx",
+      "to": "Frontend/src/components/ui/Toaster.jsx"
+    },
+    {
+      "from": "Frontend/src/app/router/AppRoutes.jsx",
+      "to": "Frontend/src/features/foundation/FoundationPage.jsx"
+    },
+    {
+      "from": "Frontend/src/app/router/AppRoutes.jsx",
+      "to": "Frontend/src/pages/NotFoundPage.jsx"
+    },
+    {
+      "from": "Frontend/src/app/router/AppRoutes.jsx",
+      "to": "Frontend/src/components/ui/Spinner.jsx"
+    },
+    {
+      "from": "Frontend/src/app/router/AppRoutes.jsx",
+      "to": "Frontend/src/features/design-system/DesignSystemPage.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/Alert.jsx",
+      "to": "Frontend/src/components/ui/Icon.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/Button.jsx",
+      "to": "Frontend/src/components/ui/Spinner.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/Dialog.jsx",
+      "to": "Frontend/src/components/ui/Icon.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/Input.jsx",
+      "to": "Frontend/src/components/ui/Field.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/Select.jsx",
+      "to": "Frontend/src/components/ui/Field.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/Table.jsx",
+      "to": "Frontend/src/components/ui/EmptyState.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/Table.jsx",
+      "to": "Frontend/src/components/ui/Skeleton.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/Textarea.jsx",
+      "to": "Frontend/src/components/ui/Field.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/ui-components.test.jsx",
+      "to": "Frontend/src/components/ui/Button.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/ui-components.test.jsx",
+      "to": "Frontend/src/components/ui/Input.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/ui-components.test.jsx",
+      "to": "Frontend/src/components/ui/Textarea.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/ui-components.test.jsx",
+      "to": "Frontend/src/components/ui/Select.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/ui-components.test.jsx",
+      "to": "Frontend/src/components/ui/Checkbox.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/ui-components.test.jsx",
+      "to": "Frontend/src/components/ui/Badge.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/ui-components.test.jsx",
+      "to": "Frontend/src/components/ui/Alert.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/ui-components.test.jsx",
+      "to": "Frontend/src/components/ui/Card.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/ui-components.test.jsx",
+      "to": "Frontend/src/components/ui/Dialog.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/ui-components.test.jsx",
+      "to": "Frontend/src/components/ui/EmptyState.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/ui-components.test.jsx",
+      "to": "Frontend/src/components/ui/Skeleton.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/ui-components.test.jsx",
+      "to": "Frontend/src/components/ui/Spinner.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/ui-components.test.jsx",
+      "to": "Frontend/src/components/ui/Table.jsx"
+    },
+    {
+      "from": "Frontend/src/components/ui/ui-components.test.jsx",
+      "to": "Frontend/src/components/ui/Icon.jsx"
+    },
+    {
+      "from": "Frontend/src/config/environment.test.js",
+      "to": "Frontend/src/config/environment.js"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "to": "Frontend/src/components/ui/Button.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "to": "Frontend/src/components/ui/Input.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "to": "Frontend/src/components/ui/Textarea.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "to": "Frontend/src/components/ui/Select.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "to": "Frontend/src/components/ui/Checkbox.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "to": "Frontend/src/components/ui/Badge.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "to": "Frontend/src/components/ui/Alert.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "to": "Frontend/src/components/ui/Card.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "to": "Frontend/src/components/ui/Dialog.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "to": "Frontend/src/components/ui/EmptyState.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "to": "Frontend/src/components/ui/Skeleton.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "to": "Frontend/src/components/ui/Spinner.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "to": "Frontend/src/components/ui/Table.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.jsx",
+      "to": "Frontend/src/components/ui/Icon.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.test.jsx",
+      "to": "Frontend/src/app/App.jsx"
+    },
+    {
+      "from": "Frontend/src/features/design-system/DesignSystemPage.test.jsx",
+      "to": "Frontend/src/features/foundation/health-api.js"
+    },
+    {
+      "from": "Frontend/src/features/foundation/FoundationPage.jsx",
+      "to": "Frontend/src/config/environment.js"
+    },
+    {
+      "from": "Frontend/src/features/foundation/FoundationPage.jsx",
+      "to": "Frontend/src/features/foundation/health-api.js"
+    },
+    {
+      "from": "Frontend/src/features/foundation/health-api.js",
+      "to": "Frontend/src/lib/api/http-client.js"
+    },
+    {
+      "from": "Frontend/src/lib/api/http-client.js",
+      "to": "Frontend/src/config/environment.js"
+    },
+    {
+      "from": "Frontend/src/lib/api/http-client.test.js",
+      "to": "Frontend/src/lib/api/http-client.js"
+    },
+    {
+      "from": "Frontend/src/lib/api/http-client.test.js",
+      "to": "Frontend/src/config/environment.js"
+    },
+    {
+      "from": "Frontend/src/lib/api/http-client.test.js",
+      "to": "Frontend/src/features/foundation/health-api.js"
+    },
+    {
+      "from": "Frontend/src/main.jsx",
+      "to": "Frontend/src/app/App.jsx"
+    },
+    {
+      "from": "Frontend/src/main.jsx",
+      "to": "Frontend/src/styles/index.css"
+    }
+  ],
+  "errors": [],
+  "unusedLocals": [],
+  "cycles": [],
+  "packages": {
+    "Backend": {
+      "production": 7,
+      "development": 1,
+      "direct": [
+        {
+          "name": "bcryptjs",
+          "spec": "^3.0.3",
+          "version": "3.0.3",
+          "installed": "3.0.3"
+        },
+        {
+          "name": "cors",
+          "spec": "^2.8.6",
+          "version": "2.8.6",
+          "installed": "2.8.6"
+        },
+        {
+          "name": "dotenv",
+          "spec": "^18.0.9",
+          "version": "18.0.9",
+          "installed": "18.0.9"
+        },
+        {
+          "name": "express",
+          "spec": "^5.3.0",
+          "version": "5.3.0",
+          "installed": "5.3.0"
+        },
+        {
+          "name": "express-rate-limit",
+          "spec": "^8.7.3",
+          "version": "8.7.3",
+          "installed": "8.7.3"
+        },
+        {
+          "name": "jsonwebtoken",
+          "spec": "^9.0.3",
+          "version": "9.0.3",
+          "installed": "9.0.3"
+        },
+        {
+          "name": "mysql2",
+          "spec": "^3.24.6",
+          "version": "3.24.6",
+          "installed": "3.24.6"
+        },
+        {
+          "name": "nodemon",
+          "spec": "^3.1.14",
+          "version": "3.1.14",
+          "installed": "3.1.14"
+        }
+      ],
+      "multipleVersions": []
+    },
+    "Frontend": {
+      "production": 10,
+      "development": 15,
+      "direct": [
+        {
+          "name": "@fontsource/be-vietnam-pro",
+          "spec": "5.3.0",
+          "version": "5.3.0",
+          "installed": "5.3.0"
+        },
+        {
+          "name": "@fontsource/lora",
+          "spec": "5.3.0",
+          "version": "5.3.0",
+          "installed": "5.3.0"
+        },
+        {
+          "name": "@radix-ui/react-dialog",
+          "spec": "1.3.1",
+          "version": "1.3.1",
+          "installed": "1.3.1"
+        },
+        {
+          "name": "@tanstack/react-query",
+          "spec": "5.108.0",
+          "version": "5.108.0",
+          "installed": "5.108.0"
+        },
+        {
+          "name": "axios",
+          "spec": "1.21.1",
+          "version": "1.21.1",
+          "installed": "1.21.1"
+        },
+        {
+          "name": "lucide-react",
+          "spec": "1.75.0",
+          "version": "1.75.0",
+          "installed": "1.75.0"
+        },
+        {
+          "name": "react",
+          "spec": "19.3.1",
+          "version": "19.3.1",
+          "installed": "19.3.1"
+        },
+        {
+          "name": "react-dom",
+          "spec": "19.3.1",
+          "version": "19.3.1",
+          "installed": "19.3.1"
+        },
+        {
+          "name": "react-router",
+          "spec": "8.5.2",
+          "version": "8.5.2",
+          "installed": "8.5.2"
+        },
+        {
+          "name": "sonner",
+          "spec": "2.0.8",
+          "version": "2.0.8",
+          "installed": "2.0.8"
+        },
+        {
+          "name": "@eslint/js",
+          "spec": "10.0.1",
+          "version": "10.0.1",
+          "installed": "10.0.1"
+        },
+        {
+          "name": "@tailwindcss/vite",
+          "spec": "4.3.5",
+          "version": "4.3.5",
+          "installed": "4.3.5"
+        },
+        {
+          "name": "@testing-library/dom",
+          "spec": "10.4.2",
+          "version": "10.4.2",
+          "installed": "10.4.2"
+        },
+        {
+          "name": "@testing-library/jest-dom",
+          "spec": "7.0.1",
+          "version": "7.0.1",
+          "installed": "7.0.1"
+        },
+        {
+          "name": "@testing-library/react",
+          "spec": "16.3.3",
+          "version": "16.3.3",
+          "installed": "16.3.3"
+        },
+        {
+          "name": "@testing-library/user-event",
+          "spec": "14.6.13",
+          "version": "14.6.13",
+          "installed": "14.6.13"
+        },
+        {
+          "name": "@vitejs/plugin-react",
+          "spec": "6.3.0",
+          "version": "6.3.0",
+          "installed": "6.3.0"
+        },
+        {
+          "name": "eslint",
+          "spec": "10.15.0",
+          "version": "10.15.0",
+          "installed": "10.15.0"
+        },
+        {
+          "name": "eslint-plugin-react-hooks",
+          "spec": "7.1.1",
+          "version": "7.1.1",
+          "installed": "7.1.1"
+        },
+        {
+          "name": "eslint-plugin-react-refresh",
+          "spec": "0.5.8",
+          "version": "0.5.8",
+          "installed": "0.5.8"
+        },
+        {
+          "name": "globals",
+          "spec": "17.14.0",
+          "version": "17.14.0",
+          "installed": "17.14.0"
+        },
+        {
+          "name": "jsdom",
+          "spec": "31.0.1",
+          "version": "31.0.1",
+          "installed": "31.0.1"
+        },
+        {
+          "name": "tailwindcss",
+          "spec": "4.3.5",
+          "version": "4.3.5",
+          "installed": "4.3.5"
+        },
+        {
+          "name": "vite",
+          "spec": "8.3.6",
+          "version": "8.3.6",
+          "installed": "8.3.6"
+        },
+        {
+          "name": "vitest",
+          "spec": "5.1.1",
+          "version": "5.1.1",
+          "installed": "5.1.1"
+        }
+      ],
+      "multipleVersions": [
+        {
+          "name": "@emnapi/core",
+          "versions": [
+            "2.0.0-beta.2",
+            "1.11.3"
+          ]
+        },
+        {
+          "name": "@emnapi/runtime",
+          "versions": [
+            "2.0.0-beta.2",
+            "1.11.3"
+          ]
+        },
+        {
+          "name": "@emnapi/wasi-threads",
+          "versions": [
+            "2.2.0",
+            "1.2.3"
+          ]
+        },
+        {
+          "name": "eslint-visitor-keys",
+          "versions": [
+            "3.4.3",
+            "5.0.1"
+          ]
+        },
+        {
+          "name": "@napi-rs/wasm-runtime",
+          "versions": [
+            "1.2.6",
+            "1.2.2"
+          ]
+        },
+        {
+          "name": "@tybys/wasm-util",
+          "versions": [
+            "0.10.3",
+            "0.10.5"
+          ]
+        },
+        {
+          "name": "tslib",
+          "versions": [
+            "2.8.1",
+            "2.9.1"
+          ]
+        },
+        {
+          "name": "dom-accessibility-api",
+          "versions": [
+            "0.6.3",
+            "0.5.16"
+          ]
+        },
+        {
+          "name": "hookified",
+          "versions": [
+            "1.15.1",
+            "2.2.0"
+          ]
+        },
+        {
+          "name": "lru-cache",
+          "versions": [
+            "11.5.3",
+            "5.1.1"
+          ]
+        }
+      ]
+    }
+  },
+  "cssTokensUnused": [
+    "--normal-bg",
+    "--normal-text",
+    "--normal-border",
+    "--text-lead",
+    "--space-20",
+    "--color-background",
+    "--color-surface",
+    "--color-surface-muted",
+    "--color-foreground",
+    "--color-foreground-muted",
+    "--color-primary",
+    "--color-primary-hover",
+    "--color-primary-foreground",
+    "--color-accent",
+    "--color-accent-foreground",
+    "--color-border",
+    "--color-focus-ring",
+    "--color-success",
+    "--color-warning",
+    "--color-danger",
+    "--color-info",
+    "--font-sans",
+    "--font-serif"
+  ],
+  "schemaComparison": {
+    "scope": "column names/types/nullability only; no defaults/cascade/collation/CHECK expression comparison",
+    "expectedColumns": 96,
+    "observedColumns": 96,
+    "mismatches": []
+  },
+  "changedFromBaseline": [
+    "Backend/src/controllers/sach.controller.js",
+    "Backend/test/an-toan-tich-hop.test.js",
+    "Frontend/README.md",
+    "Frontend/docs/01_BACKEND_API_INVENTORY.md",
+    "Frontend/docs/FE02_BACKEND_DEPENDENCIES.md",
+    "docs/DATABASE.md",
+    "docs/DECISIONS.md",
+    "docs/HANDOFF.md",
+    "docs/PROJECT_CONTEXT.md",
+    "docs/TASKS.md"
+  ],
+  "originalIndexUnchanged": true,
+  "status": "passed"
+}

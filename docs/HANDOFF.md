@@ -1,11 +1,11 @@
 # Bàn giao hiện tại
 
-Cập nhật **2026-11-19 · FE-03**. Lịch sử task tại [TASKS](TASKS.md); bàn giao chi tiết [FE03_HANDOFF](../Frontend/docs/FE03_HANDOFF.md).
+Cập nhật **2026-11-19 · QA-01**. Lịch sử tại [TASKS](TASKS.md), bàn giao đầy đủ [QA01_HANDOFF](quality-audit/QA01_HANDOFF.md); [FE03_HANDOFF](../Frontend/docs/FE03_HANDOFF.md) giữ nguyên lịch sử.
 
-- Đã triển khai Warm Wooden Library Design System và15 nhóm UI thuần +preview **http://127.0.0.1:5173/design-system**. Dev từ yêu cầu chạy thử trước vẫn giữ; / giữ trang FE-02/health và Link. Chưa FE-04/màn hình nghiệp vụ, chờ nghiệm thu.
-- Tokens palette/semantic trạng thái,Be Vietnam Pro/Lora tự host,Tailwind4/light mode,spacing/radius/shadow/focus/reduced motion. Radix Dialog1.3.1,Sonner2.0.8,Lucide1.75.0,Fontsource2family5.3.0; không CDN,store/auth/API/business giả.
-- Baseline22 và regression **78/78 test,6file**,lint/build đạt;24 contrast assertions(16text≥4.5,8boundary/focus≥3). Lần lỗi jsdom PointerCapture không tính pass; shim trong test mới, không sửa tests FE-02. Dev route/CSS/font HTTP200; các kết quả cuối và phạm vi bảo toàn ở [test report](../Frontend/docs/FE03_TEST_REPORT.md).
-- **Browser UI,375/768/1280 thực,zoom/AT/reduced motion/swipe chưa xác minh**: native pipe/browser access host không khả dụng. CSS đã review, RTL test không thay bằng chứng browser. Chưa đủ căn cứ đánh dấu mọi tiêu chí trực quan đạt; checklist manual để người dùng nghiệm thu.
-- 28 file Frontend mới,7 file Frontend cũ sửa +4 docs root; giữ Backend/DB/SQL/env/API contract/docs FE-01/FE-02/test FE-02. Không kiểm/ghi MySQL,không sửa lỗi health Backend. Kiểm hash/diff bảo toàn trong handoff.
-- Backend dependencies/JWT/user/grants/fines/lookup/profile/upload/copy note/forecast vẫn là task riêng theo phương án C. Inventory FE-01 lỗi mã hóa/contract chưa sửa,không tự xây service nghiệp vụ.
-- Sau nghiệm thu FE-03 và kiểm thủ công các mục còn mở, người dùng có thể giao FE-04; agent dừng,không tự triển khai. Trước task mới đọc AGENTS/các tài liệu bắt buộc và kiểm lại source/Git.
+- Hoàn tất audit107JS/JSX/MJS+4CSS,10module Backend+health/40endpoint(29JWT),15nhóm UI+Field,33dependency. Đã lập8report/evidence/script; source chỉ sửa helper JSON controller sách và pattern test DB cũ, inventoryFE01 đã sửa UTF-8/contract theo source. Danh sách file và cách kiểm trong taskQA-01; không thay nghiệp vụ/API/auth/transaction/schema/env/package hoặc FE runtime/styles/config.
+- Trước/sau172Backend+78Frontend test đạt; targeted34,lint/build,107AST/73node syntax/251relative edges/0cycle đạt.17HTTP smoke/12SELECT và real server.js+health-api/Axios qua SSR200 với process test origin. Browser không khả dụng; không dùng HTTP/RTL làm visual pass.
+- Snapshot DB mới:16bảng/96cột/46index;96tên/kiểu/NULL khớp DDL (chưa so đầy đủ defaults/cascade/collation/CHECK). users0/active rule0/category_manage0, JWT probe503 JWT_NOT_CONFIGURED. Không PII/hash/env values/ghi DB hoặc setup. Integration21scenarioTASK018 là lịch sử, chưa chạy lại.
+- Đầu QA cổng3000/5173 không phản hồi, process FE thiếu origin nên interceptor chặn đúng; DB kết nối được. Server/Vite kiểm thử đã dừng. Không khẳng định dev serverFE03 vẫn chạy; xem Frontend/README để khởi động với origin rõ ràng.
+- Chưa xác minh browser375/768/1280/zoom/AT/reduced-motion, MySQL ghi/concurrency/fine success/forecast ready/coverage/MAE/tải/Linux và advisory security (npm audit không report hợp lệ). [Checklist và verification](quality-audit/QA01_VERIFICATION_REPORT.md).
+- Còn gates JWT/devaccount và nghiệm thuUIFE03 trước FE04 tích hợp; note-copy/grants/rules/lookup/profile/upload/forecast xử lý theo feature bằng task riêng, [risk register](quality-audit/QA01_RISK_REGISTER.md). Đề xuất chưa được duyệt, chưa thực hiện. Giữ67file staged trướcQA/index không đổi, QA chưastage/commit/push.
+- Dừng chờ người dùng nghiệm thuQA-01; **không triển khai FE-04**, không tự mở API/migration hoặc sửa rủi ro cao.

@@ -1,5 +1,11 @@
 # Database
 
+## QA-01 — xác minh chỉ đọc, 2026-11-19
+
+- Qua pool ứng dụng: SELECT metadata/aggregate/grant, không SELECT hồ sơ/hash/PII. MySQL8.0.40;16bảng/96cột/16PK/16FK/6UNIQUE/3CHECK và46index. Verifier đối chiếu96 tên/kiểu/NULL với schema.sql không sai khác; chưa so lại đầy đủ defaults/collation/cascade/CHECK expressions. [Metadata và nguồn truy vấn](quality-audit/evidence/smoke.json), [script](quality-audit/verify-smoke.mjs), [đối chiếu cột](quality-audit/verify-static.mjs).
+- COUNT NguoiDung0, QuyDinhPhat active0, QuyenHan(category_manage)0; grants có admin/librarian/reader và không category_manage. Không chạy schema/seed/migration/cấp user hoặc ghi/xóa. SQL/lockfile/package hash giữ baseline. Source vẫn dùng locks, không UNIQUE open-loan/copy hoặc fine(detail,type); không tự thêm index/constraint.
+- 17 HTTP smoke checks qua factory+wrapper chỉ SELECT/cấm getConnection đạt;12 SQL SELECT. Server entrypoint thật khởi động/health-db200 rồi dừng; test health-client chỉ SELECT/GET, không login thành công. 172 unit/safety mới đạt không phải integration MySQL ghi. 21 scenario2026-11-07 bên dưới là lịch sử, QA-01 không chạy lại vì chưa xác minh môi trường test độc lập được phép setup.
+
 ## X?c minh ch? ??c ? FE-01, 2026-11-19
 
 - SELECT information_schema.COLUMNS/TABLE_CONSTRAINTS/KEY_COLUMN_USAGE qua pool hi?n c?: 16 b?ng, 96 c?t, 16 PK, 16 FK, 6 UNIQUE, 3 CHECK. ??i chi?u 96 t?n/ki?u/NULL v?i Backend/sql/schema.sql kh?ng sai kh?c; c?t FK v? b?ng/c?t tham chi?u quan s?t kh?p DDL. Ch?a so l?i default/index/collation/cascade/CHECK expression; kh?ng suy count th?nh to?n schema kh?p.

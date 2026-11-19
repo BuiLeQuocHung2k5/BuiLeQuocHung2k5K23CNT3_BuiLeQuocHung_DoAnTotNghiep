@@ -1,11 +1,7 @@
 import { kiemTraMa, kiemTraNoiDungSach, kiemTraTruyVanSach } from "../utils/kiem-tra-sach.js";
-import { LoiHttp } from "../utils/loi-http.js";
+import { docJsonYeuCau } from "../utils/kiem-tra-danh-muc-ban-sao.js";
 
 export function taoBoDieuKhienSach(dichVu) {
-    function docNoiDungYeuCau(req) {
-        if (!req.is("application/json")) throw new LoiHttp(415, "UNSUPPORTED_MEDIA_TYPE", "Hãy gửi Content-Type: application/json.");
-        return kiemTraNoiDungSach(req.body);
-    }
     return {
         async lietKe(req, res) {
             const { books: cacSach, pagination: thongTinPhanTrang } = await dichVu.lietKe(kiemTraTruyVanSach(req.query));
@@ -15,12 +11,12 @@ export function taoBoDieuKhienSach(dichVu) {
             res.json({ success: true, data: await dichVu.layTheoMa(kiemTraMa(req.params.id)) });
         },
         async taoMoi(req, res) {
-            const sach = await dichVu.taoMoi(docNoiDungYeuCau(req));
+            const sach = await dichVu.taoMoi(docJsonYeuCau(req, kiemTraNoiDungSach));
             res.location(`/api/books/${sach.book_id}`).status(201).json({ success: true, data: sach });
         },
         async thayThe(req, res) {
             const ma = kiemTraMa(req.params.id);
-            res.json({ success: true, data: await dichVu.thayThe(ma, docNoiDungYeuCau(req)) });
+            res.json({ success: true, data: await dichVu.thayThe(ma, docJsonYeuCau(req, kiemTraNoiDungSach)) });
         },
         async xoa(req, res) {
             await dichVu.xoa(kiemTraMa(req.params.id));

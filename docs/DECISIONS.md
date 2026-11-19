@@ -1,5 +1,11 @@
 # Quyết định và căn cứ
 
+## QA-01 — giới hạn tối ưu an toàn (2026-11-19)
+
+- Theo yêu cầu QA-01 của người dùng: audit trước sửa; chỉ cleanup cục bộ có kiểm chứng, sửa tài liệu theo source; giữ nghiệp vụ/API/auth/locking/schema/dependencies. Đã tái dùng docJsonYeuCau cho sách và sửa assertion đường dẫn DB sau refactor;172/78 test trước/sau đạt. Inventory UTF-8 được biên soạn lại vì bytes đã mất ký tự và thiếu contract, không sửa Backend để khớp tài liệu.
+- Không dựng instance/seed hoặc chạy integration ghi khi chưa xác minh môi trường được phép; không đổi CORS/JWT/grants/note/forecast gate. Các đề xuất Backend/operator/UI/security còn mở **chưa được duyệt để thực hiện**. Không có quyết định mới về auth persistence, policy tiền phạt, schema hoặc kế hoạch FE-04.
+- Căn cứ [findings](quality-audit/QA01_BACKEND_FINDINGS.md), [optimization log](quality-audit/QA01_OPTIMIZATION_LOG.md), [verification](quality-audit/QA01_VERIFICATION_REPORT.md). Phạm vi QA-01 đã thực hiện, chờ nghiệm thu; không tự chuyển FE-04.
+
 ## FE-03 — Warm Wooden Library Design System (2026-11-19)
 
 - Người dùng giao FE-03 với palette walnut/coffee/caramel/cream/ivory/espresso/sage, semantic tokens,15 nhóm component và preview; cho phép thư viện UI phục vụ trực tiếp React, không Backend/DB/contract/FE-04. Đã triển khai trong phạm vi đó, chờ nghiệm thu.

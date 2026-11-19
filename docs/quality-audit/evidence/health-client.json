@@ -1,0 +1,20 @@
+{
+  "verifiedDate": "2026-11-19",
+  "browser": false,
+  "currentProcessFrontend": {
+    "configured": false,
+    "hasBaseUrl": false,
+    "missingConfigurationBlocked": true
+  },
+  "backendEntrypoint": {
+    "started": true,
+    "port": 3000,
+    "healthDbStatus": 200
+  },
+  "explicitTestConfiguration": {
+    "actualHealthApiAndAxios": true,
+    "status": 200,
+    "envelopeValid": true
+  },
+  "status": "passed"
+}

@@ -63,7 +63,7 @@ test("test setup derives original 16 tables and seed without CREATE DATABASE or 
 });
 
 test("pure app factory cannot fall back to application DB; health uses only its explicit dependency", async () => {
-    const nguon = readFileSync(new URL("../src/app-factory.js", import.meta.url), "utf8");assert.ok(!/from ["'].*config\/database/.test(nguon));
+    const nguon = readFileSync(new URL("../src/app-factory.js", import.meta.url), "utf8");assert.ok(!/from ["'].*config\/(?:co-so-du-lieu|database)/.test(nguon));
     assert.throws(() => dungUngDung(), /explicit database dependency/);
     let cacTruyVan = 0;
     const coSoDuLieu = { async query(cauSql) { assert.equal(cauSql, "SELECT 1");cacTruyVan++;return [[{ value: 1 }]]; } };

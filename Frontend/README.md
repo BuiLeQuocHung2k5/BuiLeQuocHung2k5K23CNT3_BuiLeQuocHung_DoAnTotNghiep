@@ -1,6 +1,6 @@
 # LibriFlow Frontend
 
-Frontend **FE-03**, xác minh 2026-11-19. React + Vite, JavaScript/JSX. Warm Wooden Library Design System tại **[/design-system](http://127.0.0.1:5173/design-system)**; `/` giữ trang kỹ thuật/health FE-02 và fallback vẫn hoạt động. Chưa có màn hình nghiệp vụ/FE-04.
+Frontend **FE-03**, audit QA-01 ngày 2026-11-19. React + Vite, JavaScript/JSX. Warm Wooden Library Design System tại **[/design-system](http://127.0.0.1:5173/design-system)** khi Vite đang chạy; `/` giữ trang kỹ thuật/health FE-02 và fallback vẫn hoạt động. Chưa có màn hình nghiệp vụ/FE-04. [Kết quả QA-01 và giới hạn kiểm chứng](../docs/quality-audit/QA01_HANDOFF.md).
 
 - [Design tokens](docs/FE03_DESIGN_TOKENS.md) · [Component catalog](docs/FE03_COMPONENT_CATALOG.md)
 - [UI guidelines](docs/FE03_UI_GUIDELINES.md) · [Test report](docs/FE03_TEST_REPORT.md) · [Bàn giao FE-03](docs/FE03_HANDOFF.md)
@@ -38,4 +38,4 @@ Nút **Kiểm tra health** chỉ gọi GET `/api/health` sau khi bấm, không c
 - [Phụ thuộc Backend theo phương án C](docs/FE02_BACKEND_DEPENDENCIES.md)
 - [Bàn giao và kiểm tra](docs/FE02_HANDOFF.md)
 
-FE-01 được giữ nguyên. Inventory cũ có lỗi mã hóa và thiếu nội dung phần contract; FE-02 chỉ dựa [guide đọc được](docs/05_FRONTEND_INTEGRATION_GUIDE.md) và [health source](../Backend/src/app-factory.js#L51), không suy contract cho các service nghiệp vụ.
+QA-01 đã sửa [inventory FE-01](docs/01_BACKEND_API_INVENTORY.md) sang UTF-8 và bổ sung contract40 endpoint từ source; các handoff FE-01/02/03 giữ nguyên như lịch sử. API/JWT/grants/rule phạt/copy note và các API thiếu vẫn cần task riêng trước feature tương ứng. QA-01 xác nhận cổng3000/5173 không phản hồi ở đầu lần kiểm tra; process Frontend thiếu origin thì client chặn đúng. Khởi động Backend/Vite và cấu hình origin theo hướng dẫn trước khi kiểm tra health; test SSR/Axios200 không thay nghiệm thu browser.

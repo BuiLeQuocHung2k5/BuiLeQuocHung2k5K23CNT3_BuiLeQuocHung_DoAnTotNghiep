@@ -1,5 +1,7 @@
 # FE-02 — Phụ thuộc Backend theo phương án C
 
+**Cập nhật QA-01, 2026-11-19:** inventory01 đã sửa UTF-8 và contract từ source; dòng về lỗi inventory trong bảng dưới là snapshot FE-02, không còn blocker đó. JWT chưa sẵn sàng/users0/category_manage0/active rule0 đã được kiểm lại chỉ đọc; [risk register mới](../../docs/quality-audit/QA01_RISK_REGISTER.md) là trạng thái phụ thuộc hiện tại. Handoff FE-02 giữ nguyên lịch sử.
+
 Xác minh source/tài liệu 2026-11-19. Người dùng đã duyệt phương án C: triển khai Frontend theo kế hoạch, xử lý Backend bằng task riêng khi thành phụ thuộc thực tế. FE-02 không truy vấn MySQL hoặc kiểm lại cấu hình riêng; users=0/rules=0/category grant/JWT là **snapshot FE-01**, chưa chứng minh trạng thái DB mới trong FE-02.
 
 Phân loại: **A** không ảnh hưởng FE-02; **B** ảnh hưởng nền tảng/cấu hình FE-02; **C** chặn nghiệm thu chức năng FE tương lai; **D** cần task Backend riêng. Một vấn đề có thể thuộc A+C+D vì không chặn nền tảng nhưng chặn feature sau.
