@@ -1,5 +1,30 @@
 # Quyết định và căn cứ
 
+## FE-RENAME-01 — Quy ước tên Frontend (2026-11-20)
+
+- Người dùng yêu cầu Việt hóa tên file/thư mục/định danh nội bộ, không đổi chức năng/API/UI. Đã thực hiện theo phạm vi được giao, chờ nghiệm thu; thay quy ước tên nội bộ Frontend trước đó bằng tiếng Việt không dấu, component PascalCase, hook camelCase có use, utility kebab-case.
+- Giữ src/main.jsx, App.jsx/App.test.jsx và các file/package/API hệ sinh thái. Giữ mọi props/object/JSON keys, member API, URL routes, HTTP/env/role identifiers, literal cache keys và CSS classes/tokens. Local binding dùng alias khi cần giữ key; chỉ named export/mock export module Frontend đổi đồng bộ.
+- Bảng ánh xạ được lập trước mutation; áp dụng theo AST/scope và đường dẫn file cụ thể. Không wrapper tương thích đường dẫn cũ, alias Vite mới, dependency hoặc thay đổi kiến trúc. Tài liệu trước giữ số đo lịch sử, chỉ cập nhật reference Frontend; evidence QA01 không đổi.
+- Căn cứ: [mapping](../Frontend/docs/FE_RENAME_01_MAPPING.md), [verification](../Frontend/docs/FE_RENAME_01_TEST_REPORT.md). AST57/CSS5 khớp,129cạnh import,0cycle/case mismatch; baseline/cuối152test, lint/build đạt. Có timeout lazy shell trong một lượt đồng thời; không đổi timeout/assertion để che lỗi. Browser/Linux thực chưa xác minh.
+- Không có quyết định mới về auth/token persistence, Backend/DB hoặc FE06. Chờ nghiệm thu FE-RENAME-01 và chỉ nhận nhiệm vụ tiếp theo khi người dùng giao.
+
+## FE-05 — Public API integration (2026-11-20)
+
+- Người dùng giao FE05: chuẩn hóa API layer, không Backend/DB/auth/nghiệp vụ/FE06. Các lựa chọn sau đã triển khai trong phạm vi được giao, chờ nghiệm thu; chưa có quyết định được duyệt về token storage hoặc sửa Backend.
+- Giữ Axios FE02/QueryClient/provider: đã đủ base origin/timeout/full response/error/AbortSignal. Error utility riêng cho UI giữ status/code và non-enumerable cause, không echo raw Backend message hoặc tự toast/logout/redirect. Không thêm dependency.
+- Chỉ tích hợp 3 GET public đã kiểm source và runtime: health/books/categories. Tái dùng health service, thêm 2 list services; canonical params dùng chung key/request. Hooks mặc định enabled false, retry false, stale 30 giây, GC 5 phút, không focus/reconnect/mount refetch. Trang chạy thủ công có cancel/paused, không mock fallback hoặc protected call.
+- /app/api-check dùng route metadata FE04 và lazy page riêng để không tăng tải module kiểm API khi mở khung. Giữ tests/tokens/contract cũ; không tạo hàng loạt services.
+- Auth boundary chỉ thiết kế theo Bearer 900 giây/me/logout không revoke/không refresh trong source. JWT hiện configured=false; chưa có account test được bàn giao, QA01 users=0 chưa tái SELECT. Cần task riêng và session policy trước nghiệm thu FE06.
+- Căn cứ [architecture](../Frontend/docs/FE05_API_ARCHITECTURE.md), [queries](../Frontend/docs/FE05_QUERY_CONVENTIONS.md), [errors](../Frontend/docs/FE05_ERROR_HANDLING.md), [verification](../Frontend/docs/FE05_TEST_REPORT.md). 152 tests/lint/build đạt; browser UI/Network thực chưa xác minh. Không tự mở FE06.
+
+## FE-04 — Application Layout/Navigation/Routing (2026-11-20)
+
+- Người dùng giao FE-04 chỉ layout/routing, không auth/nghiệp vụ/Backend/DB; đây là scope cụ thể sau QA-01. Gates JWT/devaccount của QA-01 áp khi auth thật, không yêu cầu tự cấu hình Backend để render khung. Đã triển khai trong phạm vi được giao, chờ nghiệm thu.
+- Giữ / và /design-system; thêm lazy /app/* với một KhungUngDung/Outlet,3 page cấu trúc/role preview/placeholder và scoped404. Navigation metadata dùng chung, Link+matchPath hỗ trợ end/trailing slash/aria-current; không redirect hoặc route giả cho mọi feature.
+- Desktop breakpoint1024px dùng aside248px, mobile/tablet dùng Dialog FE-03/Radix drawer; matchMedia qua useSyncExternalStore, state open cục bộ. Route-key remount/resize tháo modal, focus main; Escape/close trả trigger. Không store/persistence hoặc focus-trap tự viết.
+- Role layouts chỉ planned labels, không URL link nghiệp vụ/role query/default account/authorization. Một Shell nhận navigationGroups để mở rộng khi feature auth sau có policy thật. Tái dùng Button/Icon/Card/Badge/Dialog và tokens, không thêm/nâng package.
+- Căn cứ: [FE04_LAYOUT_ARCHITECTURE](../Frontend/docs/FE04_LAYOUT_ARCHITECTURE.md), [routing](../Frontend/docs/FE04_ROUTING_MAP.md), [guidelines](../Frontend/docs/FE04_NAVIGATION_GUIDELINES.md), [tests](../Frontend/docs/FE04_TEST_REPORT.md). 100 test/lint/build đạt; browser375/768/1280 chưa khả dụng nên nghiệm thu trực quan còn mở. Không tự FE-05/06/07.
+
 ## QA-01 — giới hạn tối ưu an toàn (2026-11-19)
 
 - Theo yêu cầu QA-01 của người dùng: audit trước sửa; chỉ cleanup cục bộ có kiểm chứng, sửa tài liệu theo source; giữ nghiệp vụ/API/auth/locking/schema/dependencies. Đã tái dùng docJsonYeuCau cho sách và sửa assertion đường dẫn DB sau refactor;172/78 test trước/sau đạt. Inventory UTF-8 được biên soạn lại vì bytes đã mất ký tự và thiếu contract, không sửa Backend để khớp tài liệu.
@@ -63,7 +88,7 @@ Xác minh: 2026-11-04. Không suy diễn lý do thiết kế nếu chưa có b�
 
 | Mục | Trạng thái và căn cứ |
 | --- | --- |
-| Backend dùng ES modules, Express và MySQL trực tiếp qua mysql2 | Đã hiện diện trong `Backend/package.json`, `src/app.js`, `src/config/co-so-du-lieu.js`; lý do lựa chọn: **Chưa xác minh**. |
+| Backend dùng ES modules, Express và MySQL trực tiếp qua mysql2 | Đã hiện diện trong `Backend/package.json`, `src/ung-dung.js`, `src/cau-hinh/co-so-du-lieu.js`; lý do lựa chọn: **Chưa xác minh**. |
 | Chỉ mở API sau khi kiểm tra DB thành công | Hành vi đã xác minh trong `Backend/src/server.js`; lý do thiết kế: **Chưa xác minh**. |
 | Tách ngữ cảnh, database, quyết định, lịch sử task và bàn giao | Theo yêu cầu người dùng ngày 2026-11-04; tài liệu đã tạo, đang chờ người dùng duyệt. Quy tắc thao tác nằm ở `AGENTS.md`. |
 

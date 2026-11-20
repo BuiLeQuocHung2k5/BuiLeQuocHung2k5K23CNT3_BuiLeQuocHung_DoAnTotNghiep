@@ -4,9 +4,9 @@ Ngày xác minh: **2026-11-19**. Nền tảng React + Vite JavaScript/JSX đã t
 
 ## Phạm vi file
 
-- Source: [main](../src/main.jsx), [App](../src/app/App.jsx), [providers](../src/app/providers/AppProviders.jsx), [router](../src/app/router/AppRoutes.jsx), [trang kỹ thuật](../src/features/foundation/FoundationPage.jsx), [health API](../src/features/foundation/health-api.js), [fallback](../src/pages/NotFoundPage.jsx), [env](../src/config/environment.js), [Axios](../src/lib/api/http-client.js), [QueryClient](../src/lib/query-client.js), [CSS](../src/styles/index.css).
+- Source: [main](../src/main.jsx), [App](../src/ung-dung/App.jsx), [providers](../src/ung-dung/bo-cung-cap/BoCungCapUngDung.jsx), [router](../src/ung-dung/dinh-tuyen/DinhTuyenUngDung.jsx), [trang kỹ thuật](../src/chuc-nang/nen-tang/TrangNenTang.jsx), [health API](../src/chuc-nang/nen-tang/api-suc-khoe.js), [fallback](../src/trang/TrangKhongTimThay.jsx), [env](../src/cau-hinh/moi-truong.js), [Axios](../src/thu-vien/api/ket-noi-http.js), [QueryClient](../src/thu-vien/trinh-truy-van.js), [CSS](../src/kieu-dang/toan-cuc.css).
 - Config/build: package.json/package-lock.json, .env.example/.gitignore, index.html, vite.config.js, eslint.config.js. Template create-vite9.3.4 React được tạo riêng, không ghi đè Frontend/docs; scaffold tạm đã dọn đúng đường dẫn.
-- Test: src/app/App.test.jsx, src/config/environment.test.js, src/lib/api/http-client.test.js, src/test/setup.js.
+- Test: src/ung-dung/App.test.jsx, src/cau-hinh/moi-truong.test.js, src/thu-vien/api/ket-noi-http.test.js, src/kiem-thu/thiet-lap.js.
 - Docs: [README](../README.md), [setup](FE02_SETUP_GUIDE.md), [architecture](FE02_ARCHITECTURE.md), [dependencies](FE02_DEPENDENCIES.md), [Backend dependencies](FE02_BACKEND_DEPENDENCIES.md), FE02_HANDOFF.md. Cập nhật docs/PROJECT_CONTEXT, DECISIONS, TASKS, HANDOFF cho FE-02.
 
 ## Quyết định triển khai
@@ -17,7 +17,7 @@ React19.3.1/Vite8.3.6, Router8.5.2 declarative với `/` và `*`. QueryClientPro
 
 - Node **24.20.0**, npm **11.19.0**; runtime/dev install thành công, npm báo 0 vulnerabilities tại lần cài.
 - Lint đạt, production build đạt, **22/22 test tại 3 file đạt**: render không Backend, routing fallback/Link, click health/offline/config, env validation, giữ HTTP status/header/envelope/error và không retry ghi. Test dùng adapter/mock kỹ thuật, không MySQL/token thật.
-- Dev server Vite sẵn sàng tại loopback5173; GET `/`, `/not-found-check`, `/src/main.jsx`, `/src/styles/index.css`, `/@vite/client` đều200. Entry/module đúng và Tailwind utility được xử lý ở dev + production CSS. HTTP200/RTL không được tính là browser check.
+- Dev server Vite sẵn sàng tại loopback5173; GET `/`, `/not-found-check`, `/src/main.jsx`, `/src/kieu-dang/toan-cuc.css`, `/@vite/client` đều200. Entry/module đúng và Tailwind utility được xử lý ở dev + production CSS. HTTP200/RTL không được tính là browser check.
 - **Browser UI chưa xác minh**: công cụ browser trả “The browser access host is unavailable”. Không tải Playwright hoặc browser binaries để thay thế. Kiểm tra browser thủ công còn mở khi nghiệm thu.
 - Không kiểm Backend/auth/DB thật trong FE-02; các hạn chế FE-01 là snapshot lịch sử. Inventory FE-01 có lỗi mã hóa và contract trống, giữ nguyên; chỉ dùng 05 guide + health source đủ cho nền tảng, chưa xây service nghiệp vụ phụ thuộc phần bị thiếu.
 

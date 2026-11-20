@@ -8,7 +8,7 @@ export default defineConfig({
   preview: { host: '127.0.0.1', port: 4173, strictPort: true },
   test: {
     environment: 'jsdom',
-    setupFiles: ['./src/test/setup.js'],
+    setupFiles: ["./src/kiem-thu/thiet-lap.js"],
     include: ['src/**/*.test.{js,jsx}'],
     clearMocks: true,
     restoreMocks: true,

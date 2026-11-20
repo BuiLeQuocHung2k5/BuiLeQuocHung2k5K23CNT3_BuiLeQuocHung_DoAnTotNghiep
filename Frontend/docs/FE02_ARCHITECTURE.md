@@ -6,24 +6,24 @@ Xác minh 2026-11-19 từ các file liên kết dưới đây. Template khởi �
 Frontend/
   docs/                         FE-01 giữ nguyên; 5 tài liệu FE-02
   src/
-    app/
+    ung-dung/
       App.jsx                   root và BrowserRouter
       App.test.jsx              render/routing/health UI
-      providers/AppProviders.jsx
-      router/AppRoutes.jsx
-    config/
-      environment.js
-      environment.test.js
-    features/foundation/
-      FoundationPage.jsx         trang kỹ thuật, không nghiệp vụ
-      health-api.js             duy nhất GET /health
-    lib/
-      query-client.js
-      api/http-client.js
-      api/http-client.test.js
-    pages/NotFoundPage.jsx
-    styles/index.css
-    test/setup.js
+      bo-cung-cap/BoCungCapUngDung.jsx
+      dinh-tuyen/DinhTuyenUngDung.jsx
+    cau-hinh/
+      moi-truong.js
+      moi-truong.test.js
+    chuc-nang/nen-tang/
+      TrangNenTang.jsx         trang kỹ thuật, không nghiệp vụ
+      api-suc-khoe.js             duy nhất GET /health
+    thu-vien/
+      trinh-truy-van.js
+      api/ket-noi-http.js
+      api/ket-noi-http.test.js
+    trang/TrangKhongTimThay.jsx
+    kieu-dang/toan-cuc.css
+    kiem-thu/thiet-lap.js
     main.jsx
   .env.example / .gitignore
   eslint.config.js / vite.config.js / index.html
@@ -34,17 +34,17 @@ Chỉ tạo thư mục đang có file hữu ích; chưa tạo skeleton auth/book
 
 ## Luồng khởi động
 
-[main.jsx](../src/main.jsx) import CSS và render StrictMode → [App](../src/app/App.jsx) → [AppProviders](../src/app/providers/AppProviders.jsx) tạo một QueryClient ổn định cho mỗi app mount → BrowserRouter → [AppRoutes](../src/app/router/AppRoutes.jsx). `/` là trang kỹ thuật, `*` là NotFound với Link về `/`. Không sidebar/header/dashboard/login/protected routes/role navigation. Không API nào chạy khi mount.
+[main.jsx](../src/main.jsx) import CSS và render StrictMode → [App](../src/ung-dung/App.jsx) → [BoCungCapUngDung](../src/ung-dung/bo-cung-cap/BoCungCapUngDung.jsx) tạo một QueryClient ổn định cho mỗi app mount → BrowserRouter → [DinhTuyenUngDung](../src/ung-dung/dinh-tuyen/DinhTuyenUngDung.jsx). `/` là trang kỹ thuật, `*` là NotFound với Link về `/`. Không sidebar/header/dashboard/login/protected routes/role navigation. Không API nào chạy khi mount.
 
 ## HTTP và environment
 
-[readEnvironment](../src/config/environment.js) nhận biến VITE_API_BASE_URL công khai, trả origin + `/api` hoặc lỗi cấu hình thân thiện, không phản chiếu giá trị URL có credentials vào message. Không fallback URL production/local ngầm. [Axios instance](../src/lib/api/http-client.js) timeout10s, credentials false, Accept JSON. Request interceptor chỉ chặn thiếu/sai config; response và AxiosError giữ nguyên, kể cả status/headers/envelope/pagination/error.details. Caller tự phân biệt HTTP, network, timeout, cancellation; không biến network error thành status giả.
+[docMoiTruong](../src/cau-hinh/moi-truong.js) nhận biến VITE_API_BASE_URL công khai, trả origin + `/api` hoặc lỗi cấu hình thân thiện, không phản chiếu giá trị URL có credentials vào message. Không fallback URL production/local ngầm. [Axios instance](../src/thu-vien/api/ket-noi-http.js) timeout10s, credentials false, Accept JSON. Request interceptor chỉ chặn thiếu/sai config; response và AxiosError giữ nguyên, kể cả status/headers/envelope/pagination/error.details. Caller tự phân biệt HTTP, network, timeout, cancellation; không biến network error thành status giả.
 
-Không interceptor token/refresh/retry/redirect. Không tự unwrap data làm mất metadata. [health-api](../src/features/foundation/health-api.js) trả AxiosResponse và nhận AbortSignal nếu caller cần. Chỉ có endpoint health đã được xác minh từ [FE-01 guide](05_FRONTEND_INTEGRATION_GUIDE.md) và [Backend source](../../Backend/src/app-factory.js#L51).
+Không interceptor token/refresh/retry/redirect. Không tự unwrap data làm mất metadata. [health-api](../src/chuc-nang/nen-tang/api-suc-khoe.js) trả AxiosResponse và nhận AbortSignal nếu caller cần. Chỉ có endpoint health đã được xác minh từ [FE-01 guide](05_FRONTEND_INTEGRATION_GUIDE.md) và [Backend source](../../Backend/src/app-factory.js#L51).
 
 ## Server state và client state
 
-[QueryClient](../src/lib/query-client.js) đặt queries staleTime=0 (dữ liệu không mặc định được xem là mới trong một khoảng thời gian nghiệp vụ), retry=false và refetchOnWindowFocus=false để tránh request lặp khi lỗi/chuyển cửa sổ. Mutations retry=false. Chưa có query nghiệp vụ; các feature tương lai phải chốt cache/invalidation theo contract riêng, không kế thừa ngầm chính sách cho mượn/trả/phạt/thống kê.
+[QueryClient](../src/thu-vien/trinh-truy-van.js) đặt queries staleTime=0 (dữ liệu không mặc định được xem là mới trong một khoảng thời gian nghiệp vụ), retry=false và refetchOnWindowFocus=false để tránh request lặp khi lỗi/chuyển cửa sổ. Mutations retry=false. Chưa có query nghiệp vụ; các feature tương lai phải chốt cache/invalidation theo contract riêng, không kế thừa ngầm chính sách cho mượn/trả/phạt/thống kê.
 
 Health dùng useMutation để theo dõi thao tác kỹ thuật **chỉ chạy sau click**, dù HTTP method vẫn GET; không lưu health như dữ liệu nghiệp vụ hay polling. Có pending/disable, success kiểm envelope, và error không làm app sập.
 
@@ -54,7 +54,7 @@ Client state hiện chỉ dùng state cục bộ/provider; QueryClient dùng use
 
 Feature tự giữ page/component/API/hook/test liên quan; app chỉ ghép provider/router. Thành phần dùng chung chỉ đưa ra components khi có reuse thực, không gom tất cả vào utils. Dùng PascalCase cho React component/file JSX, camelCase hàm JS, kebab-case file utility, tên khóa API giữ nguyên. Quy ước [Backend](../../Backend/docs/quy-uoc-dat-ten.md) là phạm vi Backend, không đổi URL/JSON sang tên hàm UI.
 
-Import tương đối, không alias trong FE-02; Vite/Vitest cùng config nên không cần hai mapping. Feature dùng lib/api, không import source Backend và không gọi trực tiếp MySQL. Không tạo service cho endpoint thiếu hoặc chưa có contract đọc được. Unit test ở cạnh phần kiểm tra; setup matcher/cleanup ở src/test.
+Import tương đối, không alias trong FE-02; Vite/Vitest cùng config nên không cần hai mapping. Feature dùng lib/api, không import source Backend và không gọi trực tiếp MySQL. Không tạo service cho endpoint thiếu hoặc chưa có contract đọc được. Unit test ở cạnh phần kiểm tra; setup matcher/cleanup ở src/kiem-thu.
 
 ## CSS và chất lượng
 

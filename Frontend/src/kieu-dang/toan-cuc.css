@@ -1,0 +1,50 @@
+@import "tailwindcss";
+@import "@fontsource/be-vietnam-pro/vietnamese-400.css";
+@import "@fontsource/be-vietnam-pro/vietnamese-500.css";
+@import "@fontsource/be-vietnam-pro/vietnamese-600.css";
+@import "@fontsource/be-vietnam-pro/latin-400.css";
+@import "@fontsource/be-vietnam-pro/latin-500.css";
+@import "@fontsource/be-vietnam-pro/latin-600.css";
+@import "@fontsource/lora/vietnamese-400.css";
+@import "@fontsource/lora/vietnamese-500.css";
+@import "@fontsource/lora/latin-400.css";
+@import "@fontsource/lora/latin-500.css";
+@import "@fontsource/lora/vietnamese-400-italic.css";
+@import "@fontsource/lora/latin-400-italic.css";
+@import "./bien-thiet-ke.css";
+@import "./thanh-phan.css";
+@import "./he-thong-giao-dien.css";
+@import "./khung-ung-dung.css";
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
+  color: var(--foreground);
+  background: var(--background);
+}
+
+button:not(:disabled), a {
+  cursor: pointer;
+}
+
+* { box-sizing: border-box; }
+::selection { color: var(--foreground); background: var(--secondary-hover); }
+:where(button, input, textarea, select, a, [tabindex]):focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+button, input, textarea, select { font: inherit; }
+button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
+button { touch-action: manipulation; }
+input, select, textarea { accent-color: var(--primary); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

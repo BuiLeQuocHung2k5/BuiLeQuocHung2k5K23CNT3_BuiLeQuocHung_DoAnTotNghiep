@@ -6,7 +6,7 @@ Xác minh **2026-11-19**. Đã triển khai Warm Wooden Library Design System, c
 
 - Palette7 màu theo yêu cầu, semantic tokens/tone foreground-background-border, typography Be Vietnam Pro + Lora self-host, spacing4px, radius/shadow/focus và reduced motion; light mode.
 - **15 nhóm UI**: Button,Input,Textarea,Select,Checkbox,Badge,Card,Alert,Dialog,Table,Skeleton,EmptyState,Spinner,Toast,Icon. Field là helper nội bộ. Props/HTML attrs và states tại [catalog](FE03_COMPONENT_CATALOG.md).
-- Preview `/design-system` có palette/type/spacing, component states và tương tác trung tính; không dữ liệu sách/user/borrow giả. Lazy route tránh tải toàn bộ preview từ `/`. Trang health FE-02 giữ nguyên luồng, thêm Link tối thiểu. Singleton Toaster trong AppProviders, QueryClient không đổi policy.
+- Preview `/design-system` có palette/type/spacing, component states và tương tác trung tính; không dữ liệu sách/user/borrow giả. Lazy route tránh tải toàn bộ preview từ `/`. Trang health FE-02 giữ nguyên luồng, thêm Link tối thiểu. Singleton Toaster trong BoCungCapUngDung, QueryClient không đổi policy.
 
 ## Dependency mới
 
@@ -24,12 +24,12 @@ Các peer hỗ trợ React19 đã kiểm trước cài; pin exact trong package/
 
 Tạo:
 
-- `src/components/ui/{Button,Input,Textarea,Select,Checkbox,Badge,Card,Alert,Dialog,Table,Skeleton,EmptyState,Spinner,Toaster,Icon,Field}.jsx` và `ui-components.test.jsx`.
-- `src/styles/{tokens,components,design-system}.css`, `src/styles/contrast.test.js`.
-- `src/features/design-system/DesignSystemPage.jsx` và `.test.jsx`.
+- `src/thanh-phan/giao-dien/{Button,Input,Textarea,Select,Checkbox,Badge,Card,Alert,Dialog,Table,Skeleton,EmptyState,Spinner,Toaster,Icon,Field}.jsx` và `thanh-phan-giao-dien.test.jsx`.
+- `src/kieu-dang/{tokens,components,design-system}.css`, `src/kieu-dang/tuong-phan.test.js`.
+- `src/chuc-nang/he-thong-giao-dien/TrangHeThongGiaoDien.jsx` và `.test.jsx`.
 - `docs/FE03_{DESIGN_TOKENS,COMPONENT_CATALOG,UI_GUIDELINES,TEST_REPORT,HANDOFF}.md`.
 
-Sửa: `src/styles/index.css`, `src/app/router/AppRoutes.jsx`, `src/app/providers/AppProviders.jsx`, `src/features/foundation/FoundationPage.jsx` (chỉ Link), `package.json/package-lock.json`, `README.md`; docs/PROJECT_CONTEXT,DECISIONS,TASKS,HANDOFF. Không sửa tài liệu FE-01/FE-02 hoặc test FE-02; không đổi API contract/config/HTTP client; Backend/DB không chạm tới.
+Sửa: `src/kieu-dang/toan-cuc.css`, `src/ung-dung/dinh-tuyen/DinhTuyenUngDung.jsx`, `src/ung-dung/bo-cung-cap/BoCungCapUngDung.jsx`, `src/chuc-nang/nen-tang/TrangNenTang.jsx` (chỉ Link), `package.json/package-lock.json`, `README.md`; docs/PROJECT_CONTEXT,DECISIONS,TASKS,HANDOFF. Không sửa tài liệu FE-01/FE-02 hoặc test FE-02; không đổi API contract/config/HTTP client; Backend/DB không chạm tới.
 
 ## Kiểm tra
 
@@ -48,4 +48,4 @@ Kiểm tra cuối:
 
 Các vấn đề Backend FE-02 (health chưa kết nối, JWT/user/grants/fine/lookup/profile/upload/copy note/forecast) vẫn là task riêng theo phương án C, không ảnh hưởng UI thuần. Không xác minh lại DB trong FE-03. Inventory FE-01 lỗi mã hóa/contract còn giữ nguyên; không dùng để tự mở service nghiệp vụ.
 
-Sau nghiệm thu FE-03 và kiểm thủ công các mục chưa xác minh, người dùng có thể giao FE-04 về layout/routing nghiệp vụ. Chưa có Sidebar/Dashboard/Login/Catalog/Borrowing/User management/role navigation. Không thay Backend/database, không tự làm FE-04; giữ server dev hiện hữu để người dùng mở preview nếu đang chạy.
+Sau nghiệm thu FE-03 và kiểm thủ công các mục chưa xác minh, người dùng có thể giao FE-04 về layout/routing nghiệp vụ. Chưa có ThanhBen/Dashboard/Login/Catalog/Borrowing/User management/role navigation. Không thay Backend/database, không tự làm FE-04; giữ server dev hiện hữu để người dùng mở preview nếu đang chạy.

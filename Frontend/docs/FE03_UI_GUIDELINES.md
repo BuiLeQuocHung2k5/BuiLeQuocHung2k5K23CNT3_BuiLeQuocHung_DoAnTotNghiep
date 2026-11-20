@@ -17,7 +17,7 @@ Table có caption, scope header, row key ổn định, loading/empty rõ ràng. 
 
 ## Responsive
 
-Nguồn: [design-system.css](../src/styles/design-system.css), [components.css](../src/styles/components.css). Layout không sidebar; shell max1184px, grid minmax(0,1fr), action wrap, content có min-width0.
+Nguồn: [he-thong-giao-dien.css](../src/kieu-dang/he-thong-giao-dien.css), [thanh-phan.css](../src/kieu-dang/thanh-phan.css). Layout không sidebar; shell max1184px, grid minmax(0,1fr), action wrap, content có min-width0.
 
 | Target | Bố cục thiết kế từ CSS | Trạng thái kiểm chứng |
 |---|---|---|
@@ -29,7 +29,7 @@ Không gọi source review là responsive test thực. Khi có browser: kiểm m
 
 ## Accessibility cơ bản
 
-- Semantic main/nav/section, h1 duy nhất và h2 theo section; CardTitle cho phép đổi heading. Preview có skip link, section anchors và table caption.
+- Semantic main/nav/section, h1 duy nhất và h2 theo section; TieuDeThe cho phép đổi heading. Preview có skip link, section anchors và table caption.
 - :focus-visible outline3px offset3px; không xóa mà không thay thế. Button md44px, small36px; nội dung vẫn đọc được khi dùng keyboard. Kiểm token text4.5:1, boundary/focus3:1; decorative border và inactive state có phạm vi riêng.
 - Input/Textarea/Select nối label, required, helper/error qua aria-describedby; error có aria-invalid. Checkbox native hỗ trợ Space. Không giả lập native control bằng div.
 - Dialog dùng Radix modal: Escape, trap focus, close control có name và restore trigger; title bắt buộc, description nếu có tự liên kết. Trigger phải nhận ref. Chỉ ngăn Escape trong trường hợp feature có lý do rõ, không biến Dialog thành vùng không thoát được.

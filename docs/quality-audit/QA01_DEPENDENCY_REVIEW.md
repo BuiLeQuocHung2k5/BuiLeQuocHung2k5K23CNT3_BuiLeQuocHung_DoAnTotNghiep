@@ -19,11 +19,11 @@ Backend manifest dùng caret, lock pin phiên bản hiện tại; không coi car
 
 | Frontend package | Locked / installed | Loại, caller / vai trò |
 |---|---|---|
-| @fontsource/be-vietnam-pro | 5.3.0 | A, styles/index.css; Latin/Vietnamese400/500/600 |
-| @fontsource/lora | 5.3.0 | A, styles/index.css; Latin/Vietnamese400/500/italic400 |
-| @radix-ui/react-dialog | 1.3.1 | A, Dialog.jsx; focus/modal/portal |
+| @fontsource/be-vietnam-pro | 5.3.0 | A, kieu-dang/toan-cuc.css; Latin/Vietnamese400/500/600 |
+| @fontsource/lora | 5.3.0 | A, kieu-dang/toan-cuc.css; Latin/Vietnamese400/500/italic400 |
+| @radix-ui/react-dialog | 1.3.1 | A, HopThoai.jsx; focus/modal/portal |
 | @tanstack/react-query | 5.108.0 | A, query-client/provider/health mutation |
-| axios | 1.21.1 | A, lib/api/http-client.js |
+| axios | 1.21.1 | A, thu-vien/api/ket-noi-http.js |
 | lucide-react | 1.75.0 | A, named imports Alert/Dialog/preview/tests |
 | react | 19.3.1 | A, components/hooks/JSX runtime |
 | react-dom | 19.3.1 | A, main.jsx createRoot |
@@ -32,7 +32,7 @@ Backend manifest dùng caret, lock pin phiên bản hiện tại; không coi car
 | @eslint/js (dev) | 10.0.1 | A, eslint.config.js |
 | @tailwindcss/vite (dev) | 4.3.5 | A, vite.config.js |
 | @testing-library/dom (dev) | 10.4.2 | A, DOM testing layer/peer cho RTL/user-event, không coi unused vì không import trực tiếp |
-| @testing-library/jest-dom (dev) | 7.0.1 | A, src/test/setup.js matchers |
+| @testing-library/jest-dom (dev) | 7.0.1 | A, src/kiem-thu/thiet-lap.js matchers |
 | @testing-library/react (dev) | 16.3.3 | A, App/UI/preview tests |
 | @testing-library/user-event (dev) | 14.6.13 | A, keyboard/click/type tests |
 | @vitejs/plugin-react (dev) | 6.3.0 | A, vite.config.js |

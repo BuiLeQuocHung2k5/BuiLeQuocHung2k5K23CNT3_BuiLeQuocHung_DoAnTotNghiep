@@ -18,7 +18,7 @@ Nếu chưa có cấu hình riêng, copy `Frontend/.env.example` sang `Frontend/
 VITE_API_BASE_URL=http://127.0.0.1:3000
 ```
 
-Không kèm `/api`, đường dẫn, query, fragment hoặc credentials; [environment.js](../src/config/environment.js) kiểm tra và thêm `/api` đúng một lần. Chỉ có một biến env thực sự dùng. `.env.local`, các `.env.*` khác bị ignore; `.env.example` được giữ lại. `VITE_` được bundle tới browser, tuyệt đối không dùng cho DB password/JWT secret/private key.
+Không kèm `/api`, đường dẫn, query, fragment hoặc credentials; [moi-truong.js](../src/cau-hinh/moi-truong.js) kiểm tra và thêm `/api` đúng một lần. Chỉ có một biến env thực sự dùng. `.env.local`, các `.env.*` khác bị ignore; `.env.example` được giữ lại. `VITE_` được bundle tới browser, tuyệt đối không dùng cho DB password/JWT secret/private key.
 
 ```powershell
 npm.cmd --prefix Frontend run dev
@@ -53,6 +53,6 @@ Vite + plugin React và Tailwind Vite plugin dùng chung cấu hình Vitest ở 
 - Health lỗi nhưng app render: kiểm tra URL/cổng, Backend có chạy và CORS; không cần sửa JWT cho health public.
 - 5173/4173 bận: strictPort sẽ dừng, chọn cổng khác bằng `npm.cmd run dev -- --port 5174` hoặc dừng đúng instance của mình; không kill process không xác minh.
 - Deep link 404 trên host tương lai: cấu hình SPA fallback ở host; chưa có hosting trong FE-02.
-- Không thấy styles: kiểm tra import `src/styles/index.css`, plugin `@tailwindcss/vite`, và `@import "tailwindcss"`; không trộn CSS demo template.
+- Không thấy styles: kiểm tra import `src/kieu-dang/toan-cuc.css`, plugin `@tailwindcss/vite`, và `@import "tailwindcss"`; không trộn CSS demo template.
 
 Tài liệu chính thức đã đối chiếu: [Vite](https://vite.dev/guide/), [Tailwind với Vite](https://tailwindcss.com/docs/installation/using-vite), [Vitest](https://vitest.dev/guide/). Phiên bản cài chính xác và quyết định tương thích ở [dependencies](FE02_DEPENDENCIES.md).

@@ -15,10 +15,10 @@ let child, vite;
 const makeVite = () => createServer({ root: frontend, configFile: frontend + 'vite.config.js', server: { middlewareMode: true }, logLevel: 'silent' });
 try {
   vite = await makeVite();
-  const { environment } = await vite.ssrLoadModule('/src/config/environment.js');
+  const { moiTruong: environment } = await vite.ssrLoadModule('/src/cau-hinh/moi-truong.js');
   result.currentProcessFrontend = { configured: !environment.error, hasBaseUrl: !!environment.apiBaseUrl };
   if (environment.error) {
-    const { checkHealth } = await vite.ssrLoadModule('/src/features/foundation/health-api.js');
+    const { kiemTraSucKhoe: checkHealth } = await vite.ssrLoadModule('/src/chuc-nang/nen-tang/api-suc-khoe.js');
     await assert.rejects(() => checkHealth(), error => error.message === environment.error);
     result.currentProcessFrontend.missingConfigurationBlocked = true;
   }
@@ -45,7 +45,7 @@ try {
   // Cấu hình chỉ cho process kiểm thử; không tạo/sửa env file hoặc cấu hình người dùng.
   process.env.VITE_API_BASE_URL = `http://127.0.0.1:${port}`;
   vite = await makeVite();
-  const { checkHealth } = await vite.ssrLoadModule('/src/features/foundation/health-api.js');
+  const { kiemTraSucKhoe: checkHealth } = await vite.ssrLoadModule('/src/chuc-nang/nen-tang/api-suc-khoe.js');
   const health = await checkHealth();
   assert.equal(health.status, 200);
   assert.equal(health.data.success, true);

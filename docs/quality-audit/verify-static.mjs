@@ -68,7 +68,7 @@ for (const directory of ['Backend', 'Frontend']) {
   }
   result.packages[directory].multipleVersions = [...versions].filter(([, set]) => set.size > 1).map(([name, set]) => ({ name, versions: [...set] }));
 }
-const css = walk('Frontend/src/styles').filter(file => file.endsWith('.css')).map(file => fs.readFileSync(path.join(root, file), 'utf8')).join('\n');
+const css = walk('Frontend/src/kieu-dang').filter(file => file.endsWith('.css')).map(file => fs.readFileSync(path.join(root, file), 'utf8')).join('\n');
 const frontendText = walk('Frontend/src').map(file => fs.readFileSync(path.join(root, file), 'utf8')).join('\n');
 // Chỉ liệt kê ứng viên không có var() trực tiếp; @theme/third-party vẫn có thể dùng động.
 result.cssTokensUnused = [...css.matchAll(/(?:^|[;{])\s*(--[\w-]+)\s*:/gm)].map(match => match[1]).filter(token => !frontendText.includes(`var(${token})`));

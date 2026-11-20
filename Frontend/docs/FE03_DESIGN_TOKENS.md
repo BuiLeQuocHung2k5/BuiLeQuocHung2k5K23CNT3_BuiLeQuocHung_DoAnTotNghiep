@@ -1,6 +1,6 @@
 # FE-03 — Warm Wooden Library design tokens
 
-Xác minh **2026-11-19**. Nguồn chính: [tokens.css](../src/styles/tokens.css), [CSS base](../src/styles/index.css), [component styles](../src/styles/components.css). Chỉ light mode. Giá trị màu chỉ khai báo tại tokens; mã HEX ở preview là nhãn minh họa, không phải màu style lặp trong component.
+Xác minh **2026-11-19**. Nguồn chính: [bien-thiet-ke.css](../src/kieu-dang/bien-thiet-ke.css), [CSS base](../src/kieu-dang/toan-cuc.css), [component styles](../src/kieu-dang/thanh-phan.css). Chỉ light mode. Giá trị màu chỉ khai báo tại tokens; mã HEX ở preview là nhãn minh họa, không phải màu style lặp trong component.
 
 ## Palette thương hiệu
 
@@ -41,7 +41,7 @@ Mỗi tone có `--tone`, `--tone-background`, `--tone-border` qua lớp `ui-tone
 | Label/control | Be Vietnam Pro;14px;400/500; control mobile ≤479px dùng16px |
 | Caption/helper/error | 12px;400/500;1.6; có tương phản đầy đủ |
 | Card title | 20px;500;1.4; mặc định h3, có thể đổi cấp heading |
-| Section h2 | Lora/Georgia/serif; clamp24–32px;400; khoảng1.15–1.3 |
+| MucGiaoDien h2 | Lora/Georgia/serif; clamp24–32px;400; khoảng1.15–1.3 |
 | Preview h1 | Lora; clamp40–72px;400;1.15; emphasis italic400 |
 | Mã/định lượng | ui-monospace/SFMono-Regular/Consolas; không dùng cho đoạn nội dung dài |
 
@@ -57,7 +57,7 @@ Font được **self-host qua npm**, không gọi Google Fonts/CDN lúc chạy: 
 
 ## Kiểm tra tương phản
 
-[contrast.test.js](../src/styles/contrast.test.js) đọc token thực, resolve var rồi tính relative luminance sRGB; **16 cặp text≥4.5:1, 8 cặp boundary/focus≥3:1**, không dùng số đã làm tròn để quyết định pass. Ví dụ: foreground/background13.07; primary foreground/primary9.17; muted/surface5.81; muted/surface-muted4.74; accent foreground/accent4.73; border-strong/surface3.48; focus/background5.83. Số hiển thị làm tròn2 chữ số chỉ để đọc.
+[tuong-phan.test.js](../src/kieu-dang/tuong-phan.test.js) đọc token thực, resolve var rồi tính relative luminance sRGB; **16 cặp text≥4.5:1, 8 cặp boundary/focus≥3:1**, không dùng số đã làm tròn để quyết định pass. Ví dụ: foreground/background13.07; primary foreground/primary9.17; muted/surface5.81; muted/surface-muted4.74; accent foreground/accent4.73; border-strong/surface3.48; focus/background5.83. Số hiển thị làm tròn2 chữ số chỉ để đọc.
 
 Tone text/background lần lượt neutral6.32, success6.55, warning6.23, danger6.10, info6.36. Borderneutral/info đã được làm đậm sau kiểm tra ban đầu, các cặp quan trọng đều đạt test3:1. Border chia nhóm trang trí không phải control boundary. Disabled dùng opacity và thuộc ngoại lệ inactive; không dùng kiểu disabled làm nội dung đọc thông thường.
 

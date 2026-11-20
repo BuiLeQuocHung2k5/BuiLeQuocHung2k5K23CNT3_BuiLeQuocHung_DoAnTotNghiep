@@ -1,6 +1,22 @@
 # LibriFlow Frontend
 
-Frontend **FE-03**, audit QA-01 ngày 2026-11-19. React + Vite, JavaScript/JSX. Warm Wooden Library Design System tại **[/design-system](http://127.0.0.1:5173/design-system)** khi Vite đang chạy; `/` giữ trang kỹ thuật/health FE-02 và fallback vẫn hoạt động. Chưa có màn hình nghiệp vụ/FE-04. [Kết quả QA-01 và giới hạn kiểm chứng](../docs/quality-audit/QA01_HANDOFF.md).
+Source đã Việt hóa theo **FE-RENAME-01**, xác minh 2026-11-20: 59 file đổi đường dẫn, 17 tên thư mục và 203 tên định danh nội bộ. Chức năng vẫn ở FE-05; URL, API, UI, props, CSS và query keys giữ nguyên. Baseline/sau đổi tên đều152/152 tests, lint/build đạt; có ghi nhận timeout lazy shell ở một lượt chạy đồng thời trong test report.
+
+- [Bảng ánh xạ đầy đủ](docs/FE_RENAME_01_MAPPING.md) · [Kiểm tra trước/sau](docs/FE_RENAME_01_TEST_REPORT.md) · [Bàn giao đổi tên](docs/FE_RENAME_01_HANDOFF.md)
+
+Code hiện nằm trong `src/ung-dung`, `src/chuc-nang`, `src/bo-cuc`, `src/thanh-phan`, `src/thu-vien`, `src/cau-hinh`, `src/kieu-dang`, `src/trang`, `src/kiem-thu`. `main.jsx` và `App.jsx` giữ tên theo quy ước. Các đường dẫn source trong tài liệu trước đã được cập nhật; số đo lịch sử vẫn thuộc ngày xác minh ghi trong từng task.
+
+Frontend **FE-05**, xác minh 2026-11-20. React + Vite, JavaScript/JSX. Trang kỹ thuật **[/app/api-check](http://127.0.0.1:5173/app/api-check)** kiểm tra GET Health/Books/Categories khi bấm, có loading/error/empty/cancel và không cần JWT. Giữ App Shell `/app`, role preview `/app/layouts`, placeholder `/app/workspace`, health FE-02 tại `/` và **[/design-system](http://127.0.0.1:5173/design-system)** FE-03. Chưa Authentication/nghiệp vụ/FE-06. [QA-01 và giới hạn lịch sử](../docs/quality-audit/QA01_HANDOFF.md).
+
+- [API architecture](docs/FE05_API_ARCHITECTURE.md) · [Error handling](docs/FE05_ERROR_HANDLING.md) · [Query conventions](docs/FE05_QUERY_CONVENTIONS.md)
+- [Test report FE-05](docs/FE05_TEST_REPORT.md) · [Bàn giao FE-05 và blocker FE-06](docs/FE05_HANDOFF.md)
+
+FE-05 tái dùng Axios/QueryClient FE-02; response/error gốc giữ nguyên, query public enabledfalse/retryfalse/stale30giây/gc5phút và AbortSignal. Lint/build và **152/152 tests** đạt; GET và service Axios thật200, list thực rỗng. Browser host unavailable nên UI/Network thực chưa xác minh. Không thêm dependency/sửa Backend/database. Dev5173 kiểm thử truyền origin qua process; file env development hiện thiếu origin hợp lệ. Theo hướng dẫn bên dưới để cấu hình khi khởi động lại; không dùng VITE_ cho secret.
+
+- [Layout architecture](docs/FE04_LAYOUT_ARCHITECTURE.md) · [Routing map](docs/FE04_ROUTING_MAP.md)
+- [Navigation guidelines](docs/FE04_NAVIGATION_GUIDELINES.md) · [Test report](docs/FE04_TEST_REPORT.md) · [Bàn giao FE-04](docs/FE04_HANDOFF.md)
+
+Desktop dùng sidebar; mobile/tablet dùng drawer từ Dialog FE-03. Role preview chỉ là cấu hình hiển thị, không session/quyền. FE-04 có100test ở thời điểm bàn giao; browser UI375/768/1280 còn cần nghiệm thu thủ công theo checklist FE-04 vì browser host không khả dụng.
 
 - [Design tokens](docs/FE03_DESIGN_TOKENS.md) · [Component catalog](docs/FE03_COMPONENT_CATALOG.md)
 - [UI guidelines](docs/FE03_UI_GUIDELINES.md) · [Test report](docs/FE03_TEST_REPORT.md) · [Bàn giao FE-03](docs/FE03_HANDOFF.md)
