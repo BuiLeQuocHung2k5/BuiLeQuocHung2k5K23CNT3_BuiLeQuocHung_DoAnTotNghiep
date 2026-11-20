@@ -1,5 +1,19 @@
 # Theo dõi task
 
+## BE-AUTH-PREP-01 — Audit và chuẩn bị Authentication cho FE06 (2026-11-20)
+
+- Kiểm cuối:97/97file Frontend,83/83file Backend runtime/SQL/integration/tests cũ/env/package/lock khớp SHA256 baseline;HEAD/index entries không đổi. 7docs cũ sửa,8file mới đúng whitelist,không xóa;147links nội bộ/line anchors/UTF-8/whitespace/syntax test mới/diff-check đạt.
+
+- Trạng thái: hoàn tất audit/tài liệu/tests an toàn; MySQL login/register thành công mới chưa kiểm do môi trường test chưa được cung cấp. Không tuyên bố auth đã sẵn sàng nghiệm thu end-to-end; không FE06.
+- Baseline HEAD8d4a1d2 sạch/index không staged; lưu hash222file ngoài node_modules/dist/.git. Đã đọc AGENTS/5docs dự án, Backend README/config/auth/model/middleware/validator/error/tests/integration và FE01/FE05/QA01; Frontend đã Việt hóa được giữ nguyên.
+- Tạo Backend/test/chuan-bi-xac-thuc.test.js (3case),7docs trong [backend-auth-prep](backend-auth-prep/BE_AUTH_PREP_01_HANDOFF.md). Sửa chỉ docs:Backend/README.md,Backend/docs/xac-thuc-api.md và5docs root PROJECT_CONTEXT/DATABASE/DECISIONS/TASKS/HANDOFF. Không sửa source auth/config/SQL/package/env hoặc Frontend.
+- Kiểm trước172/172,sau175/175 Backend unit/safety,0fail/skip; targeted3/3 đạt. Test mới dùng factory thuần/model RAM/key/password ngẫu nhiên, chặn mọi SQL; giữ đủ test/assertion cũ. Không chạy Frontend tests/lint/build vì không thay Frontend, kiểm hash thay thế.
+- JWT_PRESENT=false,utility JWT_NOT_CONFIGURED; installed jsonwebtoken9.0.3/bcryptjs3.0.3. TEST_DB_* không có; npm test:integration từ chối MISSING_TEST_DB_NAME trước kết nối/ghi, không tính là integration pass. Không chạy setup/instance-isolee, tạo test schema hoặc account.
+- SELECT/metadata/SHOW GRANTS:MySQL8.0.40,16bảng,26cột auth/RBAC/history,statusENUM đúng;users0 trước/sau,roles3,category_manage0,grants11/9/1. Main account có global privilege/GRANT OPTION (chỉ boolean), không dùng làm test runtime;không đọc PII/hash hoặc xuất config secret/identity.
+- HTTP smoke9/9 trên factory/model SQL thật qua proxy chỉ SELECT,JWT config hiện tại thiếu:health/healthDB200,me/logout thiếuBearer401,login invalid400/415 vàbodyhợp lệ503,register503,OPTIONS204;1SELECT1/0SQLauth/0accounttạo. Đã đóngserver/pool. Không có MySQL auth success mới hoặc browser test.
+- [Session proposal](backend-auth-prep/BE_AUTH_PREP_01_SESSION_POLICY.md) memory-only/reload login lại còn chờ duyệt. Blocker:JWT/account/môi trường riêng vàpolicy;category_manage chỉ chặn feature tương ứng. [Risks](backend-auth-prep/BE_AUTH_PREP_01_RISKS.md) phân mức/task riêng,không tự sửa.
+- Bước tiếp theo: người dùng nghiệm thu; operator chuẩn bị target test/dev hiện hữu,secret/account đúng guard rồi kiểm auth/MySQL/browser thật; FE06 chỉ theo task riêng. Không commit/push/reset/unstage/stage.
+
 ## FE-RENAME-01 — Việt hóa tên Frontend (2026-11-20)
 
 - Kiểm cuối: đủ60file src, ASCII paths/identifiers và UTF-8/whitespace đạt;102file Backend,6docs contract FE01,docs/DATABASE,env/package/lock/evidence QA01 khớp hash baseline. HEAD/index entries giữ nguyên;457link nội bộ hợp lệ,git diff --check exit0. Chỉ giữ3docs bàn giao, dọn script/snapshot tạm sau kiểm.

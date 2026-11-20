@@ -1,5 +1,14 @@
 # Quyết định và căn cứ
 
+## BE-AUTH-PREP-01 — chuẩn bị Auth FE06 (2026-11-20)
+
+- Người dùng cho phép audit rồi bổ sung test/tài liệu, chỉ chạy ghi trên môi trường cô lập đã xác minh; không sửa auth/JWT/password/middleware/contract/schema/Frontend hoặc tạo account main. Đã thực hiện phạm vi an toàn, chờ nghiệm thu.
+- Giữ HS256, claims, issuer/audience,900giây,bcrypt12,principal/RBAC và stateless logout hiện hữu. TEST_DB_* thiếu, nên không tự chạy setup/instance-isolee vì chúng có provision/DDL/seed. Runner từ chối trước ghi là safety result, không phải integration pass.
+- Tái dùng 172 tests, thêm3 test HTTP/crypto với model RAM và database stub chặn SQL: password whitespace, register limiter và CORS Authorization. Cuối175/175 đạt; smoke current config với proxy read-only9/9 đạt. Không thay source/runtime config.
+- [Session policy](backend-auth-prep/BE_AUTH_PREP_01_SESSION_POLICY.md) memory-only/reload login lại, xử lý401/403/cache/multi-tab chỉ là **đề xuất chưa được duyệt**. Không chọn localStorage/cookie/refresh hoặc persistence trong task này.
+- [Test accounts](backend-auth-prep/BE_AUTH_PREP_01_TEST_ACCOUNTS.md) tối đa3 account có ownership/run manifest, chỉ target riêng; operator cần cấp môi trường/secret/account trước kiểm MySQL thật. Chưa có credential hoặc account DB mới được tạo/bàn giao.
+- Căn cứ [audit](backend-auth-prep/BE_AUTH_PREP_01_AUDIT.md), [verification](backend-auth-prep/BE_AUTH_PREP_01_TEST_REPORT.md), [handoff](backend-auth-prep/BE_AUTH_PREP_01_HANDOFF.md). Có thể giao FE06 riêng theo contract, chưa đủ điều kiện nghiệm thu auth end-to-end; không tự triển khai.
+
 ## FE-RENAME-01 — Quy ước tên Frontend (2026-11-20)
 
 - Người dùng yêu cầu Việt hóa tên file/thư mục/định danh nội bộ, không đổi chức năng/API/UI. Đã thực hiện theo phạm vi được giao, chờ nghiệm thu; thay quy ước tên nội bộ Frontend trước đó bằng tiếng Việt không dấu, component PascalCase, hook camelCase có use, utility kebab-case.

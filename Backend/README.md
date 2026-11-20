@@ -1,5 +1,9 @@
 # LibriFlow Backend — MySQL
 
+## BE-AUTH-PREP-01 — cập nhật 2026-11-20
+
+Đã audit Authentication và bổ sung kiểm thử, **chưa đủ điều kiện nghiệm thu auth FE06 trên MySQL thật**: JWT_SECRET hiện thiếu, chưa có cấu hình TEST_DB_* hoặc account dev được bàn giao. Baseline172/172 và sau175/175 unit/safety đạt;9check HTTP an toàn đạt, không ghi DB. Không sửa runtime auth/Frontend/env/schema. [Audit, contract, session proposal và handoff](../docs/backend-auth-prep/BE_AUTH_PREP_01_HANDOFF.md); các kết quả TASK018 bên dưới là lịch sử.
+
 ## Bàn giao cuối Backend — TASK-018 (2026-11-07)
 
 **172/172 unit/safety đạt; 21/21 scenario integration MySQL thật đạt** (Node đếm 22 gồm test cha). Kiểm tra 73 file JS/MJS, 192 import/export tương đối/casing/không vòng và 40 API không trùng đạt; `npm.cmd run db`, smoke SELECT và diff-check đạt. Giữ 15 scenario cũ, thêm 6; sửa lỗi khóa manifest integration sau refactor và nhận diện hai mã lỗi FK tương đương. Không thay source nghiệp vụ, dependency hoặc hợp đồng API.

@@ -1,5 +1,12 @@
 # Database
 
+## BE-AUTH-PREP-01 — snapshot auth chỉ đọc (2026-11-20)
+
+- SELECT metadata/aggregate và SHOW GRANTS, không đọc profile/password/hash: MySQL8.0.40,16 bảng;26 cột ở6 bảng auth/RBAC/history; status ENUM active/inactive/locked. Users0 trước/sau kiểm,roles3,category_manage0.
+- Role grants hiện tại: reader1,librarian9,admin11 permission; category_manage vẫn thiếu so với source/seed, không chạy migration/seed hoặc cấp quyền. Account kết nối MySQL có global privileges và GRANT OPTION (chỉ báo boolean), không dùng làm test runtime.
+- Process thiếu TEST_DB_*, guard dừng MISSING_TEST_DB_NAME trước kết nối; chưa có test target/account/UUID/marker được xác minh mới. Không dựng instance/schema hoặc tạo user. Không cập nhật xác minh toàn bộ96cột/constraints từ snapshot auth26cột.
+- [Audit](backend-auth-prep/BE_AUTH_PREP_01_AUDIT.md), [test account plan](backend-auth-prep/BE_AUTH_PREP_01_TEST_ACCOUNTS.md), [tests](backend-auth-prep/BE_AUTH_PREP_01_TEST_REPORT.md). Các kết quả metadata tổng thể bên dưới vẫn thuộc ngày xác minh lịch sử.
+
 ## QA-01 — xác minh chỉ đọc, 2026-11-19
 
 - Qua pool ứng dụng: SELECT metadata/aggregate/grant, không SELECT hồ sơ/hash/PII. MySQL8.0.40;16bảng/96cột/16PK/16FK/6UNIQUE/3CHECK và46index. Verifier đối chiếu96 tên/kiểu/NULL với schema.sql không sai khác; chưa so lại đầy đủ defaults/collation/cascade/CHECK expressions. [Metadata và nguồn truy vấn](quality-audit/evidence/smoke.json), [script](quality-audit/verify-smoke.mjs), [đối chiếu cột](quality-audit/verify-static.mjs).

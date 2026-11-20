@@ -1,5 +1,7 @@
 # JWT và RBAC — kiểm thử bằng Postman
 
+> BE-AUTH-PREP-01 (2026-11-20): source/contract auth giữ nguyên; JWT_SECRET hiện thiếu, TEST_DB_* chưa cấu hình, users0. Unit/safety175/175 đạt; MySQL login thành công mới **chưa kiểm chứng**. Dùng [contract FE06](../../docs/backend-auth-prep/BE_AUTH_PREP_01_API_CONTRACT.md) và [kế hoạch tài khoản cô lập](../../docs/backend-auth-prep/BE_AUTH_PREP_01_TEST_ACCOUNTS.md); runner chỉ allowlist libriflow_integration_test/libriflow_ci_test, không suy tên ví dụ thủ công bên dưới là target được phép. Không dùng fixture password minh họa làm credential dev thực.
+
 > Cập nhật TASK-018 (2026-11-07): Đăng ký/login/hash, JWT và RBAC đã kiểm chứng trên MySQL riêng; ứng dụng chính chưa có JWT_SECRET hợp lệ và users=0. Không sửa .env hoặc tạo tài khoản chính. Kết quả tổng thể 21/21 scenario thật và 172/172 unit tại [báo cáo bàn giao](backend-final-report.md). Các kết quả task trước bên dưới giữ lịch sử.
 
 Xác minh: 2026-11-05. Nguồn: `src/{routes,controllers,services,models}/xac-thuc.*.js`, `src/middlewares/xac-thuc.js`, `src/utils/{jwt,kiem-tra-xac-thuc}.js` và schema/seed trong `sql/`.
