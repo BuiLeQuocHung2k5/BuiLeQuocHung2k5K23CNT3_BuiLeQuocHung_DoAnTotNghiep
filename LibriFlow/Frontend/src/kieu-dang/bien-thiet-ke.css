@@ -1,0 +1,99 @@
+:root {
+  color-scheme: light;
+  --brand-walnut: #5d4037;
+  --brand-coffee: #795548;
+  --brand-caramel: #b8895a;
+  --brand-cream: #f7f1e8;
+  --brand-ivory: #fffdf8;
+  --brand-espresso: #34251f;
+  --brand-sage: #71806a;
+
+  --background: var(--brand-cream);
+  --surface: var(--brand-ivory);
+  --surface-muted: #eee5d8;
+  --foreground: var(--brand-espresso);
+  --foreground-muted: #716158;
+  --primary: var(--brand-walnut);
+  --primary-hover: #493027;
+  --primary-foreground: var(--brand-ivory);
+  --secondary: #ede1d2;
+  --secondary-hover: #e2d2bf;
+  --accent: var(--brand-caramel);
+  --accent-foreground: var(--brand-espresso);
+  --border: #ded1c2;
+  --border-strong: #9b8472;
+  --focus-ring: var(--brand-coffee);
+
+  --neutral: #5f5148;
+  --neutral-background: #f0e9df;
+  --neutral-border: #927b68;
+  --success: #3f5d39;
+  --success-background: #edf3e8;
+  --success-border: var(--brand-sage);
+  --warning: #79511f;
+  --warning-background: #fcf1db;
+  --warning-border: #ab844b;
+  --danger: #963e33;
+  --danger-hover: #7c3028;
+  --danger-background: #fbeee9;
+  --danger-border: #b7675a;
+  --info: #365c71;
+  --info-background: #ecf2f6;
+  --info-border: #698695;
+
+  --font-body: 'Be Vietnam Pro', Inter, system-ui, sans-serif;
+  --font-heading: Lora, Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+  --text-caption: 0.75rem;
+  --text-label: 0.875rem;
+  --text-body: 1rem;
+  --text-lead: 1.125rem;
+  --text-h3: 1.25rem;
+  --text-h2: clamp(1.5rem, 2.6vw, 2rem);
+  --text-h1: clamp(2.5rem, 5.5vw, 4.5rem);
+  --leading-body: 1.65;
+  --leading-heading: 1.15;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-full: 999px;
+  --shadow-sm: 0 2px 4px rgb(52 37 31 / 0.04);
+  --shadow-card: 0 6px 24px rgb(52 37 31 / 0.05);
+  --shadow-dialog: 0 24px 80px rgb(52 37 31 / 0.2);
+  --overlay: rgb(52 37 31 / 0.46);
+  --duration-fast: 160ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-focus-ring: var(--focus-ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-heading);
+}

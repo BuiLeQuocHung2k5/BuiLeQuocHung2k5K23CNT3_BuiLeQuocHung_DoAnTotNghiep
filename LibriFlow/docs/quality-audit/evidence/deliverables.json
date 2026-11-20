@@ -1,0 +1,266 @@
+{
+  "verifiedDate": "2026-11-19",
+  "changedExisting": [
+    "Backend/src/controllers/sach.controller.js",
+    "Backend/test/an-toan-tich-hop.test.js",
+    "Frontend/README.md",
+    "Frontend/docs/01_BACKEND_API_INVENTORY.md",
+    "Frontend/docs/FE02_BACKEND_DEPENDENCIES.md",
+    "docs/DATABASE.md",
+    "docs/DECISIONS.md",
+    "docs/HANDOFF.md",
+    "docs/PROJECT_CONTEXT.md",
+    "docs/TASKS.md"
+  ],
+  "created": [
+    {
+      "file": "docs/quality-audit//evidence/baseline.json",
+      "sha256": "8b9b6df5fa422761715c833555679fd939f184d692bd25b251873b6d2e1cd14f"
+    },
+    {
+      "file": "docs/quality-audit//evidence/dependency-audit.json",
+      "sha256": "89efd5ca76304352ae3ca1bfcc641d49c6cb8cbcb1e3afc8f68f51f9ab23214a"
+    },
+    {
+      "file": "docs/quality-audit//evidence/health-client.json",
+      "sha256": "08b65d3524694291d11564327e030e50b34221adde99ae9985e79a6a48a52533"
+    },
+    {
+      "file": "docs/quality-audit//evidence/smoke.json",
+      "sha256": "0eedf0c814ffc16f77df93c22694cfb4141dd6146a388af54c1dc14e70973d56"
+    },
+    {
+      "file": "docs/quality-audit//evidence/static-after.json",
+      "sha256": "ec91740e4485b40cbe12753e39690d4ac3174185219bf93826e3a3fbdc95c945"
+    },
+    {
+      "file": "docs/quality-audit//evidence/static-before.json",
+      "sha256": "d0edf428e584160f4785eec65b674dccb4b207f4f7a98d292344191f2d210623"
+    },
+    {
+      "file": "docs/quality-audit//QA01_BACKEND_FINDINGS.md",
+      "sha256": "2147962ccd42eea7563be563d5ac2bf9a54358cadaf2954cdf89d6e2159baeb6"
+    },
+    {
+      "file": "docs/quality-audit//QA01_DEPENDENCY_REVIEW.md",
+      "sha256": "a9726f315aeac2d59cd68bc76b7a96a861e7769ab167141762aaeb0694e6a280"
+    },
+    {
+      "file": "docs/quality-audit//QA01_FRONTEND_FINDINGS.md",
+      "sha256": "cbf01a5e2c24845581cff3bbb4a19882abd633fe64da71c16c4d3eb3c5552b6b"
+    },
+    {
+      "file": "docs/quality-audit//QA01_FULLSTACK_AUDIT.md",
+      "sha256": "72947d0fa322030657ac42ef46122606af533d249fc0b46be39f10e992de8821"
+    },
+    {
+      "file": "docs/quality-audit//QA01_HANDOFF.md",
+      "sha256": "c91e23c3f868b9a573a2c0e23fd4528e3145da20c99123209d5d1e305b926f26"
+    },
+    {
+      "file": "docs/quality-audit//QA01_OPTIMIZATION_LOG.md",
+      "sha256": "dacd0622642894ef36183eacde02481e73b6f0129d42fc3e6166d4c1f098272d"
+    },
+    {
+      "file": "docs/quality-audit//QA01_RISK_REGISTER.md",
+      "sha256": "7b3127451c70d300587e61bba8a622139f20653ed3ac303c14ccd96a69f4e840"
+    },
+    {
+      "file": "docs/quality-audit//QA01_VERIFICATION_REPORT.md",
+      "sha256": "e18e29454bc55539c6525ea4ae12cc3be6d0978b7cbf82821fb981fa4a46898a"
+    },
+    {
+      "file": "docs/quality-audit//verify-health-client.mjs",
+      "sha256": "b81c49e96d728a86b3084c2b96a9d01d08ac6f79a170b880ea11f0e0cb15d2bd"
+    },
+    {
+      "file": "docs/quality-audit//verify-smoke.mjs",
+      "sha256": "8ec157a7bf3e332e244217fc53a57777f9b11870e4f95994a6353f522865c4b9"
+    },
+    {
+      "file": "docs/quality-audit//verify-static.mjs",
+      "sha256": "a40323d2493464c59503bf54ee4203101f602d9a40e6776a449874031a69b2a3"
+    },
+    {
+      "file": "docs/quality-audit/evidence/deliverables.json"
+    }
+  ],
+  "linkCount": 178,
+  "brokenLinks": [],
+  "utf8Errors": [],
+  "highConfidenceSecretPatternMatches": [],
+  "indexUnchanged": true,
+  "contract": {
+    "documented": 40,
+    "unique": 40,
+    "runtime": 40,
+    "missing": [],
+    "extra": []
+  },
+  "protectedHashCount": 50,
+  "protectedHashChanges": [],
+  "requiredReports": [
+    "QA01_BACKEND_FINDINGS.md",
+    "QA01_DEPENDENCY_REVIEW.md",
+    "QA01_FRONTEND_FINDINGS.md",
+    "QA01_FULLSTACK_AUDIT.md",
+    "QA01_HANDOFF.md",
+    "QA01_OPTIMIZATION_LOG.md",
+    "QA01_RISK_REGISTER.md",
+    "QA01_VERIFICATION_REPORT.md"
+  ],
+  "buildAssets": [
+    {
+      "name": "be-vietnam-pro-latin-400-normal-bXgqVju9.woff",
+      "bytes": 16432
+    },
+    {
+      "name": "be-vietnam-pro-latin-400-normal-PpnXBOrz.woff2",
+      "bytes": 21168
+    },
+    {
+      "name": "be-vietnam-pro-latin-500-normal-B6LVzGNe.woff2",
+      "bytes": 21892
+    },
+    {
+      "name": "be-vietnam-pro-latin-500-normal-BJkVuMHw.woff",
+      "bytes": 16996
+    },
+    {
+      "name": "be-vietnam-pro-latin-600-normal-5IO4e7bK.woff",
+      "bytes": 17016
+    },
+    {
+      "name": "be-vietnam-pro-latin-600-normal-BZDkUTrt.woff2",
+      "bytes": 22032
+    },
+    {
+      "name": "be-vietnam-pro-vietnamese-400-normal-BuGn0gnm.woff",
+      "bytes": 6568
+    },
+    {
+      "name": "be-vietnam-pro-vietnamese-400-normal-CRcqvyg1.woff2",
+      "bytes": 11532
+    },
+    {
+      "name": "be-vietnam-pro-vietnamese-500-normal-CfdwVo8-.woff",
+      "bytes": 6884
+    },
+    {
+      "name": "be-vietnam-pro-vietnamese-500-normal-DREgrEoJ.woff2",
+      "bytes": 12172
+    },
+    {
+      "name": "be-vietnam-pro-vietnamese-600-normal-DkpCIyan.woff",
+      "bytes": 6880
+    },
+    {
+      "name": "be-vietnam-pro-vietnamese-600-normal-nyU-ZL2p.woff2",
+      "bytes": 12176
+    },
+    {
+      "name": "DesignSystemPage-0pzyK1TA.js",
+      "bytes": 65667,
+      "gzipBytes": 21541
+    },
+    {
+      "name": "index-BhgETZwJ.js",
+      "bytes": 381340,
+      "gzipBytes": 120558
+    },
+    {
+      "name": "index-Dab0aTcl.css",
+      "bytes": 31465,
+      "gzipBytes": 7058
+    },
+    {
+      "name": "lora-latin-400-italic-DYjZp4sZ.woff2",
+      "bytes": 22756
+    },
+    {
+      "name": "lora-latin-400-italic-wRLkZNVE.woff",
+      "bytes": 27728
+    },
+    {
+      "name": "lora-latin-400-normal-DBJS-Hc6.woff",
+      "bytes": 25960
+    },
+    {
+      "name": "lora-latin-400-normal-DnxXpLNu.woff2",
+      "bytes": 21148
+    },
+    {
+      "name": "lora-latin-500-normal-Dbc_1yrl.woff",
+      "bytes": 26828
+    },
+    {
+      "name": "lora-latin-500-normal-Dh16O2IA.woff2",
+      "bytes": 21900
+    },
+    {
+      "name": "lora-vietnamese-400-italic-DFs7jfwN.woff2",
+      "bytes": 5536
+    },
+    {
+      "name": "lora-vietnamese-400-italic-DGRK7mLs.woff",
+      "bytes": 7672
+    },
+    {
+      "name": "lora-vietnamese-400-normal-BxA6xcFr.woff2",
+      "bytes": 5292
+    },
+    {
+      "name": "lora-vietnamese-400-normal-DlgyXXxo.woff",
+      "bytes": 7428
+    },
+    {
+      "name": "lora-vietnamese-500-normal-LA4e_tum.woff2",
+      "bytes": 5524
+    },
+    {
+      "name": "lora-vietnamese-500-normal-vya0n-2r.woff",
+      "bytes": 7556
+    }
+  ],
+  "diffCheckExit": 0,
+  "testResults": {
+    "backendBefore": {
+      "pass": 172,
+      "fail": 0,
+      "skip": 0
+    },
+    "backendAfter": {
+      "pass": 172,
+      "fail": 0,
+      "skip": 0
+    },
+    "backendTargetedAfter": {
+      "pass": 34,
+      "fail": 0,
+      "skip": 0
+    },
+    "frontendBefore": {
+      "files": 6,
+      "pass": 78,
+      "fail": 0
+    },
+    "frontendAfter": {
+      "files": 6,
+      "pass": 78,
+      "fail": 0
+    },
+    "frontendLintBefore": 0,
+    "frontendLintAfter": 0,
+    "frontendBuildBefore": 0,
+    "frontendBuildAfter": 0,
+    "mysqlWriteIntegration": "not run",
+    "browser": "unverified",
+    "dependencyAdvisories": "unverified"
+  },
+  "status": "passed",
+  "git": {
+    "branch": "main",
+    "nestedGitDirectories": [],
+    "coreAutocrlf": true
+  }
+}

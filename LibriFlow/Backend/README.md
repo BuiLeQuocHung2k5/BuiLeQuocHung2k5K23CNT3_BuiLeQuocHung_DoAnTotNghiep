@@ -1,11 +1,119 @@
 # LibriFlow Backend — MySQL
 
+## BE-AUTH-SETUP-01 — chuẩn bị và chờ duyệt provision (2026-11-20)
+
+Đã chuẩn bị plan chỉ đọc và auth-only integration suite. Baseline 175/175, sau 178/178 unit/safety đạt. **Chưa tạo instance/database/account hoặc chạy Auth MySQL mới**: mục 6 yêu cầu phê duyệt trước tạo database/thay quyền cấp instance. Xem [kế hoạch và handoff](../docs/backend-auth-setup/BE_AUTH_SETUP_01_HANDOFF.md).
+
+Lệnh an toàn từ Backend: node integration/ke-hoach-xac-thuc.mjs. Chưa chạy provision hoặc legacy full-suite để né gate. Nhánh mới yêu cầu đủ --auth-only và --allow-create-isolated, chỉ được dùng sau khi người dùng duyệt kế hoạch. Session memory-only đã được chỉ định cho tài liệu FE-06; Frontend chưa sửa.
+
+## BE-AUTH-PREP-01 — cập nhật 2026-11-20
+
+Đã audit Authentication và bổ sung kiểm thử, **chưa đủ điều kiện nghiệm thu auth FE06 trên MySQL thật**: JWT_SECRET hiện thiếu, chưa có cấu hình TEST_DB_* hoặc account dev được bàn giao. Baseline172/172 và sau175/175 unit/safety đạt;9check HTTP an toàn đạt, không ghi DB. Không sửa runtime auth/Frontend/env/schema. [Audit, contract, session proposal và handoff](../docs/backend-auth-prep/BE_AUTH_PREP_01_HANDOFF.md); các kết quả TASK018 bên dưới là lịch sử.
+
+## Bàn giao cuối Backend — TASK-018 (2026-11-07)
+
+**172/172 unit/safety đạt; 21/21 scenario integration MySQL thật đạt** (Node đếm 22 gồm test cha). Kiểm tra 73 file JS/MJS, 192 import/export tương đối/casing/không vòng và 40 API không trùng đạt; `npm.cmd run db`, smoke SELECT và diff-check đạt. Giữ 15 scenario cũ, thêm 6; sửa lỗi khóa manifest integration sau refactor và nhận diện hai mã lỗi FK tương đương. Không thay source nghiệp vụ, dependency hoặc hợp đồng API.
+
+- [Báo cáo cuối và bằng chứng kiểm thử](docs/backend-final-report.md).
+- [40 API bàn giao cho React, request/response và quyền](docs/frontend-api-handover.md).
+- [Blocker và giới hạn còn lại](docs/backend-known-issues.md).
+- [Cách chạy instance MySQL test riêng](docs/kiem-thu-tich-hop.md): từ Backend chạy `node integration/instance-isolee.mjs` khi có binary MySQL 8.0. Script tạo datadir/cổng/UUID/tài khoản riêng, chỉ đọc instance chính, tự dừng test instance; không sửa .env hoặc dùng libriflow để test ghi.
+
+**Còn blocker cấu hình trước nghiệm thu kết nối auth:** chưa có JWT_SECRET hợp lệ và database chính chưa có người dùng. Không tự tạo/cấp staff. category_manage chưa migrate ở DB chính, chưa có quy định phạt active; forecast generate vẫn 503. Tạo phạt/thanh toán thành công và forecast ready/MAE thực chưa được kiểm chứng bằng MySQL thật. Không triển khai production hoặc Frontend trong task này. Các kết quả theo task cũ bên dưới là lịch sử; trạng thái hiện tại theo ba tài liệu bàn giao trên.
+
 Backend kết nối trực tiếp tới MySQL Server bằng `mysql2/promise`. MySQL Workbench dùng để quản lý cùng server và schema đó.
+
+TASK-017 (2026-11-07) chuẩn hóa tên Việt không dấu cho file module, hàm và biến nội bộ; chú thích dùng tiếng Việt có dấu. Có **78 file đổi tên** (65 JavaScript/MJS và 13 tài liệu), không đổi URL API, JSON, SQL hoặc quyền. Tra cứu đầy đủ và tìm module trong VS Code: [Quy ước đặt tên](docs/quy-uoc-dat-ten.md). Giữ các entrypoint app.js/app-factory.js/server.js, tên npm scripts và API thư viện. Export nội bộ nay dùng `taoUngDung`, `dungUngDung`, `taoMoHinhSach`...; script riêng import trực tiếp tên cũ cần cập nhật theo bảng ánh xạ.
+
+Kết quả TASK-017: **172/172 test trước và sau refactor**, 188 import tương đối/export hợp lệ, casing đúng và không có vòng import; cú pháp 72 file và đối chiếu cấu trúc AST đạt. Hash package/lockfile/SQL giữ nguyên. Health/auth smoke chỉ đọc, không chạy integration ghi hoặc sửa `.env`.
+
+Backend có JWT/RBAC, vẫn chỉ dùng phát triển cục bộ và chưa sẵn sàng production. Server chỉ bind `127.0.0.1`; không mở public API. Chỉ kiểm thử các thao tác ghi trên database thử nghiệm độc lập, không dùng database chính. Từ TASK-015, đăng nhập thành công cũng ghi lịch sử sử dụng; không dùng login trên DB chính để smoke test chỉ đọc.
+
+## Integration test MySQL độc lập (TASK-013)
+
+Tại TASK-013 đạt 98/98 unit/safety, integration chưa chạy vì thiếu TEST_DB_*. Đến TASK-018 đã chạy 21 scenario thật an toàn bằng instance riêng như phần bàn giao trên. `npm.cmd run test:integration` trực tiếp vẫn từ chối trước kết nối/ghi nếu thiếu guard; không tự dùng libriflow hoặc chạy setup.
+
+Hai lệnh riêng: `npm.cmd run test:integration:setup` chỉ chuẩn bị database test đã tồn tại/trống; `npm.cmd run test:integration` chạy 21 scenario MySQL thật sau khi xác minh allowlist tên DB, UUID khác instance chính, account chỉ có quyền test-schema, marker/fingerprint và DATABASE() thực tế. Không sửa `.env`, không fallback pool chính, không cleanup dữ liệu. [Hướng dẫn cấu hình và kiểm thử](docs/kiem-thu-tich-hop.md).
+
+`src/app-factory.js` nhận database tường minh cho tất cả model/health, không import cấu hình DB; `src/app.js` tiếp tục là wrapper cấu hình ứng dụng. Không thay đổi endpoint hoặc nghiệp vụ mượn/trả trong task này.
+
+## Xác thực và phân quyền
+
+`POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`, `POST /api/auth/logout`. Đăng ký chỉ gán reader theo seed; mật khẩu bcrypt cost 12; JWT HS256 có hạn 15 phút, chỉ chứa định danh và claim chuẩn. Middleware đọc lại status/roles/permissions từ DB mỗi request. Logout stateless yêu cầu client xóa token, không thu hồi token trên server.
+
+Cấu hình `JWT_SECRET` ngẫu nhiên tối thiểu 32 byte trong môi trường server; không có secret mặc định. Không sửa `.env` thật trong task này. Thiếu cấu hình: auth trả 503 an toàn, public health/GET sách vẫn chạy. Cách tạo secret không in giá trị, request/response và Postman: [Auth API](docs/xac-thuc-api.md).
+
+## Danh mục và bản sao sách (TASK-010, 2026-11-06)
+
+- `GET /api/categories`, `GET /api/categories/:id`: danh mục public, có phân trang/tìm kiếm.
+- `POST /api/categories`, `PUT/DELETE /api/categories/:id`: từ TASK-011 yêu cầu Bearer + category_manage. Seed gán cho admin/librarian, không gán reader; thiếu token 401, thiếu quyền DB 403 kể cả admin. Migration `sql/migrations/001_add_category_manage.sql` đã tạo nhưng **chưa chạy trên DB thật**, không tự cấp quyền khi startup. [Hướng dẫn danh mục](docs/danh-muc-api.md), [migration thủ công](sql/README.md).
+- `GET /api/book-copies`, `GET /api/book-copies/:id`, `GET /api/books/:id/copies`: public, phân trang/lọc, ẩn note nội bộ.
+- `POST /api/book-copies`, `PUT/DELETE /api/book-copies/:id`: Bearer + copy_manage, quyền có trong seed cho admin/librarian. Chặn sửa/xóa bản sao borrowed/lost/lượt mượn chưa hoàn tất; chặn xóa mọi lịch sử mượn/sử dụng; không chuyển bản sao sang sách khác. Chuyển trạng thái mượn/trả dành cho module sau. [Hướng dẫn bản sao](docs/ban-sao-sach-api.md).
+
+TASK-013 đạt 98/98 unit/safety, TASK-014 giữ nguyên các test đó; không thêm dependency. Chỉ thử ghi trên mock hoặc database thử nghiệm độc lập; không thử trên MySQL chính. Schema/SQL gốc giữ nguyên; seed được bổ sung category_manage theo TASK-011, không thay quyền cũ. Chưa kiểm thử chạy migration lặp lại trên MySQL độc lập; DB chính chưa có quyền này tại lần SELECT xác minh TASK-011 ngày 2026-11-06.
+
+## Mượn và trả sách (TASK-012)
+
+- `POST /api/borrows`: Bearer + borrow_manage, lập phiếu cho người mượn active với 1–100 copy available/good; transaction khóa copy theo thứ tự ID, một mục sai rollback toàn bộ.
+- `GET /api/borrows`, `GET /api/borrows/:id`: Bearer; borrow_manage xem toàn bộ, reader không có quyền đó chỉ xem phiếu của chính mình bằng WHERE user_id lấy từ JWT, không tin query user_id.
+- `POST /api/borrows/:id/return`: Bearer + return_process; trả một phần hoặc toàn bộ phần chưa trả, cập nhật detail/copy/header cùng transaction. Trả damaged chuyển copy maintenance; không tạo tiền phạt, xóa lịch sử, xử lý lost hoặc tự đánh dấu overdue.
+
+Schema/seed không đổi; quyền mượn/trả đã có cho admin/librarian trong DB. Không sửa `.env`, không chạy ghi trên DB chính. Tại mốc TASK-012 đạt 89/89 và TASK-013 đạt 98/98; kết quả hiện tại xem TASK-015 bên dưới, integration thật chưa chạy. Xem [API mượn/trả và Postman](docs/phieu-muon-api.md) về request, UTC DATETIME, khóa, rollback và các ca fail-closed.
+
+## Quá hạn và tiền phạt (TASK-014, 2026-11-07)
+
+- `GET /api/overdues`, `GET /api/borrows/:id/overdue`: JWT; borrow_manage đọc toàn bộ, reader chỉ đọc của mình. Quá hạn tính theo hạn trả UTC và chi tiết borrowed/chưa trả; GET không sửa trạng thái.
+- `GET /api/fines`, `GET /api/fines/:id`: JWT; fine_manage đọc toàn bộ, reader chỉ đọc của mình. List có phân trang/lọc.
+- `POST /api/fines`, `PATCH /api/fines/:id/payment`: bắt buộc fine_manage thực tế từ DB. Tạo chỉ nhận borrow_detail_id, fine_rule_id và reason; không nhận amount/trạng thái client tự đặt. Thanh toán chỉ nhận `{"payment_status":"paid"}` và lấy thời gian server.
+
+Chỉ chốt phạt sau khi trả bản sao: late/per_day tính ceil(số giây trễ / 86400) × mức tiền cấu hình, late/fixed một lần; damage/fixed cần good → damaged. Dùng tiền thập phân chính xác, transaction/khóa để chặn phạt trùng và thanh toán lặp. Chưa tạo phạt lost/other hoặc miễn/giảm. Luồng trả sách không tự tạo phạt, không cron, không sửa schema/seed.
+
+SELECT ngày 2026-11-07: fine_manage có cho admin/librarian, **QuyDinhPhat chưa có dữ liệu**. API tạo phạt từ chối rule không tồn tại/inactive/không hỗ trợ; không tự đặt mức tiền hoặc thêm dữ liệu. Múi giờ legacy và chính sách tiền tệ cần xác minh trước vận hành.
+
+Tại mốc TASK-014, `npm.cmd test`: **126/126 đạt** (98 cũ + 28 mới). Cú pháp và diff-check đạt; 6 SELECT mới đã probe trên MySQL không trả bản ghi nghiệp vụ. Ghi/rollback/cạnh tranh chỉ kiểm thử mock, **chưa chạy MySQL integration**. Không thêm dependency, không sửa `.env`, không ghi DB chính. [Tiền phạt và Postman](docs/tien-phat-api.md), [Quá hạn và Postman](docs/qua-han-api.md).
+
+## Lịch sử và thống kê (TASK-015, 2026-11-07)
+
+`GET /api/usage-history`, `GET /api/usage-history/me`: JWT, reader chỉ own; report_view được xem toàn bộ, /me luôn own kể cả admin. Lọc ngày UTC/action_type, phân trang limit tối đa 100; không trả details JSON hoặc hồ sơ riêng tư. `GET /api/statistics/overview`, `/api/statistics/borrows`, `/api/statistics/users` bắt buộc report_view thực tế từ DB. Khoảng ngày mặc định 30 ngày, tối đa 366; mượn nhóm ngày/tuần/tháng, user có phân trang. GET không ghi log và chỉ SELECT số liệu thật.
+
+Ghi event login sau khi xác thực/ký JWT thành công; borrow/return theo từng bản sao cho người mượn, cùng transaction nghiệp vụ. Ghi lịch sử lỗi sẽ rollback mượn/trả hoặc từ chối login; không ghi token/mật khẩu/ghi chú tùy ý. Không có API POST event công khai. Không sửa seed/schema hoặc ghi DuBaoTanSuat/NhatKyHeThong.
+
+Mục tiêu dự báo đề xuất: **số phiếu mượn/người/ngày**, phân biệt số phiếu và số bản sao; active_days là chỉ số phụ từ log mới, không phải lượt đến thư viện. Chưa triển khai mô hình hoặc dữ liệu dự báo.
+
+`npm.cmd test`: **150/150 đạt** (126 cũ + 24 mới), cú pháp 65 file đạt. SELECT overview/borrow series thật trả count 0/series rỗng; 7 SELECT probe khác đạt cú pháp không trả bản ghi nghiệp vụ. Ghi/rollback chỉ test mock; MySQL integration vẫn chưa chạy. [Lịch sử/Postman](docs/lich-su-su-dung-api.md), [Thống kê/Postman](docs/thong-ke-api.md), [Thiết kế dữ liệu dự báo](docs/thiet-ke-du-lieu-du-bao.md).
+
+## Dự báo tần suất (TASK-016, 2026-11-07)
+
+- `GET /api/forecasts/me`: JWT, preview chỉ người đang đăng nhập.
+- `GET /api/forecasts/users/:id`: JWT + forecast_view thực tế; không dùng report_view hoặc tên role để bypass.
+- `POST /api/forecasts/users/:id/generate`: JWT + forecast_view rồi giữ **503 fail-closed**, chưa có quyền tạo/lưu được phê duyệt. Không INSERT/UPDATE DuBaoTanSuat.
+
+Baseline JavaScript SMA7 lấy số phiếu không cancelled/người/ngày từ PhieuMuon, không đếm bản sao/login. Train 7 ngày UTC đã kết thúc, dự báo cùng trung bình cho ngày mai..D+7. Không có coverage được xác minh → insufficient_data, predictions rỗng và persisted=false. Chỉ file xác nhận audit qua FORECAST_COVERAGE_FILE phía server mới cho phép tổng hợp ngày trống thành 0; không nhận từ client, không tạo file xác nhận hoặc sửa `.env` trong task.
+
+Backtest tách thời gian, 7 ngày train + một ngày origin bỏ qua + 7 ngày test; tối thiểu 15 ngày đã xác nhận. MAE fixture chỉ chứng minh công thức; **chưa có MAE thực tế**, dữ liệu MySQL hiện rỗng/coverage chưa có. Không triển khai cron, không sinh dữ liệu dự báo giả.
+
+Hướng dẫn Postman/quyền/trạng thái: [Forecasts API](docs/du-bao-api.md); công thức, điều kiện dữ liệu và cấu hình coverage: [Forecast algorithm](docs/thuat-toan-du-bao.md). Ghi dự báo và MySQL integration chưa triển khai/chưa chạy do các điều kiện trên. Không thêm dependency hoặc sửa schema/seed/Git.
+
+Kiểm thử TASK-016: `npm.cmd test` **172/172 đạt** (150 cũ + 22 mới), cú pháp 72 file và git diff --check đạt. MySQL thật chỉ SELECT metadata/quyền/aggregate, hai probe nguồn không trả bản ghi nghiệp vụ; health 200 và endpoint dự báo thiếu JWT 401. Preview ready, coverage và MAE chỉ kiểm chứng bằng fixture mock, không phải kết quả vận hành thật.
+
+## Module sách
+
+`routes → controllers → services → models` xử lý lần lượt định tuyến, HTTP/validation, kết quả nghiệp vụ và truy vấn pool. `middlewares/xu-ly-loi.js` chuẩn hóa lỗi; `utils/kiem-tra-sach.js` kiểm tra dữ liệu theo `sql/schema.sql`.
+
+- `GET /api/books` (cả trailing slash): danh sách, `page`, `limit`, `search` theo title/author/publisher.
+- `GET /api/books/:id`: chi tiết.
+- `POST /api/books`: tạo sách, cần Bearer + book_create.
+- `PUT /api/books/:id`: cần book_update; thay thế đầy đủ, bắt buộc title/author; trường tùy chọn bị bỏ qua thành null.
+- `DELETE /api/books/:id`: cần book_delete; chặn xóa khi có bản sao/dữ liệu liên quan, không cascade.
+
+Hướng dẫn request/response, validation và quy trình Postman: [API sách](docs/sach-api.md).
+
+Kiểm thử tự động không ghi vào MySQL: `npm.cmd test` (Node.js 22 trở lên; môi trường xác minh Node.js 24). Module auth dùng bcryptjs, jsonwebtoken, express-rate-limit (đã ghi package-lock.json). `npm.cmd run db` là alias của `npm.cmd run db:check`; `npm.cmd start` và `npm.cmd run dev` vẫn được giữ.
 
 ## Cấu hình
 
 1. Mở connection trong MySQL Workbench. Dùng cùng Hostname, Port và Username cho `DB_HOST`, `DB_PORT`, `DB_USER` trong `.env`.
-2. Nếu chưa có schema, chạy nội dung `sql/create-database.sql` trong SQL Editor của Workbench. Script chỉ tạo schema `libriflow` nếu chưa tồn tại, chưa tạo bảng nghiệp vụ.
+2. Khi cần dựng database mới và đã xác nhận đúng môi trường, chạy `sql/schema.sql` rồi `sql/seeds/initial-permissions.sql` trong SQL Editor của Workbench. Script đầu tạo database và 16 bảng; script sau khởi tạo vai trò/quyền. Xem [hướng dẫn SQL](sql/README.md) trước khi thực thi. Không chạy lại các script trên database hiện tại để kiểm thử; chúng không phải migration. `sql/create-database.sql` chỉ là script cũ tạo schema trống.
 3. Điền mật khẩu MySQL vào `DB_PASSWORD` và tên schema vào `DB_NAME` trong `.env`. Nếu chưa có `.env`, sao chép từ `.env.example`. Đặt mật khẩu trong dấu nháy kép nếu có ký tự `#`. Không commit `.env`.
 
 ```dotenv
@@ -33,10 +141,10 @@ Kết nối thành công sẽ in `MySQL connected successfully`. API chỉ bắt
 ## Truy vấn trong Backend
 
 ```javascript
-import pool from "./config/database.js";
+import boKetNoi from "./config/co-so-du-lieu.js";
 
 // Dùng tham số để truyền dữ liệu vào truy vấn.
-const [rows] = await pool.execute("SELECT ? AS value", ["LibriFlow"]);
+const [cacDong] = await boKetNoi.execute("SELECT ? AS value", ["LibriFlow"]);
 ```
 
 ## Lỗi thường gặp

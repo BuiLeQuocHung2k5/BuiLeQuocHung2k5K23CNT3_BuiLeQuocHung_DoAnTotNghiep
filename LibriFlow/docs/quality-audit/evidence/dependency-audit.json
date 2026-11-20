@@ -1,0 +1,9 @@
+{
+  "verifiedDate": "2026-11-19",
+  "status": "unverified",
+  "attempts": [
+    { "projects": ["Backend", "Frontend"], "command": "npm.cmd audit --json --package-lock-only --ignore-scripts", "exitCodes": [1, 1], "jsonKeys": ["message", "error"], "hasAdvisoryMetadata": false },
+    { "projects": ["Backend", "Frontend"], "command": "npm.cmd audit --json --package-lock-only --ignore-scripts --registry=https://registry.npmjs.org --fetch-retries=0 --fetch-timeout=15000", "exitCodes": [1, 1], "jsonKeys": ["message", "error"], "hasAdvisoryMetadata": false }
+  ],
+  "limitations": "No vulnerabilities count can be inferred. Raw registry errors were not copied; no package or lockfile was modified."
+}

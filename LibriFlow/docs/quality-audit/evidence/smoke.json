@@ -1,0 +1,1391 @@
+{
+  "verifiedDate": "2026-11-19",
+  "existing": {
+    "backend3000": {
+      "reachable": false
+    },
+    "frontend5173": {
+      "reachable": false
+    }
+  },
+  "checks": [
+    {
+      "method": "GET",
+      "path": "/api/health",
+      "status": 200,
+      "cors": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/health/db",
+      "status": 200,
+      "cors": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/books?limit=1",
+      "status": 200,
+      "cors": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/categories?limit=1",
+      "status": 200,
+      "cors": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/book-copies?limit=1",
+      "status": 200,
+      "cors": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me",
+      "status": 401,
+      "cors": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/borrows",
+      "status": 401,
+      "cors": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/fines",
+      "status": 401,
+      "cors": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/overdues",
+      "status": 401,
+      "cors": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/usage-history/me",
+      "status": 401,
+      "cors": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/statistics/overview",
+      "status": 401,
+      "cors": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/forecasts/me",
+      "status": 401,
+      "cors": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/books?sort=title",
+      "status": 400,
+      "cors": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/books/0",
+      "status": 400,
+      "cors": "*"
+    },
+    {
+      "method": "GET",
+      "path": "/api/not-a-route",
+      "status": 404,
+      "cors": "*"
+    },
+    {
+      "method": "OPTIONS",
+      "path": "/api/auth/me",
+      "status": 204
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me (invalid token)",
+      "status": 503
+    }
+  ],
+  "sqlCalls": 12,
+  "database": {
+    "version": "8.0.40",
+    "tables_count": "16",
+    "columns_count": "96",
+    "users_count": "0",
+    "active_fine_rules": "0",
+    "category_permission_count": "0",
+    "constraints": [
+      {
+        "type": "UNIQUE",
+        "count": "6"
+      },
+      {
+        "type": "PRIMARY KEY",
+        "count": "16"
+      },
+      {
+        "type": "FOREIGN KEY",
+        "count": "16"
+      },
+      {
+        "type": "CHECK",
+        "count": "3"
+      }
+    ],
+    "columns": [
+      {
+        "table_name": "bansaosach",
+        "column_name": "copy_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "bansaosach",
+        "column_name": "book_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "bansaosach",
+        "column_name": "isbn",
+        "column_type": "varchar(20)",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "bansaosach",
+        "column_name": "barcode",
+        "column_type": "varchar(50)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "bansaosach",
+        "column_name": "condition_status",
+        "column_type": "enum('good','damaged')",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "bansaosach",
+        "column_name": "availability_status",
+        "column_type": "enum('available','borrowed','lost','maintenance')",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "bansaosach",
+        "column_name": "note",
+        "column_type": "text",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "bansaosach",
+        "column_name": "created_at",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "bansaosach",
+        "column_name": "updated_at",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "bosach",
+        "column_name": "series_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "bosach",
+        "column_name": "series_name",
+        "column_type": "varchar(200)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "bosach",
+        "column_name": "description",
+        "column_type": "text",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "bosach",
+        "column_name": "created_at",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "chitietphieumuon",
+        "column_name": "borrow_detail_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "chitietphieumuon",
+        "column_name": "borrow_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "chitietphieumuon",
+        "column_name": "copy_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "chitietphieumuon",
+        "column_name": "returned_at",
+        "column_type": "datetime",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "chitietphieumuon",
+        "column_name": "condition_before",
+        "column_type": "enum('good','damaged')",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "chitietphieumuon",
+        "column_name": "condition_after",
+        "column_type": "enum('good','damaged')",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "chitietphieumuon",
+        "column_name": "status",
+        "column_type": "enum('borrowed','returned','lost')",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "chitietphieumuon",
+        "column_name": "note",
+        "column_type": "text",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "danhmuc",
+        "column_name": "category_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "danhmuc",
+        "column_name": "name",
+        "column_type": "varchar(100)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "danhmuc",
+        "column_name": "description",
+        "column_type": "text",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "danhmuc",
+        "column_name": "created_at",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "dubaotansuat",
+        "column_name": "forecast_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "dubaotansuat",
+        "column_name": "user_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "dubaotansuat",
+        "column_name": "forecast_date",
+        "column_type": "date",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "dubaotansuat",
+        "column_name": "predicted_count",
+        "column_type": "decimal(12,2)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "dubaotansuat",
+        "column_name": "model_version",
+        "column_type": "varchar(50)",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "dubaotansuat",
+        "column_name": "created_at",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "lichsusudung",
+        "column_name": "usage_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "lichsusudung",
+        "column_name": "user_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "lichsusudung",
+        "column_name": "copy_id",
+        "column_type": "bigint unsigned",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "lichsusudung",
+        "column_name": "action_type",
+        "column_type": "varchar(50)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "lichsusudung",
+        "column_name": "action_date",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "lichsusudung",
+        "column_name": "details",
+        "column_type": "json",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "nguoidung",
+        "column_name": "user_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "nguoidung",
+        "column_name": "name",
+        "column_type": "varchar(100)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "nguoidung",
+        "column_name": "email",
+        "column_type": "varchar(150)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "nguoidung",
+        "column_name": "password",
+        "column_type": "varchar(255)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "nguoidung",
+        "column_name": "phone",
+        "column_type": "varchar(20)",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "nguoidung",
+        "column_name": "avatar",
+        "column_type": "varchar(255)",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "nguoidung",
+        "column_name": "status",
+        "column_type": "enum('active','inactive','locked')",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "nguoidung",
+        "column_name": "created_at",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "nguoidung",
+        "column_name": "updated_at",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "nguoidung_vaitro",
+        "column_name": "user_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "nguoidung_vaitro",
+        "column_name": "role_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "nhatkyhethong",
+        "column_name": "log_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "nhatkyhethong",
+        "column_name": "user_id",
+        "column_type": "bigint unsigned",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "nhatkyhethong",
+        "column_name": "action",
+        "column_type": "varchar(100)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "nhatkyhethong",
+        "column_name": "description",
+        "column_type": "text",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "nhatkyhethong",
+        "column_name": "ip_address",
+        "column_type": "varchar(45)",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "nhatkyhethong",
+        "column_name": "created_at",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "phat",
+        "column_name": "fine_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "phat",
+        "column_name": "borrow_detail_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "phat",
+        "column_name": "fine_rule_id",
+        "column_type": "bigint unsigned",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "phat",
+        "column_name": "fine_type",
+        "column_type": "enum('late','damage','lost','other')",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "phat",
+        "column_name": "amount",
+        "column_type": "decimal(12,2)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "phat",
+        "column_name": "reason",
+        "column_type": "varchar(255)",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "phat",
+        "column_name": "assessed_at",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "phat",
+        "column_name": "payment_status",
+        "column_type": "enum('unpaid','paid','waived')",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "phat",
+        "column_name": "paid_at",
+        "column_type": "datetime",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "phieumuon",
+        "column_name": "borrow_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "phieumuon",
+        "column_name": "user_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "phieumuon",
+        "column_name": "borrow_date",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "phieumuon",
+        "column_name": "due_date",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "phieumuon",
+        "column_name": "status",
+        "column_type": "enum('borrowed','partially_returned','returned','overdue','cancelled')",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "phieumuon",
+        "column_name": "note",
+        "column_type": "text",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "phieumuon",
+        "column_name": "created_at",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "quydinhphat",
+        "column_name": "fine_rule_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "quydinhphat",
+        "column_name": "rule_type",
+        "column_type": "enum('late','damage','lost')",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "quydinhphat",
+        "column_name": "amount",
+        "column_type": "decimal(12,2)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "quydinhphat",
+        "column_name": "unit",
+        "column_type": "enum('per_day','fixed')",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "quydinhphat",
+        "column_name": "description",
+        "column_type": "varchar(255)",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "quydinhphat",
+        "column_name": "is_active",
+        "column_type": "tinyint(1)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "quydinhphat",
+        "column_name": "created_at",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "quyenhan",
+        "column_name": "permission_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "quyenhan",
+        "column_name": "name",
+        "column_type": "varchar(100)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "quyenhan",
+        "column_name": "description",
+        "column_type": "varchar(255)",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "sach",
+        "column_name": "book_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "sach",
+        "column_name": "category_id",
+        "column_type": "bigint unsigned",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "sach",
+        "column_name": "series_id",
+        "column_type": "bigint unsigned",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "sach",
+        "column_name": "title",
+        "column_type": "varchar(255)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "sach",
+        "column_name": "author",
+        "column_type": "varchar(150)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "sach",
+        "column_name": "publisher",
+        "column_type": "varchar(150)",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "sach",
+        "column_name": "description",
+        "column_type": "text",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "sach",
+        "column_name": "publication_year",
+        "column_type": "smallint unsigned",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "sach",
+        "column_name": "created_at",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "sach",
+        "column_name": "updated_at",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "vaitro",
+        "column_name": "role_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "vaitro",
+        "column_name": "name",
+        "column_type": "varchar(50)",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "vaitro",
+        "column_name": "description",
+        "column_type": "varchar(255)",
+        "nullable": "YES"
+      },
+      {
+        "table_name": "vaitro",
+        "column_name": "created_at",
+        "column_type": "datetime",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "vaitro_quyenhan",
+        "column_name": "role_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      },
+      {
+        "table_name": "vaitro_quyenhan",
+        "column_name": "permission_id",
+        "column_type": "bigint unsigned",
+        "nullable": "NO"
+      }
+    ],
+    "indexes": [
+      {
+        "table_name": "bansaosach",
+        "index_name": "barcode",
+        "non_unique": 0,
+        "column_name": "barcode",
+        "position": 1
+      },
+      {
+        "table_name": "bansaosach",
+        "index_name": "idx_bansao_book",
+        "non_unique": 1,
+        "column_name": "book_id",
+        "position": 1
+      },
+      {
+        "table_name": "bansaosach",
+        "index_name": "idx_bansao_status",
+        "non_unique": 1,
+        "column_name": "condition_status",
+        "position": 1
+      },
+      {
+        "table_name": "bansaosach",
+        "index_name": "idx_bansao_status",
+        "non_unique": 1,
+        "column_name": "availability_status",
+        "position": 2
+      },
+      {
+        "table_name": "bansaosach",
+        "index_name": "isbn",
+        "non_unique": 0,
+        "column_name": "isbn",
+        "position": 1
+      },
+      {
+        "table_name": "bansaosach",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "copy_id",
+        "position": 1
+      },
+      {
+        "table_name": "bosach",
+        "index_name": "idx_bosach_name",
+        "non_unique": 1,
+        "column_name": "series_name",
+        "position": 1
+      },
+      {
+        "table_name": "bosach",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "series_id",
+        "position": 1
+      },
+      {
+        "table_name": "chitietphieumuon",
+        "index_name": "idx_ctpm_borrow",
+        "non_unique": 1,
+        "column_name": "borrow_id",
+        "position": 1
+      },
+      {
+        "table_name": "chitietphieumuon",
+        "index_name": "idx_ctpm_copy",
+        "non_unique": 1,
+        "column_name": "copy_id",
+        "position": 1
+      },
+      {
+        "table_name": "chitietphieumuon",
+        "index_name": "idx_ctpm_status",
+        "non_unique": 1,
+        "column_name": "status",
+        "position": 1
+      },
+      {
+        "table_name": "chitietphieumuon",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "borrow_detail_id",
+        "position": 1
+      },
+      {
+        "table_name": "danhmuc",
+        "index_name": "name",
+        "non_unique": 0,
+        "column_name": "name",
+        "position": 1
+      },
+      {
+        "table_name": "danhmuc",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "category_id",
+        "position": 1
+      },
+      {
+        "table_name": "dubaotansuat",
+        "index_name": "idx_dbts_user_date",
+        "non_unique": 1,
+        "column_name": "user_id",
+        "position": 1
+      },
+      {
+        "table_name": "dubaotansuat",
+        "index_name": "idx_dbts_user_date",
+        "non_unique": 1,
+        "column_name": "forecast_date",
+        "position": 2
+      },
+      {
+        "table_name": "dubaotansuat",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "forecast_id",
+        "position": 1
+      },
+      {
+        "table_name": "lichsusudung",
+        "index_name": "fk_lssd_copy",
+        "non_unique": 1,
+        "column_name": "copy_id",
+        "position": 1
+      },
+      {
+        "table_name": "lichsusudung",
+        "index_name": "idx_lssd_action_date",
+        "non_unique": 1,
+        "column_name": "action_type",
+        "position": 1
+      },
+      {
+        "table_name": "lichsusudung",
+        "index_name": "idx_lssd_action_date",
+        "non_unique": 1,
+        "column_name": "action_date",
+        "position": 2
+      },
+      {
+        "table_name": "lichsusudung",
+        "index_name": "idx_lssd_user_date",
+        "non_unique": 1,
+        "column_name": "user_id",
+        "position": 1
+      },
+      {
+        "table_name": "lichsusudung",
+        "index_name": "idx_lssd_user_date",
+        "non_unique": 1,
+        "column_name": "action_date",
+        "position": 2
+      },
+      {
+        "table_name": "lichsusudung",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "usage_id",
+        "position": 1
+      },
+      {
+        "table_name": "nguoidung",
+        "index_name": "email",
+        "non_unique": 0,
+        "column_name": "email",
+        "position": 1
+      },
+      {
+        "table_name": "nguoidung",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "user_id",
+        "position": 1
+      },
+      {
+        "table_name": "nguoidung_vaitro",
+        "index_name": "fk_ndvt_role",
+        "non_unique": 1,
+        "column_name": "role_id",
+        "position": 1
+      },
+      {
+        "table_name": "nguoidung_vaitro",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "user_id",
+        "position": 1
+      },
+      {
+        "table_name": "nguoidung_vaitro",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "role_id",
+        "position": 2
+      },
+      {
+        "table_name": "nhatkyhethong",
+        "index_name": "fk_nkht_user",
+        "non_unique": 1,
+        "column_name": "user_id",
+        "position": 1
+      },
+      {
+        "table_name": "nhatkyhethong",
+        "index_name": "idx_nkht_created",
+        "non_unique": 1,
+        "column_name": "created_at",
+        "position": 1
+      },
+      {
+        "table_name": "nhatkyhethong",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "log_id",
+        "position": 1
+      },
+      {
+        "table_name": "phat",
+        "index_name": "fk_phat_rule",
+        "non_unique": 1,
+        "column_name": "fine_rule_id",
+        "position": 1
+      },
+      {
+        "table_name": "phat",
+        "index_name": "idx_phat_detail",
+        "non_unique": 1,
+        "column_name": "borrow_detail_id",
+        "position": 1
+      },
+      {
+        "table_name": "phat",
+        "index_name": "idx_phat_payment",
+        "non_unique": 1,
+        "column_name": "payment_status",
+        "position": 1
+      },
+      {
+        "table_name": "phat",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "fine_id",
+        "position": 1
+      },
+      {
+        "table_name": "phieumuon",
+        "index_name": "idx_phieumuon_due",
+        "non_unique": 1,
+        "column_name": "due_date",
+        "position": 1
+      },
+      {
+        "table_name": "phieumuon",
+        "index_name": "idx_phieumuon_due",
+        "non_unique": 1,
+        "column_name": "status",
+        "position": 2
+      },
+      {
+        "table_name": "phieumuon",
+        "index_name": "idx_phieumuon_user",
+        "non_unique": 1,
+        "column_name": "user_id",
+        "position": 1
+      },
+      {
+        "table_name": "phieumuon",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "borrow_id",
+        "position": 1
+      },
+      {
+        "table_name": "quydinhphat",
+        "index_name": "idx_qdphat_type",
+        "non_unique": 1,
+        "column_name": "rule_type",
+        "position": 1
+      },
+      {
+        "table_name": "quydinhphat",
+        "index_name": "idx_qdphat_type",
+        "non_unique": 1,
+        "column_name": "is_active",
+        "position": 2
+      },
+      {
+        "table_name": "quydinhphat",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "fine_rule_id",
+        "position": 1
+      },
+      {
+        "table_name": "quyenhan",
+        "index_name": "name",
+        "non_unique": 0,
+        "column_name": "name",
+        "position": 1
+      },
+      {
+        "table_name": "quyenhan",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "permission_id",
+        "position": 1
+      },
+      {
+        "table_name": "sach",
+        "index_name": "fk_sach_category",
+        "non_unique": 1,
+        "column_name": "category_id",
+        "position": 1
+      },
+      {
+        "table_name": "sach",
+        "index_name": "fk_sach_series",
+        "non_unique": 1,
+        "column_name": "series_id",
+        "position": 1
+      },
+      {
+        "table_name": "sach",
+        "index_name": "idx_sach_author",
+        "non_unique": 1,
+        "column_name": "author",
+        "position": 1
+      },
+      {
+        "table_name": "sach",
+        "index_name": "idx_sach_title",
+        "non_unique": 1,
+        "column_name": "title",
+        "position": 1
+      },
+      {
+        "table_name": "sach",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "book_id",
+        "position": 1
+      },
+      {
+        "table_name": "vaitro",
+        "index_name": "name",
+        "non_unique": 0,
+        "column_name": "name",
+        "position": 1
+      },
+      {
+        "table_name": "vaitro",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "role_id",
+        "position": 1
+      },
+      {
+        "table_name": "vaitro_quyenhan",
+        "index_name": "fk_vtqh_permission",
+        "non_unique": 1,
+        "column_name": "permission_id",
+        "position": 1
+      },
+      {
+        "table_name": "vaitro_quyenhan",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "role_id",
+        "position": 1
+      },
+      {
+        "table_name": "vaitro_quyenhan",
+        "index_name": "PRIMARY",
+        "non_unique": 0,
+        "column_name": "permission_id",
+        "position": 2
+      }
+    ],
+    "grants": [
+      {
+        "role_name": "admin",
+        "permission_name": "book_create"
+      },
+      {
+        "role_name": "admin",
+        "permission_name": "book_delete"
+      },
+      {
+        "role_name": "admin",
+        "permission_name": "book_update"
+      },
+      {
+        "role_name": "admin",
+        "permission_name": "book_view"
+      },
+      {
+        "role_name": "admin",
+        "permission_name": "borrow_manage"
+      },
+      {
+        "role_name": "admin",
+        "permission_name": "copy_manage"
+      },
+      {
+        "role_name": "admin",
+        "permission_name": "fine_manage"
+      },
+      {
+        "role_name": "admin",
+        "permission_name": "forecast_view"
+      },
+      {
+        "role_name": "admin",
+        "permission_name": "report_view"
+      },
+      {
+        "role_name": "admin",
+        "permission_name": "return_process"
+      },
+      {
+        "role_name": "admin",
+        "permission_name": "user_manage"
+      },
+      {
+        "role_name": "librarian",
+        "permission_name": "book_create"
+      },
+      {
+        "role_name": "librarian",
+        "permission_name": "book_update"
+      },
+      {
+        "role_name": "librarian",
+        "permission_name": "book_view"
+      },
+      {
+        "role_name": "librarian",
+        "permission_name": "borrow_manage"
+      },
+      {
+        "role_name": "librarian",
+        "permission_name": "copy_manage"
+      },
+      {
+        "role_name": "librarian",
+        "permission_name": "fine_manage"
+      },
+      {
+        "role_name": "librarian",
+        "permission_name": "forecast_view"
+      },
+      {
+        "role_name": "librarian",
+        "permission_name": "report_view"
+      },
+      {
+        "role_name": "librarian",
+        "permission_name": "return_process"
+      },
+      {
+        "role_name": "reader",
+        "permission_name": "book_view"
+      }
+    ]
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/api/health",
+      "jwt": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/health/db",
+      "jwt": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "jwt": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "jwt": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me",
+      "jwt": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/logout",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/usage-history",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/usage-history/me",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/statistics/overview",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/statistics/borrows",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/statistics/users",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/forecasts/me",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/forecasts/users/:id",
+      "jwt": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/forecasts/users/:id/generate",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/overdues",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/borrows/:id/overdue",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/fines",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/fines/:id",
+      "jwt": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/fines",
+      "jwt": true
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/fines/:id/payment",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/borrows",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/borrows/:id",
+      "jwt": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/borrows",
+      "jwt": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/borrows/:id/return",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/categories",
+      "jwt": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/categories/:id",
+      "jwt": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/categories",
+      "jwt": true
+    },
+    {
+      "method": "PUT",
+      "path": "/api/categories/:id",
+      "jwt": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/categories/:id",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/book-copies",
+      "jwt": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/book-copies/:id",
+      "jwt": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/book-copies",
+      "jwt": true
+    },
+    {
+      "method": "PUT",
+      "path": "/api/book-copies/:id",
+      "jwt": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/book-copies/:id",
+      "jwt": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/books/:id/copies",
+      "jwt": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/books",
+      "jwt": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/books/:id",
+      "jwt": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/books",
+      "jwt": true
+    },
+    {
+      "method": "PUT",
+      "path": "/api/books/:id",
+      "jwt": true
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/books/:id",
+      "jwt": true
+    }
+  ],
+  "authConfiguration": {
+    "available": false,
+    "errorCode": "JWT_NOT_CONFIGURED"
+  },
+  "status": "passed"
+}
