@@ -1,5 +1,25 @@
 # Theo dõi task
 
+## FE-STACK-01 — Đối chiếu công nghệ Frontend (2026-11-20)
+
+- Trạng thái: hoàn tất khảo sát `Frontend/package.json`, lockfile, cấu hình và source; React/React DOM 19.3.1 + Vite 8.3.6, JavaScript/JSX, SPA với BrowserRouter. Không sửa source/config/dependency hoặc truy cập DB.
+- Xác minh sử dụng thực tế: React Router 8.5.2 (`src/ung-dung/App.jsx`); TanStack Query 5.108.0 (provider và hooks public); Axios 1.21.1 (`src/thu-vien/api/ket-noi-http.js`); Tailwind 4.3.5 qua Vite plugin và CSS import, kết hợp CSS tùy chỉnh; Radix Dialog 1.3.1, Sonner 2.0.8, Lucide 1.75.0, Fontsource Be Vietnam Pro/Lora 5.3.0. Các đường dẫn source tính từ `Frontend/`.
+- Công cụ: ESLint 10.15.0; Vitest 5.1.1/jsdom 31.0.1/Testing Library; engines khai báo Node >=24.15.0 <25 và npm >=11 <12, không phải xác minh runtime hiện hành.
+- Kiểm tra: `git status --short`, đọc source/config và `rg`; script Node đối chiếu 25 dependency trực tiếp với `package-lock.json`: 25/25 khớp. Không thấy TS/TSX/tsconfig ngoài dependency/build. `git diff --check -- docs/TASKS.md docs/HANDOFF.md` đạt.
+- File sửa: chỉ `docs/TASKS.md`, `docs/HANDOFF.md`; giữ thay đổi BE-AUTH-SETUP-01 đang có. Không chạy lint/test/build/browser vì chỉ khảo sát và ghi tài liệu; trạng thái chạy thực tế chưa xác minh trong task này. Không có blocker cho kết luận stack; bước tiếp: dùng kết quả làm mô tả công nghệ hiện tại, auth tiếp tục theo gate task riêng.
+
+## BE-AUTH-SETUP-01 — Môi trường Auth test và JWT/MySQL (2026-11-20)
+
+- Trạng thái: hoàn tất chuẩn bị, **chờ phê duyệt provision theo mục 6**. Chưa tạo instance/database/user hoặc login MySQL mới; chưa nghiệm thu end-to-end. Mục 14 memory-only đã được chỉ định, chỉ hoàn thiện tài liệu, không Frontend/FE-06.
+- Baseline HEAD 9bd5f45 sạch, index không staged; lưu hash 230 file trước sửa. Đã đọc AGENTS, 5 docs dự án, 7 docs BE-AUTH-PREP, source/config/SQL/integration Backend, QA risk, FE-01 guide và FE-05 handoff; đối chiếu source hiện tại.
+- Tạo integration/{ke-hoach-xac-thuc.mjs,chay-xac-thuc.mjs,xac-thuc.mjs,.env.example}, Backend/test/moi-truong-xac-thuc.test.js và 7 docs trong [backend-auth-setup](backend-auth-setup/BE_AUTH_SETUP_01_HANDOFF.md). Sửa instance runner, Backend README và 5 docs dự án. Không sửa runtime auth, SQL/schema nguồn, env thật, package/lock, Frontend hoặc tài liệu task trước.
+- Backend trước 175/175, sau 178/178 unit/safety; targeted guard 3/3 và auth 18/18 đạt, 0 fail/skip. Static: 78 JS/MJS, 201 cạnh import, 264 bindings, không lỗi/casing/cycle. Không bỏ/nới test cũ.
+- Plan read-only và binary --version đạt: main MySQL 8.0.40, users = 0, 16 bảng, ba role; metadata/count hashes khớp. JWT valid=false, TEST_DB_* bắt buộc đều thiếu. Launcher từ chối MISSING_TEST_DB_NAME; runner thiếu một cờ auth từ chối exit 2 trước startup. Refusal không phải integration pass.
+- [Kế hoạch cụ thể](backend-auth-setup/BE_AUTH_SETUP_01_TEST_DATABASE.md): instance mới OS temp/loopback, UUID/datadir/cổng khác main, database/account riêng, CSPRNG, nạp 16 DDL + 2 guard vào target mới/trống; runtime ba quyền; hai fixture reader/staff; deactivate/close/stop đúng ownership. **Chưa thực hiện các bước này.**
+- Auth suite có 10 scenario, không tự chạy trong npm test; hai diagnostic thiếu config/DB fault được phân biệt với MySQL thật. Chưa kiểm startup/grants/schema/SQL auth/cleanup thật của nhánh mới hoặc dev demo/browser/TLS/pentest.
+- Bước tiếp: xin phê duyệt kế hoạch; sau đó mới chạy node integration/instance-isolee.mjs --auth-only --allow-create-isolated và cập nhật evidence. Không stage/reset/unstage/commit/push hoặc mở FE-06.
+- Kiểm cuối: 97/97 file Frontend khớp blob HEAD qua Git filters; 100 file Backend được bảo vệ không có diff; chỉ 7 file cũ sửa và 12 file mới đúng phạm vi, không xóa; HEAD/index không đổi. 132 local links tại 13 docs, UTF-8/whitespace/diff-check đạt. Targeted chung 21/21 = 18 auth + 3 guard; không tính thành MySQL pass.
+
 ## BE-AUTH-PREP-01 — Audit và chuẩn bị Authentication cho FE06 (2026-11-20)
 
 - Kiểm cuối:97/97file Frontend,83/83file Backend runtime/SQL/integration/tests cũ/env/package/lock khớp SHA256 baseline;HEAD/index entries không đổi. 7docs cũ sửa,8file mới đúng whitelist,không xóa;147links nội bộ/line anchors/UTF-8/whitespace/syntax test mới/diff-check đạt.

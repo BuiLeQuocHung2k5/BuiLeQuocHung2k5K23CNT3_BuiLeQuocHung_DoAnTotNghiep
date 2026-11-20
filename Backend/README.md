@@ -1,5 +1,11 @@
 # LibriFlow Backend — MySQL
 
+## BE-AUTH-SETUP-01 — chuẩn bị và chờ duyệt provision (2026-11-20)
+
+Đã chuẩn bị plan chỉ đọc và auth-only integration suite. Baseline 175/175, sau 178/178 unit/safety đạt. **Chưa tạo instance/database/account hoặc chạy Auth MySQL mới**: mục 6 yêu cầu phê duyệt trước tạo database/thay quyền cấp instance. Xem [kế hoạch và handoff](../docs/backend-auth-setup/BE_AUTH_SETUP_01_HANDOFF.md).
+
+Lệnh an toàn từ Backend: node integration/ke-hoach-xac-thuc.mjs. Chưa chạy provision hoặc legacy full-suite để né gate. Nhánh mới yêu cầu đủ --auth-only và --allow-create-isolated, chỉ được dùng sau khi người dùng duyệt kế hoạch. Session memory-only đã được chỉ định cho tài liệu FE-06; Frontend chưa sửa.
+
 ## BE-AUTH-PREP-01 — cập nhật 2026-11-20
 
 Đã audit Authentication và bổ sung kiểm thử, **chưa đủ điều kiện nghiệm thu auth FE06 trên MySQL thật**: JWT_SECRET hiện thiếu, chưa có cấu hình TEST_DB_* hoặc account dev được bàn giao. Baseline172/172 và sau175/175 unit/safety đạt;9check HTTP an toàn đạt, không ghi DB. Không sửa runtime auth/Frontend/env/schema. [Audit, contract, session proposal và handoff](../docs/backend-auth-prep/BE_AUTH_PREP_01_HANDOFF.md); các kết quả TASK018 bên dưới là lịch sử.

@@ -1,5 +1,12 @@
 # Database
 
+## BE-AUTH-SETUP-01 — trạng thái trước provision (2026-11-20)
+
+- Chỉ SELECT main identity, metadata và COUNT của 16 bảng: MySQL 8.0.40, users = 0, ba role đúng tên. Metadata/count hashes khớp giữa các lượt đọc; không đọc PII/hash user hoặc khẳng định checksum mọi giá trị.
+- TEST_DB_* chưa có. Chưa thực thi guard UUID/grants/marker trên target mới. Binary 8.0 được kiểm bằng --version, chưa start mysqld hoặc tạo datadir/database/account.
+- [Kế hoạch xin duyệt](backend-auth-setup/BE_AUTH_SETUP_01_TEST_DATABASE.md): instance mới loopback, khác main về UUID/datadir/cổng; nạp DDL/seed không sửa vào target mới/trống và thêm 2 bảng guard sau phê duyệt. Không sửa schema đang có, DROP hoặc reset.
+- CREATE DATABASE/USER, ALTER USER bootstrap, GRANT/REVOKE trên instance mới đang chờ phê duyệt theo mục 6. Không chạy runner legacy để né gate. [Test report](backend-auth-setup/BE_AUTH_SETUP_01_TEST_REPORT.md).
+
 ## BE-AUTH-PREP-01 — snapshot auth chỉ đọc (2026-11-20)
 
 - SELECT metadata/aggregate và SHOW GRANTS, không đọc profile/password/hash: MySQL8.0.40,16 bảng;26 cột ở6 bảng auth/RBAC/history; status ENUM active/inactive/locked. Users0 trước/sau kiểm,roles3,category_manage0.

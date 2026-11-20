@@ -1,5 +1,13 @@
 # Quyết định và căn cứ
 
+## BE-AUTH-SETUP-01 — chuẩn bị auth và gate provision (2026-11-20)
+
+- Mục 6 yêu cầu dừng và xin phê duyệt trước tạo database/thay quyền cấp instance. Phần chuẩn bị đã xong; chưa phê duyệt hoặc thực thi provision.
+- Tái dùng runner TASK-018 với nhánh --auth-only và cờ --allow-create-isolated; thiếu một cờ sẽ dừng trước startup. Giữ UUID/grants/marker/fingerprint rails; không dùng legacy full-suite để né gate. Main chỉ SELECT; test runtime sau setup dự kiến còn SELECT/INSERT/UPDATE.
+- Chuẩn bị 10 scenario, hai fixture reader/staff; không admin, không sửa role permissions. JWT test CSPRNG trong RAM qua seam getSecret, không dùng production secret hoặc sửa .env.
+- **Mục 14 đã chỉ định memory token, không localStorage/sessionStorage, reload login lại và không refresh.** Tài liệu áp dụng chỉ dẫn mới; “đề xuất chưa duyệt” trong BE-AUTH-PREP là lịch sử. Chưa triển khai Frontend; phân loại 403 theo code, không global logout mọi 403.
+- Căn cứ: [database plan](backend-auth-setup/BE_AUTH_SETUP_01_TEST_DATABASE.md), [session policy](backend-auth-setup/BE_AUTH_SETUP_01_SESSION_POLICY.md), [verification](backend-auth-setup/BE_AUTH_SETUP_01_TEST_REPORT.md). Unit 178/178, targeted auth 18/18 và static checks đạt; integration MySQL mới chưa chạy. Không thay algorithm/claims/TTL/hash/middleware/API/schema nguồn hoặc Frontend/FE-06.
+
 ## BE-AUTH-PREP-01 — chuẩn bị Auth FE06 (2026-11-20)
 
 - Người dùng cho phép audit rồi bổ sung test/tài liệu, chỉ chạy ghi trên môi trường cô lập đã xác minh; không sửa auth/JWT/password/middleware/contract/schema/Frontend hoặc tạo account main. Đã thực hiện phạm vi an toàn, chờ nghiệm thu.
