@@ -1,5 +1,7 @@
 # FE-04 — Application Layout Architecture
 
+Cập nhật **2026-11-21 · FE-DESKTOP-01**: phần mô tả FE-04 bên dưới là snapshot lịch sử. Shell hiện luôn dùng Sidebar desktop, đã bỏ drawer/hamburger và hook matchMedia. Xem [bàn giao desktop](FE_DESKTOP_01_HANDOFF.md) cho trạng thái hiện tại; Auth/Authorization và trang sách đã được bổ sung ở FE-06/07/08.
+
 Xác minh **2026-11-20**, baseline Git `e5562a3`, working tree ban đầu sạch. Đã đọc README, bàn giao FE-02/FE-03, mapping/quyền FE-01 và QA-01; baseline Frontend **78/78 test** đạt. React19.3.1/Vite8.3.6/Router8.5.2/Tailwind4.3.5 giữ nguyên. Không thêm package hoặc thay Design System.
 
 ## Một Shell dùng chung
@@ -31,8 +33,8 @@ Shell không phụ thuộc API hoặc tài khoản. `/app` là trang giới thi�
 | [ThanhBen](../src/bo-cuc/ThanhBen.jsx) | aside desktop, branding/footer; NoiDungThanhBen tái dùng trong drawer |
 | [DieuHuongUngDung](../src/bo-cuc/DieuHuongUngDung.jsx) | Render config bằng Router Link + matchPath; aria-current/class active; planned item không có to là nhãn không thể bấm |
 | [DauTrang](../src/bo-cuc/DauTrang.jsx) | Breadcrumb, mobile trigger và slot tài khoản trung tính; không notification/user/logout giả |
-| [DieuHuongDiDong](../src/bo-cuc/DieuHuongDiDong.jsx) | State open cục bộ và close reason, tái dùng Dialog FE-03, focus restore khi dismiss hoặc focus main khi chọn route |
-| [useDieuHuongDesktop](../src/bo-cuc/useDieuHuongDesktop.js) | useSyncExternalStore subscribe matchMedia1024px, cleanup listener; không global UI store |
+| DieuHuongDiDong (đã loại bỏ ở FE-DESKTOP-01) | State open cục bộ và close reason, tái dùng Dialog FE-03, focus restore khi dismiss hoặc focus main khi chọn route |
+| useDieuHuongDesktop (đã loại bỏ ở FE-DESKTOP-01) | useSyncExternalStore subscribe matchMedia1024px, cleanup listener; không global UI store |
 | [role-layout-config](../src/ung-dung/dieu-huong/cau-hinh-bo-cuc-vai-tro.js) | Tên3 role + nhóm nhãn nghiệp vụ dự kiến, không URL/permission/token |
 | [application pages](../src/chuc-nang/khung-ung-dung) | Overview cấu trúc, role preview, placeholder và shell NotFound; không data/API nghiệp vụ |
 | [khung-ung-dung.css](../src/kieu-dang/khung-ung-dung.css) | Layout/navigation responsive trong layer components, dùng tokens FE-03 |

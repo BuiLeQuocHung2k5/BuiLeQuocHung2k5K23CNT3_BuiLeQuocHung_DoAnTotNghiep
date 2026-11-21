@@ -22,7 +22,7 @@ export default function TrangTongQuanUngDung({ title }) {
         <The><DauThe><BieuTuong icon={LayoutTemplate} size={24} /><TieuDeThe as="h2" className="mt-4">Cấu hình có thể mở rộng</TieuDeThe><MoTaThe>Admin, Librarian và Reader chỉ là các bố cục dự kiến.</MoTaThe></DauThe><NoiDungThe><Link className="app-text-link" to={cacTrangTrongKhung.find(trang => trang.id === 'layouts').to}>Xem cấu hình bố cục <BieuTuong icon={ArrowUpRight} size={16} /></Link></NoiDungThe></The>
         <The><DauThe><BieuTuong icon={SquareDashed} size={24} /><TieuDeThe as="h2" className="mt-4">Khoảng dành cho nội dung</TieuDeThe><MoTaThe>Một placeholder minh họa vùng hiển thị của route con.</MoTaThe></DauThe><NoiDungThe><Link className="app-text-link" to={cacTrangTrongKhung.find(trang => trang.id === 'workspace').to}>Thử vùng nội dung <BieuTuong icon={ArrowUpRight} size={16} /></Link></NoiDungThe></The>
       </div>
-      <p className="app-scope-note">Tài khoản và quyền truy cập sẽ được tích hợp ở nhiệm vụ sau. Việc nhìn thấy một mục điều hướng không đại diện cho quyền truy cập.</p>
+      <p className="app-scope-note">Tài khoản đã được xác thực với thư viện. Phân quyền chi tiết từng chức năng sẽ được triển khai ở nhiệm vụ sau; nhìn thấy một mục điều hướng không đại diện cho quyền truy cập.</p>
     </div>
   )
 }

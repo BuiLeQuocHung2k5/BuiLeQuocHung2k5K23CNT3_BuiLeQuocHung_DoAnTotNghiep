@@ -1,57 +1,42 @@
 # BE-AUTH-SETUP-01 — Environment
 
-Xác minh **2026-11-20**, baseline HEAD 9bd5f45 sạch. Node 24.20.0/npm 11.19.0; MySQL chính 8.0.40, binary MySQL 8.0 có sẵn. Chỉ báo tên biến và trạng thái cấu hình, không xuất credential hoặc identity riêng của main.
-
-**Đã hoàn tất phần chuẩn bị, chưa khởi tạo test instance.** Mục 6 của yêu cầu bắt buộc phê duyệt trước CREATE DATABASE hoặc thay quyền cấp instance. Xem [kế hoạch cụ thể](BE_AUTH_SETUP_01_TEST_DATABASE.md).
+Xác minh **2026-11-21** sau phê duyệt có điều kiện. Node 24.20.0/npm 11.19.0; main và test MySQL 8.0.40. Baseline tiếp tục HEAD 8c224e8 sạch. **Auth integration đã đạt; instance test đã dừng.** [Test report](BE_AUTH_SETUP_01_TEST_REPORT.md), [database lifecycle](BE_AUTH_SETUP_01_TEST_DATABASE.md).
 
 ## Biến và cơ chế thực tế
 
 | Biến/cơ chế | Nguồn và cách dùng |
 | --- | --- |
-| PORT | Backend/src/server.js, mặc định 3000 và bind loopback. Auth suite dùng cổng 0 tạm. |
-| DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD | [Config](../../Backend/src/config/co-so-du-lieu.js) đọc Backend/.env và process. NODE_ENV không tự cách ly database. Pool chính trong runner chỉ dùng SELECT. |
-| JWT_SECRET | [JWT utility](../../Backend/src/utils/jwt.js) mặc định đọc process. Hiện thiếu/chưa hợp lệ; không sửa env. |
-| TEST_DB_NAME, TEST_DB_HOST, TEST_DB_PORT, TEST_DB_USER, TEST_DB_PASSWORD | [Guard](../../Backend/integration/an-toan.mjs) yêu cầu đầy đủ; hiện đều chưa có trong process. |
-| TEST_DB_SERVER_UUID, TEST_DB_MAIN_SERVER_UUID | Guard bắt buộc pin hai UUID khác nhau. Không chỉ kiểm tên database. |
-| TEST_DB_SETUP_CONFIRM | setup.mjs yêu cầu đúng tên target khi nạp schema vào database trống. |
-| MYSQLD_TEST_BINARY | Runner/plan dùng binary đã có hoặc đường dẫn mặc định trong source. Không cài phần mềm. |
-| getSecret của JWT utility | Seam hiện hữu: suite sinh 48 byte CSPRNG trong RAM rồi dùng utility sign/verify thật. Không lấy secret production. |
+| PORT | Backend/src/server.js, mặc định 3000 và loopback. Suite dùng cổng HTTP 0 tạm. |
+| DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD | [Config](../../Backend/src/config/co-so-du-lieu.js) đọc Backend/.env/process. NODE_ENV không cách ly database. Runner chỉ dùng pool main cho SELECT. |
+| JWT_SECRET | [Utility](../../Backend/src/utils/jwt.js) đọc process mặc định. Không sửa config chính; suite dùng getSecret CSPRNG riêng. |
+| TEST_DB_NAME, TEST_DB_HOST, TEST_DB_PORT, TEST_DB_USER, TEST_DB_PASSWORD | Parent cấp riêng cho setup/auth child trên instance mới đã pin; không fallback về DB_*. Không lưu credential vào file. |
+| TEST_DB_SERVER_UUID, TEST_DB_MAIN_SERVER_UUID | Guard yêu cầu đủ pin và hai UUID khác nhau; không chỉ so tên database. |
+| TEST_DB_SETUP_CONFIRM | Setup cần đúng tên target và database trống. |
+| MYSQLD_TEST_BINARY | Binary 8.0 đã có hoặc đường dẫn mặc định đã kiểm; không cài/nâng cấp phần mềm. |
+| getSecret | Seam hiện hữu cho suite: 48 byte CSPRNG trong RAM, cùng utility sign/verify thật, không production secret. |
 
-[Integration env example](../../Backend/integration/.env.example) chỉ là mẫu không bí mật, không tự load hoặc ghi đè Backend/.env. Không tạo/sửa file env thật. Root .gitignore đã ignore .env/.env.* và cho phép .env.example.
+[Integration env example](../../Backend/integration/.env.example) chỉ là mẫu, không tự load hoặc ghi đè Backend/.env. Bốn file env/example hiện hữu khớp SHA-256 baseline. Root .gitignore giữ .env/.env.* ngoài Git và cho phép .env.example.
 
-JWT test không hardcode, không ghi file/log/Git, không dùng lại production secret. Secret chỉ tồn tại trong process của suite. Nhánh auth-only loại DB_* và JWT_SECRET chính khỏi env child; guard vẫn đọc tên main trong Backend/.env để từ chối trỏ nhầm.
+Trước chạy không có TEST_DB_* lâu dài; parent cấp trong env child rồi kết thúc. Sau chạy không có môi trường auth test đang hoạt động hoặc credential bền được bàn giao. Không tự đặt DB_* hay JWT_SECRET cho server main.
 
-## Lệnh đã chạy an toàn
+## Lệnh đã chạy theo phê duyệt
 
 Từ Backend:
 
 ~~~powershell
 node integration/ke-hoach-xac-thuc.mjs
 npm.cmd test
-~~~
-
-Plan chỉ SELECT identity, metadata, counts và kiểm binary bằng --version; không tạo datadir hoặc khởi động mysqld. Kết quả: main identity được xác minh, users = 0, metadata/count hashes khớp giữa các lượt đọc. Chưa có MySQL auth success mới.
-
-## Lệnh chờ phê duyệt
-
-Chỉ sau khi người dùng phê duyệt kế hoạch:
-
-~~~powershell
+node --test test/moi-truong-xac-thuc.test.js
 node integration/instance-isolee.mjs --auth-only --allow-create-isolated
+npm.cmd test
 ~~~
 
-Thiếu một trong hai cờ sẽ dừng trước startup. Cờ opt-in là xác nhận vận hành sau phê duyệt, không thay sự phê duyệt của người dùng. Không dùng lệnh legacy không tham số để né gate; lệnh đó có provision/full-suite riêng của TASK-018.
+Một run: setup PASS, 10 scenario PASS, cleanup verified, main identity/snapshot unchanged, process exit 0. MySQL chỉ bind loopback; UUID/datadir/cổng khác main. Runtime SHOW GRANTS chỉ INSERT/SELECT/UPDATE.
 
-Nếu operator cung cấp target hiện hữu đã xác minh và đủ guard/config, launcher không provision là:
+Lệnh auth cần cả hai cờ; thiếu một cờ dừng trước startup. Không dùng legacy full-suite để né gate hoặc tự chạy thêm sau nghiệm thu. Launcher không provision là node integration/chay-xac-thuc.mjs, chỉ dùng khi target hiện hữu đã qua đủ guard/config; hiện target đã dừng.
 
-~~~powershell
-node integration/chay-xac-thuc.mjs
-~~~
+## Backend dev cho FE-06
 
-Hiện launcher từ chối MISSING_TEST_DB_NAME trước kết nối/ghi. Auth suite dùng app factory với database đã guard; không import app.js/pool chính.
+npm start đọc DB_* và JWT_SECRET, không chuyển sang TEST_DB_* tự động. Runner dùng app factory/guard, không khởi động server main hoặc để lại Backend demo lâu dài.
 
-## Backend dev và giới hạn bàn giao
-
-Lệnh npm start hiện hữu đọc DB_* và JWT_SECRET, không tự chuyển sang TEST_DB_*. Trước khi chạy dev auth cần cấu hình một target dev riêng đã xác minh và secret ngẫu nhiên qua môi trường riêng; không ghi đè Backend/.env hoặc dùng production/main để thử login có ghi usage event.
-
-Runner này tạo bằng chứng kiểm thử tạm rồi đóng, chưa cung cấp Backend dev lâu dài hoặc credential cho browser FE-06. Việc chốt vòng đời và kênh bàn giao môi trường dev còn cần thực hiện riêng sau khi có môi trường được duyệt.
+Backend auth đã có bằng chứng E2E để bắt đầu xây dựng FE-06 sau nghiệm thu. Muốn chạy browser tích hợp cần target dev riêng đã xác minh, JWT secret mạnh riêng và account/vòng đời được chốt; không dùng main hoặc lấy credential từ logs. Đây là bước vận hành tiếp theo, chưa được triển khai trong lần kiểm chứng này.

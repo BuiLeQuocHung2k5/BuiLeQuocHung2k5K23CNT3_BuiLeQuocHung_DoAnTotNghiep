@@ -1,6 +1,8 @@
 # FE-04 — Navigation Guidelines
 
-Xác minh **2026-11-20**. Source [DieuHuongUngDung](../src/bo-cuc/DieuHuongUngDung.jsx), [ThanhBen](../src/bo-cuc/ThanhBen.jsx), [DieuHuongDiDong](../src/bo-cuc/DieuHuongDiDong.jsx), [route config](../src/ung-dung/dinh-tuyen/cau-hinh-tuyen.js).
+Cập nhật **2026-11-21 · FE-DESKTOP-01**: phần mô tả FE-04 bên dưới là snapshot lịch sử. Shell hiện luôn dùng Sidebar desktop, đã bỏ drawer/hamburger và hook matchMedia. Xem [bàn giao desktop](FE_DESKTOP_01_HANDOFF.md) cho trạng thái hiện tại; Auth/Authorization và trang sách đã được bổ sung ở FE-06/07/08.
+
+Xác minh **2026-11-20**. Source [DieuHuongUngDung](../src/bo-cuc/DieuHuongUngDung.jsx), [ThanhBen](../src/bo-cuc/ThanhBen.jsx), DieuHuongDiDong (đã loại bỏ ở FE-DESKTOP-01), [route config](../src/ung-dung/dinh-tuyen/cau-hinh-tuyen.js).
 
 ## Cấu hình
 

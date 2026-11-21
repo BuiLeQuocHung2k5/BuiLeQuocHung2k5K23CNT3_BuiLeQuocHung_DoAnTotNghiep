@@ -1,37 +1,21 @@
-import { act, render, screen, waitFor, within } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import App from "../../ung-dung/App.jsx"
 import { kiemTraSucKhoe } from "../nen-tang/api-suc-khoe.js"
 
 vi.mock("../nen-tang/api-suc-khoe.js", () => ({ kiemTraSucKhoe: vi.fn() }))
-
-let chieuRongKhung
-let cacHamTheoDoiManHinh
+// Các test FE-04 kiểm layout với principal mock; guard/phiên thật được kiểm riêng ở FE-06.
+vi.mock('../xac-thuc/useXacThuc.js', async nhapGoc => ({
+  ...await nhapGoc(),
+  useXacThuc: () => ({ daDangNhap: true, nguoiDung: { name: 'Bạn đọc kiểm thử', roles: ['reader'] }, dangXuat: vi.fn() }),
+}))
 
 beforeEach(() => {
-  chieuRongKhung = 1280
-  cacHamTheoDoiManHinh = new Set()
-  vi.stubGlobal('matchMedia', vi.fn(truyVan => ({
-    media: truyVan,
-    get matches() { return truyVan === '(min-width: 1024px)' && chieuRongKhung >= 1024 },
-    addEventListener(type, hamGoiLai) { if (type === 'change' && truyVan === '(min-width: 1024px)') cacHamTheoDoiManHinh.add(hamGoiLai) },
-    removeEventListener(type, hamGoiLai) { if (type === 'change') cacHamTheoDoiManHinh.delete(hamGoiLai) },
-  })))
   window.history.replaceState({}, '', '/app')
 })
 
-afterEach(() => { vi.unstubAllGlobals() })
-
-function doiKichThuoc(chieuRong) {
-  act(() => {
-    chieuRongKhung = chieuRong
-    for (const hamGoiLai of cacHamTheoDoiManHinh) hamGoiLai({ matches: chieuRong >= 1024, media: '(min-width: 1024px)' })
-  })
-}
-
-async function hienThiKhung(duongDanTep = '/app', chieuRong = 1280) {
-  chieuRongKhung = chieuRong
+async function hienThiKhung(duongDanTep = '/app') {
   window.history.replaceState({}, '', duongDanTep)
   const ketQua = render(<App />)
   await screen.findByRole('banner')
@@ -39,15 +23,15 @@ async function hienThiKhung(duongDanTep = '/app', chieuRong = 1280) {
 }
 
 describe('Application Shell and routing', () => {
-  it('renders sidebar, header, a single main Outlet and a neutral future account slot without APIs', async () => {
+  it('renders sidebar, header, a single main Outlet and the supplied account without APIs', async () => {
     await hienThiKhung()
     expect(screen.getByRole('complementary', { name: 'Điều hướng ứng dụng' })).toBeVisible()
     expect(screen.getByRole('navigation', { name: 'Điều hướng chính' })).toBeVisible()
     expect(screen.getByRole('navigation', { name: 'Đường dẫn trang' })).toBeVisible()
     expect(screen.getAllByRole('main')).toHaveLength(1)
     expect(screen.getByRole('main')).toContainElement(screen.getByRole('heading', { level: 1, name: 'Khung ứng dụng' }))
-    expect(screen.getByText('Tài khoản chưa tích hợp')).toBeVisible()
-    expect(screen.queryByRole('button', { name: /đăng xuất/i })).not.toBeInTheDocument()
+    expect(screen.getByText('Bạn đọc kiểm thử')).toBeVisible()
+    expect(screen.getByRole('button', { name: /đăng xuất/i })).toBeVisible()
     expect(kiemTraSucKhoe).not.toHaveBeenCalled()
   })
 
@@ -130,91 +114,31 @@ describe('Application Shell and routing', () => {
   })
 })
 
-describe('Mobile/tablet navigation', () => {
-  it.each([375, 768])('uses a closed drawer trigger at %spx instead of a duplicate sidebar', async chieuRong => {
-    await hienThiKhung('/app', chieuRong)
-    expect(screen.queryByRole('complementary')).not.toBeInTheDocument()
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Mở điều hướng' })).toHaveAttribute('aria-expanded', 'false')
-  })
-
-  it('opens and closes with accessible controls and restores focus on dismissal', async () => {
-    const nguoiThaoTac = userEvent.setup()
-    await hienThiKhung('/app', 375)
-    const trigger = screen.getByRole('button', { name: 'Mở điều hướng' })
-    await nguoiThaoTac.click(trigger)
-    const hopThoai = await screen.findByRole('dialog', { name: 'Điều hướng LibriFlow' })
-    expect(trigger).toHaveAttribute('aria-expanded', 'true')
-    expect(hopThoai).toHaveAccessibleDescription('Chọn một trang kỹ thuật. Các chức năng nghiệp vụ chưa được tích hợp.')
-    expect(within(hopThoai).getByRole('navigation', { name: 'Điều hướng chính' })).toBeVisible()
-    await nguoiThaoTac.click(within(hopThoai).getByRole('button', { name: 'Đóng hộp thoại' }))
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    await waitFor(() => expect(trigger).toHaveFocus())
-    expect(trigger).toHaveAttribute('aria-expanded', 'false')
-  })
-
-  it('traps keyboard focus, closes on Escape and returns focus to the menu trigger', async () => {
-    const nguoiThaoTac = userEvent.setup()
-    await hienThiKhung('/app', 768)
-    await nguoiThaoTac.tab()
-    await nguoiThaoTac.tab()
-    const trigger = screen.getByRole('button', { name: 'Mở điều hướng' })
-    expect(trigger).toHaveFocus()
-    await nguoiThaoTac.keyboard('{Enter}')
-    const hopThoai = await screen.findByRole('dialog')
-    for (let i = 0; i < 8; i++) { await nguoiThaoTac.tab(); expect(hopThoai).toContainElement(document.activeElement) }
-    await nguoiThaoTac.tab({ shift: true })
-    expect(hopThoai).toContainElement(document.activeElement)
-    await nguoiThaoTac.keyboard('{Escape}')
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    await waitFor(() => expect(trigger).toHaveFocus())
-  })
-
-  it('closes after choosing a route, focuses new content and does not reopen on the new route', async () => {
-    const nguoiThaoTac = userEvent.setup()
-    await hienThiKhung('/app', 375)
-    await nguoiThaoTac.click(screen.getByRole('button', { name: 'Mở điều hướng' }))
-    await nguoiThaoTac.click(within(screen.getByRole('dialog')).getByRole('link', { name: 'Khu vực nội dung' }))
+it('keeps one desktop sidebar and header mounted when resizing the window, without a drawer', async () => {
+  await hienThiKhung()
+  const thanhBen = screen.getByRole('complementary', { name: 'Điều hướng ứng dụng' })
+  const dauTrang = screen.getByRole('banner')
+  const chieuRongGoc = window.innerWidth
+  try {
+    // jsdom chỉ kiểm cấu trúc/điều hướng khi resize, không xác minh layout CSS trực quan.
+    for (const chieuRong of [1440, 900, 1366, 1920]) {
+      act(() => {
+        window.innerWidth = chieuRong
+        window.dispatchEvent(new Event('resize'))
+      })
+      expect(screen.getAllByRole('complementary')).toEqual([thanhBen])
+      expect(screen.getByRole('banner')).toBe(dauTrang)
+      expect(screen.queryByRole('button', { name: 'Mở điều hướng' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+      expect(within(thanhBen).getByRole('link', { name: 'Khu vực nội dung' })).toBeVisible()
+    }
+    await userEvent.click(within(thanhBen).getByRole('link', { name: 'Khu vực nội dung' }))
     expect(await screen.findByRole('heading', { name: 'Khu vực nội dung', level: 1 })).toBeVisible()
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    await waitFor(() => expect(screen.getByRole('main')).toHaveFocus())
-    expect(screen.getByRole('button', { name: 'Mở điều hướng' })).toHaveAttribute('aria-expanded', 'false')
-    await nguoiThaoTac.click(screen.getByRole('button', { name: 'Mở điều hướng' }))
-    expect(within(screen.getByRole('dialog')).getByRole('link', { name: 'Khu vực nội dung' })).toHaveAttribute('aria-current', 'page')
-    await nguoiThaoTac.click(within(screen.getByRole('dialog')).getByRole('link', { name: 'Kiểm tra nền tảng', exact: true }))
-    await screen.findByRole('heading', { name: 'Nền tảng LibriFlow' })
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    await waitFor(() => expect(screen.getByRole('main')).toHaveFocus())
-  })
-
-  it('removes an open drawer on desktop resize and returns to compact mode without a stale modal', async () => {
-    const nguoiThaoTac = userEvent.setup()
-    await hienThiKhung('/app', 375)
-    await nguoiThaoTac.click(screen.getByRole('button', { name: 'Mở điều hướng' }))
-    expect(screen.getByRole('dialog')).toBeVisible()
-    doiKichThuoc(1280)
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    expect(screen.getByRole('complementary', { name: 'Điều hướng ứng dụng' })).toBeVisible()
-    expect(screen.queryByRole('button', { name: 'Mở điều hướng' })).not.toBeInTheDocument()
-    await waitFor(() => expect(screen.getByRole('main')).toHaveFocus())
-    doiKichThuoc(768)
-    expect(screen.getByRole('button', { name: 'Mở điều hướng' })).toHaveAttribute('aria-expanded', 'false')
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    expect(document.body.style.pointerEvents).toBe('')
-  })
-
-  it('closes an open drawer when browser history changes the route', async () => {
-    const nguoiThaoTac = userEvent.setup()
-    await hienThiKhung('/app', 375)
-    await nguoiThaoTac.click(screen.getByRole('button', { name: 'Mở điều hướng' }))
-    await nguoiThaoTac.click(within(screen.getByRole('dialog')).getByRole('link', { name: 'Khu vực nội dung' }))
-    await screen.findByRole('heading', { name: 'Khu vực nội dung', level: 1 })
-    await nguoiThaoTac.click(screen.getByRole('button', { name: 'Mở điều hướng' }))
-    act(() => { window.history.back() })
-    await screen.findByRole('heading', { name: 'Khung ứng dụng', level: 1 })
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Mở điều hướng' })).toHaveAttribute('aria-expanded', 'false')
-  })
+    expect(screen.getByRole('main')).toHaveFocus()
+    expect(screen.getByRole('complementary')).toBe(thanhBen)
+  } finally {
+    window.innerWidth = chieuRongGoc
+  }
 })
 
 describe('Role layout preview is presentation only', () => {
@@ -224,10 +148,10 @@ describe('Role layout preview is presentation only', () => {
     expect(screen.getByText('Chỉ là bản xem trước, không phải phân quyền')).toBeVisible()
     expect(screen.getByText('Chọn một bố cục')).toBeVisible()
     expect(screen.queryByRole('navigation', { name: 'Bản xem trước điều hướng' })).not.toBeInTheDocument()
-    expect(screen.getByText('Tài khoản chưa tích hợp')).toBeVisible()
+    expect(screen.getByText('Bạn đọc kiểm thử')).toBeVisible()
   })
 
-  it.each(['admin', 'librarian', 'reader'])('shows only planned, non-clickable items for %s without creating a session', async name => {
+  it.each(['admin', 'librarian', 'reader'])('shows only planned, non-clickable items for %s without changing the supplied account', async name => {
     const nguoiThaoTac = userEvent.setup()
     const boLuuTru = vi.spyOn(Storage.prototype, 'setItem')
     await hienThiKhung('/app/layouts')
@@ -239,7 +163,7 @@ describe('Role layout preview is presentation only', () => {
     expect(window.location.search).toBe('')
     expect(boLuuTru).not.toHaveBeenCalled()
     expect(kiemTraSucKhoe).not.toHaveBeenCalled()
-    expect(screen.getByText('Tài khoản chưa tích hợp')).toBeVisible()
+    expect(screen.getByText('Bạn đọc kiểm thử')).toBeVisible()
   })
 
   it('does not persist the preview selection across route changes', async () => {

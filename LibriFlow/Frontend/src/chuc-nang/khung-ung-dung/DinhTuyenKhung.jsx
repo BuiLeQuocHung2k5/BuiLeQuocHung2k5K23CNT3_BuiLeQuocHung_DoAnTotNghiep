@@ -8,8 +8,9 @@ import TrangNoiDungMau from "./TrangNoiDungMau.jsx"
 import TrangKhongTimThayTrongKhung from "./TrangKhongTimThayTrongKhung.jsx"
 
 const TrangKiemTraApi = lazy(() => import("../api-cong-khai/TrangKiemTraApi.jsx"))
+const TrangQuanLySach = lazy(() => import('../sach/TrangQuanLySach.jsx'))
 
-const cacTrang = { overview: TrangTongQuanUngDung, layouts: TrangXemThuBoCuc, workspace: TrangNoiDungMau, 'api-check': TrangKiemTraApi }
+const cacTrang = { overview: TrangTongQuanUngDung, books: TrangQuanLySach, layouts: TrangXemThuBoCuc, workspace: TrangNoiDungMau, 'api-check': TrangKiemTraApi }
 
 export default function DinhTuyenKhung() {
   return <Routes><Route element={<KhungUngDung />}>

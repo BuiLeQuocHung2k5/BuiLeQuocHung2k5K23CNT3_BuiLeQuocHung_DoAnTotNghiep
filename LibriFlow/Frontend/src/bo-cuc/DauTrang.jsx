@@ -1,19 +1,32 @@
-import { Link } from 'react-router'
-import { ChevronRight, UserRound } from 'lucide-react'
+import { Link, useNavigate } from 'react-router'
+import { ChevronRight, UserRound, LogOut } from 'lucide-react'
 import BieuTuong from "../thanh-phan/giao-dien/BieuTuong.jsx"
-import DieuHuongDiDong from "./DieuHuongDiDong.jsx"
 import { DUONG_DAN_UNG_DUNG } from "../ung-dung/dinh-tuyen/cau-hinh-tuyen.js"
+import NutBam from '../thanh-phan/giao-dien/NutBam.jsx'
+import { useXacThuc } from '../chuc-nang/xac-thuc/useXacThuc.js'
 
-export default function DauTrang({ pageTitle: tieuDeTrang, groups: cacNhom, isDesktop: laDesktop, routeKey: khoaTuyen, mainRef: thamChieuNoiDung }) {
+const tenVaiTro = { admin: 'Quản trị viên', librarian: 'Thủ thư', reader: 'Bạn đọc' }
+
+export default function DauTrang({ pageTitle: tieuDeTrang }) {
+  const { nguoiDung, dangXuat } = useXacThuc()
+  const dieuHuong = useNavigate()
+  function xuLyDangXuat() {
+    void dangXuat()
+    dieuHuong('/dang-nhap', { replace: true })
+  }
   return (
     <header className="app-header">
-      {!laDesktop && <DieuHuongDiDong key={khoaTuyen} groups={cacNhom} mainRef={thamChieuNoiDung} />}
       <nav className="app-breadcrumb" aria-label="Đường dẫn trang"><ol>
         <li><Link to={DUONG_DAN_UNG_DUNG}>Ứng dụng</Link></li>
         <li aria-hidden="true"><BieuTuong icon={ChevronRight} size={14} /></li>
         <li><span aria-current="page">{tieuDeTrang}</span></li>
       </ol></nav>
-      <div className="app-account-slot" aria-label="Khu vực tài khoản chưa tích hợp"><BieuTuong icon={UserRound} size={18} /><span>Tài khoản chưa tích hợp</span></div>
+      <div className="app-account-slot" aria-label="Tài khoản LibriFlow">
+        <BieuTuong icon={UserRound} size={18} />
+        {nguoiDung ? <><div className="auth-account-info"><strong>{nguoiDung.name}</strong><span>{nguoiDung.roles.map(vaiTro => tenVaiTro[vaiTro] ?? vaiTro).join(', ') || 'Chưa có vai trò'}</span></div>
+          <NutBam variant="ghost" size="sm" onClick={xuLyDangXuat} icon={<BieuTuong icon={LogOut} size={17} />}>Đăng xuất</NutBam></>
+          : <><span>Chế độ xem thử</span><Link className="app-text-link" to="/dang-nhap">Đăng nhập</Link></>}
+      </div>
     </header>
   )
 }

@@ -1,0 +1,40 @@
+@layer components {
+  .book-heading, .book-pagination { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); }
+  .book-heading { justify-content: space-between; }
+  .book-toolbar { padding: var(--space-5); display: grid; grid-template-columns: minmax(0, 1fr) 170px; align-items: start; gap: var(--space-5); }
+  .book-search { display: flex; align-items: end; flex-wrap: wrap; gap: var(--space-3); }
+  .book-search > .ui-field { flex: 1 1 240px; min-width: 0; }
+  .book-title-cell { display: flex; align-items: start; gap: var(--space-3); min-width: 180px; max-width: 340px; }
+  .book-title-cell svg { flex-shrink: 0; margin-top: 5px; color: var(--primary); }
+  .book-title-button { text-align: left; color: var(--primary); font-weight: 500; overflow-wrap: anywhere; min-height: 32px; text-decoration: underline; text-underline-offset: 3px; }
+  .book-record-id { display: block; color: var(--foreground-muted); font-size: var(--text-caption); overflow-wrap: anywhere; }
+  .book-row-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); min-width: 100px; }
+  .book-pagination { font-size: var(--text-label); color: var(--foreground-muted); }
+  .book-dialog { width: min(760px, calc(100vw - 32px)); }
+  .book-inventory-dialog { width: min(1120px, calc(100vw - 48px)); }
+  .copy-section { display: grid; min-width: 0; gap: var(--space-4); margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px solid var(--border); }
+  .copy-section h3, .copy-section h4 { margin: 0; font-family: var(--font-heading); }
+  .copy-section td { overflow-wrap: anywhere; max-width: 240px; }
+  .copy-editor { padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-md); }
+  .copy-note-confirm { display: flex; align-items: start; gap: var(--space-3); font-size: var(--text-label); }
+  .copy-note-confirm input { flex-shrink: 0; margin-top: 4px; }
+  .copy-operation { display: grid; gap: var(--space-4); }
+  .book-form, .book-delete { display: grid; gap: var(--space-5); }
+  .book-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+  .book-form-wide, .book-category-picker { grid-column: 1 / -1; }
+  .book-category-picker { display: grid; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-md); }
+  .book-category-search { display: flex; align-items: end; flex-wrap: wrap; gap: var(--space-3); }
+  .book-category-search > .ui-field { flex: 1 1 180px; min-width: 0; }
+  .book-form-actions { display: flex; justify-content: end; gap: var(--space-3); flex-wrap: wrap; }
+  .book-detail h2 { font: 400 var(--text-h2) / 1.4 var(--font-heading); margin-block: var(--space-4); overflow-wrap: anywhere; }
+  .book-detail dl { display: grid; gap: var(--space-3); }
+  .book-detail dl > div { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: var(--space-3); }
+  .book-detail dt { color: var(--foreground-muted); }
+  .book-detail dd { margin: 0; overflow-wrap: anywhere; }
+  .book-description { white-space: pre-wrap; overflow-wrap: anywhere; }
+  @media (max-width: 767px) {
+    .book-toolbar, .book-form-grid { grid-template-columns: minmax(0, 1fr); }
+    .book-detail dl > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
+    .book-form-actions > .ui-button { flex: 1 1 140px; }
+  }
+}

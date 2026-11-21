@@ -1,5 +1,11 @@
 # LibriFlow Backend — MySQL
 
+## BE-AUTH-SETUP-01 — kiểm chứng Auth MySQL đạt (2026-11-21)
+
+Theo phê duyệt có điều kiện, đã chạy đúng một instance MySQL test riêng: **10/10 scenario Auth đạt** (Node 11/11 gồm test cha), Backend 178/178 unit/safety trước/sau. Runtime SQL account chỉ INSERT/SELECT/UPDATE; 2 fixture đã inactive, HTTP/pools đóng và instance đã dừng. Main identity/metadata/count hashes và toàn bộ Frontend giữ nguyên; không đổi runtime/API/schema nguồn hoặc env.
+
+[Report và giới hạn](../docs/backend-auth-setup/BE_AUTH_SETUP_01_TEST_REPORT.md), [handoff](../docs/backend-auth-setup/BE_AUTH_SETUP_01_HANDOFF.md). Đủ bằng chứng Backend để bắt đầu xây dựng FE-06 sau nghiệm thu; browser tích hợp còn cần Backend dev riêng, chưa có credential/môi trường lâu dài được bàn giao. Dừng chờ nghiệm thu, không tự FE-06. Các mục ngày 2026-11-20 và TASK trước bên dưới là lịch sử.
+
 ## BE-AUTH-SETUP-01 — chuẩn bị và chờ duyệt provision (2026-11-20)
 
 Đã chuẩn bị plan chỉ đọc và auth-only integration suite. Baseline 175/175, sau 178/178 unit/safety đạt. **Chưa tạo instance/database/account hoặc chạy Auth MySQL mới**: mục 6 yêu cầu phê duyệt trước tạo database/thay quyền cấp instance. Xem [kế hoạch và handoff](../docs/backend-auth-setup/BE_AUTH_SETUP_01_HANDOFF.md).

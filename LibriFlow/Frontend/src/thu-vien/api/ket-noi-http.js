@@ -15,4 +15,4 @@ ketNoiHttp.interceptors.request.use((cauHinh) => {
 })
 
 // Giữ nguyên AxiosResponse/AxiosError: status, headers, envelope, details và cause.
-// Chưa có interceptor token/refresh, redirect phiên hoặc retry.
+// Interceptor Bearer/401 được đăng ký và tháo bởi BoCungCapXacThuc; không refresh/retry.

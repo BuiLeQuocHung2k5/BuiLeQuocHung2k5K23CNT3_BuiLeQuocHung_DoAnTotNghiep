@@ -1,5 +1,14 @@
 # Database
 
+## BE-AUTH-SETUP-01 — MySQL test đã chạy và dừng (2026-11-21)
+
+- Sau phê duyệt có điều kiện, tạo đúng một instance MySQL 8.0.40 mới dưới OS temp; SELECT xác minh bind 127.0.0.1, port 61458, datadir/UUID/cổng khác main và đường dẫn không chồng lấn. Database/account test chưa tồn tại trước setup.
+- Chỉ nạp DDL/seed hiện hữu không sửa vào target mới/trống, thêm 2 bảng guard/run. Runtime SHOW GRANTS xác minh INSERT/SELECT/UPDATE trong schema test; không global/admin/GRANT OPTION. Không đổi cấu hình/quyền main.
+- 10/10 scenario đạt; hai fixture reader và reader+librarian, không admin hoặc sửa role permissions. SELECT xác nhận 2/2 inactive, tổng 2 user, 2 login events và 1 run passed.
+- Main chỉ SELECT: MySQL 8.0.40, users = 0 theo plan; identity và metadata/count hashes trước/sau không đổi. Không tuyên bố count hash là checksum mọi field.
+- HTTP/pools đóng; instance dừng, OS xác nhận PID 53212 không còn và port 61458 không listen. Giữ datadir/result dưới %TEMP%/libriflow-integration-BOn3tG để audit; không DROP/DELETE/TRUNCATE/reset. 6/6 SQL nguồn và 4/4 env/example giữ SHA-256 baseline.
+- [Bằng chứng](backend-auth-setup/evidence/BE_AUTH_SETUP_01_2026-11-21.json), [test report](backend-auth-setup/BE_AUTH_SETUP_01_TEST_REPORT.md). Chưa có Backend dev lâu dài; không tự dùng main cho FE-06. Snapshot dưới đây là lịch sử trước lần chạy được duyệt.
+
 ## BE-AUTH-SETUP-01 — trạng thái trước provision (2026-11-20)
 
 - Chỉ SELECT main identity, metadata và COUNT của 16 bảng: MySQL 8.0.40, users = 0, ba role đúng tên. Metadata/count hashes khớp giữa các lượt đọc; không đọc PII/hash user hoặc khẳng định checksum mọi giá trị.
