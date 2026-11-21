@@ -1,5 +1,13 @@
 # Theo dõi task
 
+## FE-ASSETS-01 — Chuẩn bị thư mục ảnh bìa sách (2026-11-21)
+
+- Hoàn tất, chờ người dùng bổ sung ảnh. Baseline Git sạch, HEAD c4e94fa; đã kiểm cấu trúc Frontend, Vite và palette hiện có, chưa có public/ảnh bìa.
+- Tạo Frontend/public/Anh/BiaSach/.gitkeep và [bia-sach-mac-dinh.svg](../Frontend/public/Anh/BiaSach/bia-sach-mac-dinh.svg), biểu tượng sách mở dùng màu Warm Wooden Library. Không tạo ảnh Don Quijote/Đồi gió hú hoặc tải Internet.
+- Quy ước/cách sử dụng ở [HANDOFF](HANDOFF.md): tên thường, không dấu, nối bằng dấu -, ưu tiên jpg/jpeg/png/webp; người dùng chép don-quijote.jpg và doi-gio-hu.jpg. Về sau ánh xạ rõ theo book_id thật, không theo vị trí danh sách; task chưa thêm ánh xạ/runtime.
+- Kiểm tra: Vite createServer cổng loopback tạm phục vụ SVG 200/image/svg+xml, nội dung khớp file; npm.cmd run build -- --logLevel=warn đạt, asset trong dist khớp public; Vite preview phục vụ SVG đúng 200/MIME/nội dung. Hai server tạm đã đóng. Không chạy unit tests/lint/browser vì chỉ thêm static SVG và tài liệu, không đổi source JS/JSX.
+- Chỉ tạo 2 file asset và sửa TASKS/HANDOFF; không Backend/database/API/dữ liệu sách/upload/dependency hoặc commit/push. Tiếp theo: chờ người dùng tự chép ảnh, chưa tích hợp hiển thị.
+
 ## FE-09 — Hoàn thiện giao diện kho sách (2026-11-21)
 
 - Trạng thái: hoàn tất phần Frontend theo contract hiện hữu, chờ nghiệm thu; liên kết đầu sách/bản sao trong cùng hộp thoại, giữ tìm kiếm/phân trang sách. [Bàn giao ngắn](../Frontend/docs/FE09_HANDOFF.md).

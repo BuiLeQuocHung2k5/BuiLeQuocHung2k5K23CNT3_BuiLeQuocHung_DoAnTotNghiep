@@ -1,5 +1,18 @@
 # Bàn giao hiện tại
 
+## FE-ASSETS-01 — Thêm ảnh bìa sách (2026-11-21)
+
+Đã chuẩn bị [Frontend/public/Anh/BiaSach/](../Frontend/public/Anh/BiaSach/) với .gitkeep và [bia-sach-mac-dinh.svg](../Frontend/public/Anh/BiaSach/bia-sach-mac-dinh.svg) dùng màu Warm Wooden Library. Chưa có ảnh cho hai đầu sách, chưa gắn ảnh vào giao diện/dữ liệu.
+
+- Chép ảnh vào đúng thư mục trên; tên chữ thường, không dấu, các từ nối bằng dấu -, ưu tiên .jpg/.jpeg/.png/.webp.
+- Hai file người dùng sẽ bổ sung: don-quijote.jpg — Don Quijote, Miguel de Cervantes; doi-gio-hu.jpg — Đồi gió hú, Emily Brontë. Không có ảnh giả cho hai sách.
+- URL Vite không chứa public: /Anh/BiaSach/bia-sach-mac-dinh.svg. Sau khi chép ảnh, dùng /Anh/BiaSach/don-quijote.jpg hoặc /Anh/BiaSach/doi-gio-hu.jpg. Giữ đúng hoa/thường Anh/BiaSach khi triển khai.
+- Nếu ứng dụng được triển khai dưới base path riêng, dựng URL với import.meta.env.BASE_URL + 'Anh/BiaSach/<ten-file>' thay vì cố định gốc domain.
+- Khi tích hợp về sau, khai báo ánh xạ rõ book_id thực tế → tên ảnh và fallback SVG khi chưa có ảnh; không gán theo chỉ số/thứ tự danh sách hoặc tự suy ID từ tên sách. Chưa triển khai ánh xạ, upload, sửa API hoặc dữ liệu trong task này.
+- Build đạt; SVG trả 200/image/svg+xml và khớp nội dung trên Vite dev lẫn production preview. Server kiểm tra đã dừng; chưa kiểm browser trực quan, không chạy bộ unit/lint vì không sửa JS/JSX. Không Backend/database hoặc commit/push.
+
+Dừng chờ người dùng bổ sung ảnh; trạng thái bàn giao nghiệp vụ FE-09 bên dưới giữ nguyên.
+
 Cập nhật **2026-11-21 · FE-09**: hoàn tất phần Frontend kho sách/bản sao theo API hiện hữu, chờ nghiệm thu. `/app/sach` → Chi tiết có bảng bản sao và thêm/sửa/xóa theo `copy_manage`, loading/empty/error/retry/Toast và xác nhận xóa. Không đổi Backend/database/FE06–07 runtime; giữ CRUD đầu sách FE08. Form sửa bản sao yêu cầu xác nhận thay thế ghi chú vì GET không trả note. [Task](TASKS.md), [bàn giao và file thay đổi](../Frontend/docs/FE09_HANDOFF.md). Hồi quy cuối **280/280 tests tại 16 file**, 0 fail/skip; lint/build và diff-check đạt. Backend hashes giữ nguyên; chưa browser/CRUD MySQL E2E, cổng3000 không lắng nghe lúc khảo sát. Tiếp theo: nghiệm thu với Backend dev riêng và account/quyền hợp lệ; không commit/push hoặc tự FE-10. Các bàn giao dưới đây là lịch sử.
 
 Cập nhật **2026-11-21 · RUN-GUIDE-01**: đã khảo sát source/cấu hình và cung cấp hướng dẫn chạy thử PowerShell; xem [task RUN-GUIDE-01](TASKS.md). Chỉ sửa TASKS/HANDOFF, giữ nguyên source và thay đổi Git có sẵn. Node/npm và node_modules đã có; chưa chạy server/tests/build/browser hoặc truy cập database. JWT/account/môi trường MySQL hiện tại **Chưa xác minh**. Bước tiếp: chạy Frontend 5173 và Backend mặc định 3000, kiểm tra health; login/CRUD cần Backend dev riêng với JWT/account/quyền hợp lệ. Trạng thái nghiệm thu desktop bên dưới giữ nguyên.
