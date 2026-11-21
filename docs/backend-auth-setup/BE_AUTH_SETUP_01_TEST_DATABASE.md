@@ -1,34 +1,32 @@
-# BE-AUTH-SETUP-01 — Test database và kế hoạch xin phê duyệt
+# BE-AUTH-SETUP-01 — Test database
 
-Xác minh **2026-11-20**. **Chưa thực hiện provision, DDL hoặc cấp quyền.** Main chỉ SELECT; chưa có target test mới được xác minh để ghi. Tái dùng [instance runner](../../Backend/integration/instance-isolee.mjs), [setup](../../Backend/integration/setup.mjs), [guard](../../Backend/integration/an-toan.mjs); schema nguồn và runtime auth giữ nguyên.
+Xác minh **2026-11-21**. Người dùng đã phê duyệt có điều kiện tạo đúng một instance test mới, tối đa hai fixture, chạy 10 scenario rồi cleanup. **Đã thực hiện thành công đúng kế hoạch**, không mở rộng phạm vi. [Kết quả](BE_AUTH_SETUP_01_TEST_REPORT.md), [evidence](evidence/BE_AUTH_SETUP_01_2026-11-21.json).
 
-## Phạm vi đề nghị phê duyệt
+## Kế hoạch được duyệt và trạng thái thực tế
 
-| Thành phần | Phạm vi chính xác |
+| Thành phần | Phạm vi và bằng chứng |
 | --- | --- |
-| Instance | Một mysqld mới; datadir mới dưới %TEMP%/libriflow-integration-<random>/data. Không my.ini hoặc Windows service; chỉ 127.0.0.1, cổng OS cấp khác main. |
-| Identity | Trước DDL: UUID/datadir/cổng khác main, MySQL 8.0; target database và test account phải chưa tồn tại. Không fallback sang connection chính. |
-| Database | Tạo libriflow_integration_test trên instance mới. Không tạo/đổi/xóa database trên instance đang dùng. |
-| Bootstrap | Chỉ root của instance mới. Sau kiểm tra identity và target chưa tồn tại, đặt password CSPRNG trong RAM. |
-| SQL account | Tạo libriflow_it@127.0.0.1 với password CSPRNG. Setup được SELECT/INSERT/UPDATE/CREATE/REFERENCES/INDEX trong đúng schema test. Sau setup thu hồi CREATE/REFERENCES/INDEX; runtime còn SELECT/INSERT/UPDATE, không global privilege hoặc GRANT OPTION. |
-| Schema/seed | Nạp 16 bảng từ DDL không sửa và seed RBAC hiện hữu vào target mới/trống, thêm 2 bảng guard/run. Không ALTER schema ứng dụng đã tồn tại hoặc seed main. |
-| Dữ liệu | Hai fixture reader và reader+librarian; chỉ auth, user-role, login events, manifest và status fixture. Không sửa VaiTro_QuyenHan hoặc tạo catalog/mượn/trả/phạt/dự báo. |
-| Cleanup | Deactivate đúng fixture thuộc run, đóng HTTP/pools, SHUTDOWN instance đã pin; chỉ xử lý PID runner tạo. Giữ datadir/result để kiểm tra. Không DROP/TRUNCATE/DELETE hoặc reset database. |
+| Instance | Một mysqld 8.0.40 mới, --no-defaults, không my.ini/Windows service, bind 127.0.0.1 được SELECT xác nhận. |
+| Cổng/datadir | Port 61458; datadir mới %TEMP%/libriflow-integration-BOn3tG/data. Cổng/UUID/datadir khác main, không chồng lấn đường dẫn. |
+| Target mới | Trước DDL xác minh libriflow_integration_test và account libriflow_it@127.0.0.1 chưa tồn tại trên instance mới. |
+| Bootstrap | Chỉ root của instance mới; sau identity/absence checks đặt password CSPRNG trong RAM. Không sửa account hoặc quyền main. |
+| SQL account | Setup SELECT/INSERT/UPDATE/CREATE/REFERENCES/INDEX trong đúng schema test. REVOKE CREATE/REFERENCES/INDEX rồi SHOW GRANTS xác minh runtime chỉ INSERT/SELECT/UPDATE, không global/admin/GRANT OPTION. |
+| DDL/seed | Nạp 16 bảng từ source không sửa, seed RBAC hiện hữu và 2 bảng guard/run vào target mới/trống. Không ALTER schema ứng dụng đã có hoặc seed main. |
+| Fixture | Đúng hai account reader và reader+librarian, tạo qua register API thật. Không admin hoặc sửa VaiTro_QuyenHan. |
+| Cleanup | Cả 2 fixture inactive, HTTP/pools đóng, instance riêng đã dừng. OS xác nhận PID 53212 không còn và port 61458 không listen. Giữ datadir/result, không DROP/TRUNCATE/DELETE/reset. |
 
-Các thao tác cấp instance cần duyệt gồm ALTER USER bootstrap, CREATE DATABASE/USER, GRANT và REVOKE trên **instance mới**. Cú pháp tham chiếu: [MySQL ALTER USER](https://dev.mysql.com/doc/refman/8.0/en/alter-user.html), [MySQL REVOKE](https://dev.mysql.com/doc/refman/8.0/en/revoke.html). Code dùng mysql2 query parameters, không đưa credential vào shell arguments. Nhánh auth tắt general/slow/raw SQL logs và binlog; không xuất raw SQL error hoặc secret.
+ALTER USER bootstrap, CREATE DATABASE/USER, GRANT và REVOKE chỉ chạy trên connection mới đã xác minh UUID/datadir/cổng; không dùng pool main để ghi. Cú pháp tham chiếu: [MySQL ALTER USER](https://dev.mysql.com/doc/refman/8.0/en/alter-user.html), [MySQL REVOKE](https://dev.mysql.com/doc/refman/8.0/en/revoke.html). Credential truyền bằng mysql2 query parameters, không qua shell arguments. General/slow/raw SQL logs và binlog tắt ở nhánh auth.
 
-## Guard trước và trong run
+## Guard đã thực thi
 
-- [Plan chỉ đọc](../../Backend/integration/ke-hoach-xac-thuc.mjs) xác minh main identity và snapshot metadata/counts của 16 bảng; không công bố identity riêng. Main hiện có 0 user, không coi main là test.
-- Allowlist hiện hữu: libriflow_integration_test/libriflow_ci_test; TEST_DB_* phải đầy đủ và pin hai UUID khác nhau. Account chỉ được quyền schema test; guard từ chối global/admin/GRANT OPTION hoặc quyền ngoài allowlist.
-- Setup chỉ chấp nhận target trống và xác nhận đúng tên. Runtime yêu cầu marker/version/fingerprint DDL + seed. Setup hiện hữu bỏ CREATE DATABASE/USE khi load source trong bộ nhớ.
-- Mỗi connection/query/transaction kiểm DATABASE()/UUID. SQL runtime chỉ SELECT/INSERT/UPDATE; cấm DDL, cross-schema, multiple statements và DELETE. Các rail bổ sung không thay least privilege hoặc identity pins.
-- Sau run đối chiếu main identity và metadata/count hashes trước/sau. Count hash không chứng minh mọi giá trị dữ liệu không đổi. Nếu lệch hoặc chưa xác minh cleanup, không báo PASS.
+- [Plan](../../Backend/integration/ke-hoach-xac-thuc.mjs) và runner đọc main identity/metadata/counts; không công bố identity riêng hoặc dùng main làm test.
+- [Guard](../../Backend/integration/an-toan.mjs) yêu cầu đủ TEST_DB_*, allowlist tên test và hai UUID khác nhau; từ chối global/admin/GRANT OPTION/quyền ngoài allowlist.
+- [Setup](../../Backend/integration/setup.mjs) chỉ nạp schema vào target trống có xác nhận đúng tên. Source bỏ CREATE DATABASE/USE trong bộ nhớ, không sửa file SQL.
+- Mỗi connection/query/transaction kiểm DATABASE()/UUID. Runtime yêu cầu marker/version/fingerprint DDL+seed, chỉ cho SELECT/INSERT/UPDATE, cấm DDL/cross-schema/multiple statements/DELETE.
+- Runner đối chiếu main identity và metadata/count hashes trước/sau, xác minh manifest 10 scenario passed và cleanup fixture trước shutdown. Không tính count hash là checksum mọi field.
 
-## Trạng thái và điều kiện tiếp tục
+## Vòng đời và phạm vi tiếp theo
 
-Plan read-only và test từ chối cờ thiếu đã đạt. **Chưa start instance, ALTER/CREATE/GRANT/REVOKE, nạp schema/seed hoặc tạo fixture.** Guard của target mới hiện được kiểm ở source/unit, chưa có bằng chứng thực thi MySQL mới.
+Instance đã dừng; không có connection/credential dev bền được bàn giao. Datadir chứa hash/data test được giữ cục bộ theo kế hoạch và không phải môi trường production.
 
-Mục 6 yêu cầu: “Nếu phải thực hiện thao tác tạo database hoặc thay đổi quyền truy cập ở cấp instance, dừng bước đó và báo cáo kế hoạch cụ thể để người dùng phê duyệt.”
-
-Sau phê duyệt mới chạy lệnh trong [environment](BE_AUTH_SETUP_01_ENVIRONMENT.md), cập nhật bằng chứng thực tế. Nếu lỗi, phân biệt môi trường/helper với auth runtime; không sửa nghiệp vụ hoặc nới assertion để ép pass.
+Phê duyệt ngày 2026-11-21 đã được sử dụng cho lần chạy này. Không tự chạy thêm, mở rộng fixture, tạo Backend dev lâu dài hoặc cấp account ở main. Nếu kế hoạch tiếp theo rộng hơn phạm vi, phải xin phê duyệt mới; hiện dừng chờ nghiệm thu.

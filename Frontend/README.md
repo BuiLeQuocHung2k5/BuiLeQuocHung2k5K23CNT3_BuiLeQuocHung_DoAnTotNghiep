@@ -16,7 +16,7 @@ FE-05 tái dùng Axios/QueryClient FE-02; response/error gốc giữ nguyên, qu
 - [Layout architecture](docs/FE04_LAYOUT_ARCHITECTURE.md) · [Routing map](docs/FE04_ROUTING_MAP.md)
 - [Navigation guidelines](docs/FE04_NAVIGATION_GUIDELINES.md) · [Test report](docs/FE04_TEST_REPORT.md) · [Bàn giao FE-04](docs/FE04_HANDOFF.md)
 
-Desktop dùng sidebar; mobile/tablet dùng drawer từ Dialog FE-03. Role preview chỉ là cấu hình hiển thị, không session/quyền. FE-04 có100test ở thời điểm bàn giao; browser UI375/768/1280 còn cần nghiệm thu thủ công theo checklist FE-04 vì browser host không khả dụng.
+Shell hiện ưu tiên desktop theo FE-DESKTOP-01: luôn có Sidebar + Header + Main, không drawer/hamburger; vẫn co giãn CSS cơ bản khi thu nhỏ cửa sổ. Auth memory FE-06, quyền FE-07 và trang sách /app/sach FE-08 đã hiện diện. Role preview chỉ là minh họa hiển thị, không cấp quyền. Xem [bàn giao desktop](docs/FE_DESKTOP_01_HANDOFF.md); các số liệu FE-03/04/05 dưới đây là lịch sử. Ba kích thước desktop 1366×768, 1440×900, 1920×1080 chưa kiểm chứng trực quan vì browser host không khả dụng.
 
 - [Design tokens](docs/FE03_DESIGN_TOKENS.md) · [Component catalog](docs/FE03_COMPONENT_CATALOG.md)
 - [UI guidelines](docs/FE03_UI_GUIDELINES.md) · [Test report](docs/FE03_TEST_REPORT.md) · [Bàn giao FE-03](docs/FE03_HANDOFF.md)

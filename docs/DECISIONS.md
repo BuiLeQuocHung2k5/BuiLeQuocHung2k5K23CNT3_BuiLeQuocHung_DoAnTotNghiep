@@ -1,5 +1,20 @@
 # Quyết định và căn cứ
 
+## FE-DESKTOP-01 — Ưu tiên desktop (2026-11-21)
+
+- Căn cứ: người dùng yêu cầu tinh giản Frontend, giữ Sidebar + Header + Main, ưu tiên laptop/desktop và không tiếp tục giao diện điều hướng riêng cho điện thoại. Chỉ dẫn đã được xác định trong task; phần lập trình chờ nghiệm thu.
+- Bỏ drawer/hamburger, state/callback mobile và hook matchMedia chỉ dành cho chuyển chế độ điều hướng. Sidebar luôn mount, tiếp tục dùng bộ lọc quyền FE-07; route guard và session FE-06 giữ nguyên.
+- Sidebar mặc định 248px; cửa sổ dưới 1024px dùng 200px và Header xếp hàng bằng CSS. Giữ media queries bảo vệ nội dung, bảng cuộn ngang và giới hạn form/Dialog; không thay tokens, thư viện hoặc logic nghiệp vụ.
+- [Handoff](../Frontend/docs/FE_DESKTOP_01_HANDOFF.md) và [test report](../Frontend/docs/FE_DESKTOP_01_TEST_REPORT.md) ghi kiểm tra/giới hạn. Không đổi Backend/database/API; không triển khai FE-09 hoặc commit/push.
+
+## BE-AUTH-SETUP-01 — thực thi phạm vi đã duyệt (2026-11-21)
+
+- Căn cứ: người dùng phê duyệt có điều kiện tiếp tục đúng kế hoạch một instance test mới, tối đa hai fixture, 10 scenario, cleanup; không mở rộng sang main/runtime/API/schema nguồn/Frontend hoặc FE-06. Gate mục 6 đã được đáp ứng cho lần chạy này.
+- Tái dùng runner/suite hiện hữu; bổ sung kiểm tra identity/path/bind và SELECT/SHOW GRANTS lấy bằng chứng quyền/fixture cleanup thực tế. Không đổi suite 10 scenario hoặc runtime để ép pass.
+- Đã thực thi thành công: 10/10 scenario, runtime SQL ba quyền, 2 fixture inactive, instance đã dừng; main snapshot/identity và Frontend không đổi. [Test report](backend-auth-setup/BE_AUTH_SETUP_01_TEST_REPORT.md), [evidence](backend-auth-setup/evidence/BE_AUTH_SETUP_01_2026-11-21.json).
+- Session memory-only theo mục 14 giữ nguyên. Đủ bằng chứng Backend auth để bắt đầu xây dựng FE-06 sau nghiệm thu; Backend dev riêng cho browser chưa được cấp. Không lấy credential từ logs, không đổi JWT_SECRET/DB_* main hoặc tạo account ở main.
+- Dừng chờ nghiệm thu, không tự chạy thêm hoặc mở rộng phạm vi. Snapshot ngày 2026-11-20 bên dưới là lịch sử.
+
 ## BE-AUTH-SETUP-01 — chuẩn bị auth và gate provision (2026-11-20)
 
 - Mục 6 yêu cầu dừng và xin phê duyệt trước tạo database/thay quyền cấp instance. Phần chuẩn bị đã xong; chưa phê duyệt hoặc thực thi provision.

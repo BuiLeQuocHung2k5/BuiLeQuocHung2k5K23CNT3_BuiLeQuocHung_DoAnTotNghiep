@@ -1,32 +1,24 @@
 # BE-AUTH-SETUP-01 — Auth integration
 
-Xác minh source **2026-11-20**; [API contract](../backend-auth-prep/BE_AUTH_PREP_01_API_CONTRACT.md) giữ nguyên. Đã chuẩn bị [suite MySQL](../../Backend/integration/xac-thuc.mjs) và [launcher](../../Backend/integration/chay-xac-thuc.mjs); **chưa chạy trên MySQL test**.
+Xác minh **2026-11-21**: [suite](../../Backend/integration/xac-thuc.mjs) đã đạt **10/10 scenario** trên MySQL test mới; Node 11/11 gồm test cha. [Test report chi tiết](BE_AUTH_SETUP_01_TEST_REPORT.md), [evidence](evidence/BE_AUTH_SETUP_01_2026-11-21.json). [API contract](../backend-auth-prep/BE_AUTH_PREP_01_API_CONTRACT.md) và runtime giữ nguyên.
 
-## Các tình huống chờ chạy
-
-| Nhóm | Kiểm tra dự kiến |
+| Nhóm đã chạy | Kết quả |
 | --- | --- |
-| Bootstrap thực | Register 2 fixture, bcrypt cost 12, login trả token/900 giây/no-store; verify HS256, issuer/audience và 5 claims. |
-| Current user | Me trả ID chuỗi, roles/permissions từ SQL; không password/hash/token. |
-| Login lỗi | Sai password/unknown email: 401. Thiếu email/password hoặc email sai: 400. |
-| Header | Thiếu Bearer, Basic hoặc malformed: 401 AUTHENTICATION_REQUIRED. |
-| JWT | Sai signature/issuer/audience hoặc sửa payload: 401 INVALID_TOKEN; hết hạn: 401 TOKEN_EXPIRED; signed subject không có user: 401. |
-| Authorization | GET statistics/overview: thiếu JWT 401, reader 403, staff 200. Claim admin giả không vượt RBAC từ DB. |
-| Account status | Fixture inactive/locked: login/me 403. Khôi phục active để chạy tiếp; cleanup cuối đặt inactive. |
-| Logout/event | Logout 200 không revoke, me với cùng token vẫn 200. GET/logout không thêm login event; 2 login thật có 2 SQL events. |
-| Thiếu JWT config | Factory chẩn đoán với getSecret undefined trả 503 trước mọi SQL. |
-| DB fault | Factory chẩn đoán inject ECONNREFUSED trả 503 DATABASE_UNAVAILABLE, không lộ nội bộ. Đây là mô phỏng lỗi kết nối, không phải outage MySQL thật. |
+| Register/login | Hai fixture qua API/SQL thật; 201/200, bcrypt cost 12, Bearer/no-store, không lộ password/hash. |
+| Current user | Me 200, đúng ID và roles/permissions từ DB; reader không report_view, staff có. |
+| Login lỗi | Sai/unknown credentials 401; thiếu email/password hoặc email sai 400. |
+| Header | Thiếu/BASIC/malformed Bearer đều 401. |
+| JWT | HS256, issuer/audience/5 claims và TTL 900 đúng; sai chữ ký/issuer/audience/sửa payload/user không tồn tại 401; hết hạn TOKEN_EXPIRED 401. |
+| Authorization | Statistics overview: thiếu token 401, reader 403, staff 200; role/permission claim giả không vượt RBAC DB. |
+| Account status | inactive/locked từ chối cả login/me bằng 403 ACCOUNT_INACTIVE. |
+| Logout/events | Logout 200 không revoke; token vẫn gọi me 200 trước deactivation. Đúng 2 SQL login events, GET/logout không thêm event. |
+| Thiếu JWT config | Factory chẩn đoán 503 JWT_NOT_CONFIGURED trước SQL, database calls = 0. |
+| DB fault mô phỏng | Inject ECONNREFUSED, trả 503 DATABASE_UNAVAILABLE an toàn; không phải outage MySQL thật. |
 
-Tổng 10 scenario dự kiến; Node tính thêm test cha thành 11 nếu toàn bộ thực thi. Tám nhóm đầu dùng model/SQL/MySQL thật sau guard; hai nhóm cuối là chẩn đoán cấu hình/fault injection. Chưa có pass count integration mới.
+Tám nhóm đầu dùng model, MySQL, HTTP và JWT thật sau guard. Hai nhóm cuối là diagnostic có chủ đích. Không suy kết quả này thành browser/CORS, tải hoặc production certification.
 
-## JWT và fail-closed
+JWT secret 48 byte CSPRNG trong RAM qua seam getSecret hiện hữu; không dùng production secret. Parent tách DB_*/JWT_SECRET/forecast config chính khỏi env child. Giữ HS256, issuer libriflow-api, audience libriflow-client, claims sub/iat/exp/iss/aud và 900 giây.
 
-Suite sinh 48 byte CSPRNG riêng trong RAM sau khi mở target đã guard, truyền qua getSecret hiện hữu. Không dùng JWT_SECRET production. Parent auth-only loại DB_*, JWT_SECRET và forecast config chính khỏi env child.
+App factory/middleware/validator/controller/service/model không đổi. HTTP chỉ loopback cổng 0, không log body/header/token. Assertion và manifest không xuất credential/hash. Logout giữ stateless semantics: token có thể dùng tới exp khi account còn active; không blacklist/refresh/revocation mới.
 
-Giữ HS256, TTL 900, issuer libriflow-api, audience libriflow-client, claims sub/iat/exp/iss/aud. Token âm tính không thay runtime algorithm, TTL hoặc API. Unit hiện hữu đã kiểm JWT/config fail-closed bằng model giả. Main vẫn thiếu JWT hợp lệ; chưa có login MySQL thành công mới.
-
-## HTTP và dữ liệu
-
-Dùng app factory, JWT, middleware, validator, controller, service và model hiện hữu. HTTP loopback cổng 0; không log request body/header/token. Assertions chỉ xuất status/code/boolean; scenario failure dùng tên tĩnh, không dump credential hoặc SQL response. Manifest không chứa token/password/hash.
-
-Protected GET thống kê yêu cầu report_view, giúp kiểm RBAC mà không tạo dữ liệu nghiệp vụ khác. [Logout controller](../../Backend/src/controllers/xac-thuc.controller.js) giữ stateless semantics: token có thể dùng tới exp khi account còn active. Không có blacklist/refresh hoặc server revocation mới.
+Cả hai fixture đã inactive và instance đã dừng. Chưa có Backend dev lâu dài hoặc credential browser được bàn giao; xem [environment](BE_AUTH_SETUP_01_ENVIRONMENT.md).

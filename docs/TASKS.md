@@ -1,5 +1,89 @@
 # Theo dõi task
 
+## FE-09 — Hoàn thiện giao diện kho sách (2026-11-21)
+
+- Trạng thái: hoàn tất phần Frontend theo contract hiện hữu, chờ nghiệm thu; liên kết đầu sách/bản sao trong cùng hộp thoại, giữ tìm kiếm/phân trang sách. [Bàn giao ngắn](../Frontend/docs/FE09_HANDOFF.md).
+- Thêm QuanLyBanSao.jsx, dich-vu-ban-sao.js và 6 test trong Frontend/src/chuc-nang/sach; sửa TrangQuanLySach.jsx/test và sach.css. Tạo FE09_HANDOFF.md; cập nhật TASKS/HANDOFF. Không sửa Backend/database/env/package/auth/route hoặc Git index, không commit/push.
+- Tích hợp GET books/:id/copies, POST book-copies, PUT/DELETE book-copies/:id, quyền copy_manage; chỉ sửa available/maintenance, borrowed/lost chỉ xem. Có xác nhận xóa, validation, Toast, loading/empty/error/retry, phân trang và xử lý kết quả ghi chưa rõ. PUT ghi chú cần xác nhận thay thế vì GET không trả note.
+- Kiểm tra: baseline 274/274; hồi quy đầu giữ 274 cũ đạt nhưng 4 test mới thiếu status active trong fixture; đã sửa fixture và chạy riêng 6/6 đạt. Hồi quy cuối `npm.cmd run test:run -- --maxWorkers=1`: **280/280 tại 16 file**, 0 fail/skip. `npm.cmd run lint`, `npm.cmd run build`, diff-check đạt; SHA-256 Backend ngoài node_modules/.git khớp đầu task.
+- Chưa kiểm browser trực quan/resize/AT và Backend/MySQL E2E; không thấy listener 3000 khi khảo sát. Không truy vấn/ghi DB hay tạo fixture/account. Bước tiếp: nghiệm thu bằng Backend dev riêng với JWT/account/quyền phù hợp, không FE-10.
+
+## RUN-GUIDE-01 — Hướng dẫn chạy thử (2026-11-21)
+
+- Trạng thái: hoàn tất khảo sát và hướng dẫn lệnh PowerShell chạy Frontend/Backend, URL kiểm tra và unit tests; không khởi động dịch vụ.
+- Xác minh từ package.json hai phần, Frontend/vite.config.js, DinhTuyenUngDung.jsx, BaoVeDangNhap.jsx, Backend/src/server.js và config/co-so-du-lieu.js: Vite 5173, API mặc định 3000, Backend kiểm tra MySQL trước listen; origin Frontend không kèm /api. Các trang kỹ thuật layouts/workspace/api-check có ngoại lệ không cần phiên; /app và /app/sach cần đăng nhập.
+- Kiểm tra: node --version = v24.20.0, npm.cmd --version = 11.19.0; cả hai node_modules tồn tại; git status cho thấy staged/unstaged/untracked có sẵn, giữ nguyên. Không có listener 3000/5173 được trả về tại lần khảo sát. Chỉ sửa docs/TASKS.md và docs/HANDOFF.md.
+- Chưa chạy: server, browser, tests/build, kết nối hoặc truy vấn MySQL. JWT/account/database hiện tại **Chưa xác minh**; bàn giao trước ghi chưa có môi trường dev auth lâu dài.
+- Bước tiếp: người dùng chạy hai terminal theo hướng dẫn; muốn thử login/CRUD cần môi trường dev riêng và tài khoản/quyền hợp lệ. Không chạy schema/seed/migration hay tạo account trong task này.
+
+## FE-DESKTOP-01 — Tinh giản điều hướng, ưu tiên desktop (2026-11-21)
+
+- Trạng thái: **hoàn tất phần lập trình, dừng chờ nghiệm thu**. Sidebar + Header + Main luôn hiện, bỏ mobile drawer/hamburger/overlay và hook matchMedia; không đổi logic quyền/phiên/nghiệp vụ.
+- Đọc AGENTS/5 docs dự án, handoff/source FE03–FE08, CSS, Router và tests; xác minh caller trước xóa. Baseline HEAD 8c224e8 có staged/unstaged/untracked; lưu hash 269 file và nội dung index.
+- Xóa DieuHuongDiDong.jsx và useDieuHuongDesktop.js; sửa 4 component bo-cuc, CSS Shell và 4 file test liên quan bước điều hướng. Tạo [FE_DESKTOP_01_TEST_REPORT](../Frontend/docs/FE_DESKTOP_01_TEST_REPORT.md)/[FE_DESKTOP_01_HANDOFF](../Frontend/docs/FE_DESKTOP_01_HANDOFF.md); cập nhật README, 2 docs FE04, DECISIONS/TASKS/HANDOFF. Danh sách đầy đủ ở handoff.
+- CSS mặc định Sidebar 248px, cửa sổ dưới 1024px còn 200px/Header một cột; giữ wrap, min-width, scroll bảng và viewport form/Dialog, không xóa mọi media query. Không đổi Warm Wooden Library hoặc Radix Dialog dùng chung.
+- Baseline tuần tự 280/280; cuối **274/274 tại 15 file**, 0 fail/skip; lint/build đạt. Lệnh từ Frontend: npm.cmd run test:run -- --maxWorkers=1; npm.cmd run lint; npm.cmd run build. Bỏ đúng 7 ca mobile, thêm 1 ca resize; giữ nghiệp vụ/bảo mật. Lượt mặc định baseline có 2 timeout lazy; hồi quy đầu có 3 ca còn thao tác hamburger, đã đổi sang Sidebar và giữ assertion. Chi tiết ở report.
+- Static parse 68 JS/JSX/MJS và 201 cạnh import-export tĩnh tương đối không lỗi/casing. Production HTTP 10 SPA shells/35 assets 200, preview loopback đã đóng; bundle không còn marker drawer/hamburger. Không coi jsdom/shell HTTP là visual/browser pass.
+- Chưa kiểm trực quan 1366×768/1440×900/1920×1080, zoom/AT vì browser host/native pipe unavailable; chưa Backend/MySQL E2E. Không truy cập DB, tạo fixture/account hoặc start Backend; không đổi Backend/schema/API/package/env/lock, Router/Auth Context/quyền hoặc FE08 runtime.
+- Bước tiếp: người dùng nghiệm thu desktop và cửa sổ thu nhỏ bằng browser khả dụng. FE08 đã hiện diện được giữ nguyên nghiệp vụ; không chức năng mới/FE09, không stage/unstage/reset/commit/push.
+
+- Kiểm cuối: delta đúng 15 file hiện hữu sửa/2 file mobile xóa/2 docs mới; 252 file baseline khác (gồm 108 Backend) giữ SHA-256. HEAD/index giữ nguyên, 118 liên kết nội bộ tại 8 tài liệu và UTF-8/whitespace/diff-check đạt.
+
+## FE-08 — Trang quản lý sách (2026-11-21)
+
+- Trạng thái: **hoàn tất phần lập trình trong phạm vi API hiện có, dừng chờ nghiệm thu**. Chưa kiểm chứng Frontend CRUD end-to-end với Backend/MySQL thật hoặc responsive trực quan.
+- Đọc AGENTS/5 docs dự án, tài liệu FE-01/05/06/07 và đối chiếu routes/controller/service/validator/model/schema Backend. GET books/detail public; /app/sach yêu cầu đăng nhập. Ghi cần đúng book_create/book_update/book_delete từ me, không Admin bypass.
+- Tạo 5 module/test trong Frontend/src/chuc-nang/sach, CSS sach.css và đúng hai tài liệu [FE08_TEST_REPORT](../Frontend/docs/FE08_TEST_REPORT.md)/[FE08_HANDOFF](../Frontend/docs/FE08_HANDOFF.md). Sửa cấu hình tuyến, DinhTuyenKhung, hai assertion menu FE-07 và TASKS/HANDOFF gốc; danh sách chi tiết ở handoff.
+- /app/sach có danh sách, tìm title/author/publisher, page/limit, chi tiết GET riêng, thêm/sửa đủ 7 trường và xóa cứng sau xác nhận. Có validation, loading/empty/error/retry, Toast, lỗi 409, cache invalidation và chặn gửi lặp. Giữ null/năm 0/ID BIGINT dạng chuỗi; không thêm filter/ISBN/ảnh hoặc dữ liệu giả khi contract thiếu.
+- Baseline 232/232; cuối **280/280 tests tại 15 file**, 0 fail/skip, thêm 48 mock tests (26 service + 22 UI). Lệnh từ Frontend: npm.cmd run test:run, npm.cmd run lint, npm.cmd run build; đều đạt. Hai test menu cũ cập nhật vì có trang sách thật; giữ toàn bộ test cũ.
+- Static 70 JS/JSX, 210 cạnh import, 261 bindings, không lỗi/casing/cycle. Production HTTP smoke 10 SPA shells/35 assets trả 200, preview loopback đã đóng; không coi shell 200 là UI/guard E2E.
+- Chưa chạy CRUD Backend/MySQL thật, concurrency/SQL hoặc kiểm tra trực quan responsive/AT: TCP Backend mặc định 3000 không mở, chưa có dev account được bàn giao, browser host/native pipe unavailable. Không truy cập DB, tạo fixture/account hay khởi động Backend.
+- Baseline lưu hash 258 file, HEAD 8c224e8 có staged/unstaged/untracked từ trước. 108 file Backend và tổng 176 file bảo vệ khớp SHA-256; HEAD/index không đổi. Không sửa Backend/schema/API/env/package/lock, Auth/FE05/FE07 runtime, không thêm dependency; không stage/unstage/reset/commit/push.
+- Hạn chế: category lookup tối đa 100 kết quả/từ khóa, ngoài lookup hiển thị ID; chưa có API bộ sách nên chỉ nhập/giữ series_id đã biết. PUT chưa có ETag/version; mạng/5xx/response ghi sai được báo chưa rõ kết quả và không tự replay.
+- Bước tiếp: người dùng nghiệm thu. E2E cần Backend dev/MySQL cô lập, account/grants hợp lệ và browser trong phạm vi được giao; FE-09 chỉ theo task mới, chưa triển khai.
+
+- Kiểm tra bàn giao cuối: delta chỉ 6 file hiện hữu sửa/8 file mới, không xóa; 50 liên kết nội bộ trong 4 tài liệu, UTF-8/whitespace/diff-check đạt. Hash git ls-files --stage -z và HEAD giữ nguyên.
+
+## FE-07 — Phân quyền Frontend (2026-11-21)
+
+- Trạng thái: hoàn tất phần lập trình cơ chế trong phạm vi trang hiện hữu, **dừng chờ nghiệm thu**. Chưa phân quyền E2E với Backend thật: thiếu Backend dev/account/browser; không truy cập database hoặc tạo fixture.
+- Đọc AGENTS/5 docs dự án, Authorization Matrix, FE06 handoff/report, FE01 integration guide, BE-AUTH-PREP/SETUP và đối chiếu principal/middleware/seed/routes Backend. Ba role admin/librarian/reader, 12 tên permission từ source; grant lấy từ me, không admin bypass hoặc gán từ seed.
+- Baseline HEAD 8c224e8, index đã có staged BE-AUTH-SETUP-01/FE-06; lưu hash 252 file và index. Giữ nguyên index, không reset/unstage/stage/commit/push.
+- Tạo kiem-tra-quyen.js, hai file test FE07 và TrangKhongCoQuyen.jsx; sửa BaoVeDangNhap, DieuHuongUngDung, cấu hình menu/routes và thêm /403. Tạo đúng hai docs [FE07_TEST_REPORT](../Frontend/docs/FE07_TEST_REPORT.md)/[FE07_HANDOFF](../Frontend/docs/FE07_HANDOFF.md), cập nhật TASKS/HANDOFF gốc.
+- Helper: OR giữa role được phép, ALL permissions, kết hợp AND; dữ liệu/config quyền thiếu/sai/lạ hoặc mảng thưa thì deny. Shared route giữ auth-only. Guard render 403 trước children, không mount nội dung/redirect loop; cùng helper lọc Sidebar/drawer, bỏ nhóm rỗng.
+- Hiện chưa có business page/action cần grant riêng: không gán permission lên demo hoặc tạo menu CRUD giả. Primary menu /app cho mọi user đăng nhập; 5 tools public tách nhóm riêng. Ba role thấy cùng menu thật vì tất cả trang hiện hữu dùng chung/public; guard yêu cầu quyền được kiểm qua metadata fixture chỉ trong tests.
+- Frontend baseline 182/182; cuối **232/232 tại 13 file**, 0 fail/skip; 50 tests mới (33 helper/menu, 17 guard/UI/API-mock), targeted trước case cuối 49/49. ESLint/build đạt. Static 65 file/172 cạnh import/214 bindings, không lỗi/casing/cycle.
+- 182 test cũ và 30 FE06 Auth tests không sửa, vẫn đạt; memory/TTL/login/me/logout/401/403 giữ nguyên. Backend 403 trong adapter mock hiện lỗi an toàn, không logout; logout sau đó vẫn đạt.
+- Production preview tạm: 9 SPA shells/31 assets 200 và đã đóng server; không coi HTTP shell là browser/guard pass. Browser host/native pipe unavailable; TCP 3000 không mở, chưa E2E/visual responsive/AT. Không Backend runtime/schema/contract/package/env changes; 108 Backend và 164 file được bảo vệ khớp SHA-256.
+- Bước tiếp: nghiệm thu; FE-08 chỉ theo task mới, cần map từng route/action thật sang API/quyền rõ ràng và Backend dev/grants/browser riêng để E2E. UI dùng snapshot me, Backend tiếp tục kiểm quyền/scope mỗi request; không tự refresh policy hoặc triển khai FE-08.
+- Kiểm cuối: delta FE-07 chỉ 6 file hiện hữu sửa/6 file mới, không xóa; 41 local links tại 4 docs, UTF-8/whitespace/diff-check đạt. Index/HEAD giữ nguyên; không có marker route/token mock FE07 trong bundle production.
+
+## FE-06 — Đăng nhập và đăng xuất (2026-11-21)
+
+- Trạng thái: **hoàn tất phần lập trình, dừng chờ nghiệm thu**. Chưa kiểm chứng Frontend end-to-end với Backend/MySQL thật: chưa có Backend dev/account hoạt động được bàn giao, cổng 3000 không listen; không gọi auth main hoặc tạo fixture.
+- Đọc AGENTS/5 docs dự án, BE-AUTH-SETUP và contract/source auth, nền tảng FE-03/04/05 và quy tắc FE-RENAME. Baseline HEAD 8c224e8 có thay đổi BE-AUTH-SETUP-01 chưa commit; lưu hash 243 file để giữ nguyên thay đổi đang có.
+- Thêm 5 module src/chuc-nang/xac-thuc (trang, provider, hook/context, service, guard), 1 file 30 tests và CSS auth; tạo đúng 2 docs Frontend FE06_TEST_REPORT/FE06_HANDOFF. Sửa Header, provider/routing/config routes, thông báo overview, import CSS, chú thích HTTP client và harness/assertion layout cũ. Danh sách tại [handoff](../Frontend/docs/FE06_HANDOFF.md).
+- Luồng POST /auth/login email/password → GET /auth/me Bearer → /app; token/principal trong memory, reload mất phiên. Header tên/role thật; logout API rồi xóa phiên/cache ngay kể cả mạng lỗi. Fixed TTL 900 giây; 401 phiên hiện hành xóa phiên, response cũ không ảnh hưởng phiên mới; không tự logout 403, không refresh/revocation.
+- /app và app path lạ có guard; giữ /, /design-system và ba route kỹ thuật /app/layouts, /app/workspace, /app/api-check công khai để không mất demo/public probe. Không giả lập user hoặc triển khai quyền chi tiết FE-07.
+- Frontend baseline 152/152 tại 10 file; cuối 182/182 tại 11 file, 0 fail/skip; targeted Auth 30/30, lint/build đạt. Static 61 JS/JSX/154 cạnh import/194 bindings, không lỗi/casing/cycle. Lệnh: npm.cmd run test:run, npm.cmd run lint, npm.cmd run build.
+- Axios adapter mock chỉ trong tests, không Backend/MySQL thật. 8 dev + 8 production SPA shells và 31 assets HTTP 200; không suy HTTP shell là browser/guard pass. Hai Vite process kiểm tra đã dừng, cổng 5173/4173 không listen. Browser host/native pipe unavailable; responsive/zoom/AT/browser Network thực chưa xác minh.
+- Bảo toàn 108/108 file Backend và tổng 126 file được bảo vệ (Backend/docs auth cũ/package/lock/env) bằng SHA-256. Không truy cập database, sửa contract/dependency/env hoặc commit/push; HEAD/index không đổi. Backend tests không chạy lại vì không thay Backend. Giữ nguyên BE-AUTH-SETUP-01 đang có.
+- Bước tiếp: người dùng nghiệm thu; kiểm browser/Backend dev riêng khi được cung cấp. FE-07 cần task riêng và phân quyền theo permissions Backend; không tự triển khai. [Test report](../Frontend/docs/FE06_TEST_REPORT.md).
+- Kiểm cuối: delta FE-06 chỉ 10 file hiện hữu sửa/9 file mới đúng whitelist, không xóa; 34 local links tại 4 docs, UTF-8/whitespace/diff-check đạt. TCP probe cuối xác nhận 3000/5173/4173 không listen sau cleanup; không dùng kết quả rỗng từ CIM bị từ chối quyền làm bằng chứng.
+
+## BE-AUTH-SETUP-01 — Tiếp tục theo phê duyệt và kiểm chứng MySQL (2026-11-21)
+
+- Trạng thái: **hoàn tất kiểm chứng E2E trong phạm vi đã duyệt, dừng chờ nghiệm thu**. Người dùng phê duyệt có điều kiện một instance test mới, tối đa hai fixture, 10 scenario và cleanup; không mở rộng phạm vi.
+- Baseline tiếp tục HEAD 8c224e8 sạch, index sạch; lưu SHA-256 242 file gồm env ignored (chỉ hash, không xuất giá trị). Đọc lại AGENTS/5 docs dự án, kế hoạch, handoff và source runner/setup/guard/auth suite trước chạy.
+- Lệnh từ Backend: node integration/ke-hoach-xac-thuc.mjs; npm.cmd test trước/sau; node --test test/moi-truong-xac-thuc.test.js; node integration/instance-isolee.mjs --auth-only --allow-create-isolated. Chạy đúng một lần MySQL, 10/10 scenario đạt (Node 11/11 gồm cha), 0 fail/skip; unit 178/178 trước/sau, guard 3/3. Static 78 file/201 cạnh import/265 bindings, không lỗi/casing/cycle.
+- Cô lập thực tế: MySQL 8.0.40 mới, bind 127.0.0.1, port 61458, UUID/datadir/cổng khác main, không chồng lấn đường dẫn; target database/account chưa tồn tại trước setup. Runtime SHOW GRANTS chỉ INSERT/SELECT/UPDATE trên schema test. DDL/seed không sửa, chỉ nạp target mới/trống.
+- Login/JWT/me/RBAC/logout đạt; 8 nhóm dùng MySQL thật, 2 diagnostic thiếu config/ECONNREFUSED được nêu riêng, không báo là outage MySQL thật. 2 fixture đều inactive; tổng 2 user/2 login events/1 run passed. HTTP/pools đóng, instance dừng; OS xác nhận PID 53212 không còn và port 61458 không listen. Giữ datadir/result, không DELETE/DROP/TRUNCATE/reset.
+- Main chỉ SELECT, identity/metadata/count hashes trước/sau không đổi. SHA-256: 97/97 Frontend, 59/59 Backend/src, 6/6 SQL, 4/4 env/example giữ nguyên; HEAD/index không đổi. Không auth runtime/API/schema nguồn/Frontend hoặc FE-06; không commit/push.
+- File sửa: Backend/integration/instance-isolee.mjs (guard/evidence), Backend/README.md, 5 docs dự án, 6 docs setup; thêm evidence JSON. Suite/test/session policy và tài liệu contract nhiệm vụ trước giữ nguyên. [Handoff đầy đủ](backend-auth-setup/BE_AUTH_SETUP_01_HANDOFF.md), [test report](backend-auth-setup/BE_AUTH_SETUP_01_TEST_REPORT.md), [evidence](backend-auth-setup/evidence/BE_AUTH_SETUP_01_2026-11-21.json).
+- Giới hạn: chưa browser/CORS enforcement, actual MySQL outage, TLS/proxy, tải/pentest hoặc Backend dev bền. Không chạy Frontend tests/lint/build vì Frontend giữ nguyên; Backend không có lint/build script. Main JWT vẫn chưa cấu hình, không dùng main để thử.
+- Bước tiếp: người dùng nghiệm thu; đủ bằng chứng kỹ thuật để bắt đầu xây dựng FE-06 sau nghiệm thu. Chạy browser tích hợp còn cần target dev/config/account riêng; chưa tự triển khai hoặc cấp môi trường này.
+- Kiểm cuối: 13 file hiện hữu sửa và 1 evidence JSON mới đúng whitelist, không xóa; 143 local links tại 13 docs/UTF-8/whitespace/diff-check đạt. Scan mẫu credential trong diff/evidence/mysql.log không có kết quả; không coi đây là pentest.
+
 ## FE-STACK-01 — Đối chiếu công nghệ Frontend (2026-11-20)
 
 - Trạng thái: hoàn tất khảo sát `Frontend/package.json`, lockfile, cấu hình và source; React/React DOM 19.3.1 + Vite 8.3.6, JavaScript/JSX, SPA với BrowserRouter. Không sửa source/config/dependency hoặc truy cập DB.

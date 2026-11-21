@@ -4,14 +4,14 @@ import NhanTrangThai from "../thanh-phan/giao-dien/NhanTrangThai.jsx"
 import { thuongHieuUngDung, DUONG_DAN_UNG_DUNG } from "../ung-dung/dinh-tuyen/cau-hinh-tuyen.js"
 import DieuHuongUngDung from "./DieuHuongUngDung.jsx"
 
-export function NoiDungThanhBen({ groups: cacNhom, onNavigate: xuLyChuyenTrang }) {
+function NoiDungThanhBen({ groups: cacNhom }) {
   return (
     <div className="app-sidebar-content">
-      <Link to={DUONG_DAN_UNG_DUNG} className="app-brand" onClick={xuLyChuyenTrang} aria-label="LibriFlow — khung ứng dụng">
+      <Link to={DUONG_DAN_UNG_DUNG} className="app-brand" aria-label="LibriFlow — khung ứng dụng">
         <span className="app-brand-mark"><BieuTuong icon={thuongHieuUngDung.icon} size={25} /></span>
         <span><span className="app-brand-name">{thuongHieuUngDung.name}</span><span className="app-brand-caption">{thuongHieuUngDung.caption}</span></span>
       </Link>
-      <DieuHuongUngDung groups={cacNhom} onNavigate={xuLyChuyenTrang} />
+      <DieuHuongUngDung groups={cacNhom} />
       <div className="app-sidebar-footnote"><NhanTrangThai>FE-04 · Layout</NhanTrangThai><p>Khung giao diện độc lập.<br />Chức năng sẽ được tích hợp sau.</p></div>
     </div>
   )

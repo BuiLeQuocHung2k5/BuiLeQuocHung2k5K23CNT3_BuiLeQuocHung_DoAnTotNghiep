@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { randomBytes, createHash } from "node:crypto";
 import mysql from "mysql2/promise";
 import boKetNoiChinh from "../src/config/co-so-du-lieu.js";
-import { CAC_BANG_UNG_DUNG } from "./an-toan.mjs";
+import { CAC_BANG_UNG_DUNG, kiemTraQuyenCoSoDuLieu } from "./an-toan.mjs";
 
 // Chỉ khởi tạo datadir mới dưới OS temp; không nạp my.ini, không đăng ký service, không dùng dữ liệu chính.
 const tepThucThi = process.env.MYSQLD_TEST_BINARY || "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysqld.exe";
@@ -57,9 +57,11 @@ try {
     dinhDanhChinhBanDau = chinh.identity;
     baoCao.main_before = snapshotCongKhai(chinh.public);
     if (!chinh.identity.database_name || !chinh.identity.server_uuid) throw Object.assign(new Error("Main identity unknown"), { code: "MAIN_IDENTITY_UNVERIFIED" });
+    if (chiXacThuc && (!chinh.identity.data_directory || !Number(chinh.identity.port))) throw Object.assign(new Error("Main path/port unverified"), { code: "MAIN_IDENTITY_UNVERIFIED" });
     thuMucTam = await mkdtemp(path.join(tmpdir(), "libriflow-integration-"));
     const datadir = path.join(thuMucTam, "data");
     if (!chuanHoaDuongDan(datadir).startsWith(chuanHoaDuongDan(tmpdir()) + "/libriflow-integration-") || chuanHoaDuongDan(datadir) === chuanHoaDuongDan(chinh.identity.data_directory)) throw Object.assign(new Error("Unsafe data path"), { code: "UNSAFE_ISOLATED_DATADIR" });
+    if (chiXacThuc && (chuanHoaDuongDan(datadir).startsWith(chuanHoaDuongDan(chinh.identity.data_directory) + "/") || chuanHoaDuongDan(chinh.identity.data_directory).startsWith(chuanHoaDuongDan(datadir) + "/"))) throw Object.assign(new Error("Overlapping main/test data paths"), { code: "UNSAFE_ISOLATED_DATADIR" });
     await mkdir(datadir);
     nhatKy = createWriteStream(path.join(thuMucTam, "mysql.log"), { flags: "a" });
     const coWindows = process.platform === "win32" ? ["--no-monitor"] : [];
@@ -75,11 +77,12 @@ try {
         catch (loi) { loiKetNoi = loi; if (mayChu.exitCode !== null) break; await cho(250); }
     }
     if (!quanTriTest) throw Object.assign(new Error("Isolated server unavailable"), { code: "ISOLATED_START_FAILED", cause: loiKetNoi?.code });
-    const [[dinhDanh]] = await quanTriTest.query("SELECT @@server_uuid AS server_uuid, @@datadir AS data_directory, @@port AS port, VERSION() AS version");
+    const [[dinhDanh]] = await quanTriTest.query("SELECT @@server_uuid AS server_uuid, @@datadir AS data_directory, @@port AS port, @@bind_address AS bind_address, VERSION() AS version");
     if (!dinhDanh.server_uuid || dinhDanh.server_uuid === chinh.identity.server_uuid || chuanHoaDuongDan(dinhDanh.data_directory) !== chuanHoaDuongDan(datadir) || Number(dinhDanh.port) !== port) throw Object.assign(new Error("Unsafe test identity"), { code: "ISOLATED_IDENTITY_UNVERIFIED" });
     cauHinhTest = { uuid: dinhDanh.server_uuid, datadir, port };
+    if (chiXacThuc && dinhDanh.bind_address !== "127.0.0.1") throw Object.assign(new Error("Auth test must bind only to loopback"), { code: "NON_LOOPBACK_TEST_FORBIDDEN" });
     if (chiXacThuc && !/^8\.0\./.test(dinhDanh.version)) throw Object.assign(new Error("Auth test requires the reviewed MySQL 8.0 runtime"), { code: "UNREVIEWED_MYSQL_VERSION" });
-    baoCao.isolation = { distinct_server_uuid: true, distinct_datadir: true, distinct_port: true, bind_address: "127.0.0.1", database_name: "libriflow_integration_test", dedicated_user: true, version: dinhDanh.version };
+    baoCao.isolation = { distinct_server_uuid: true, distinct_datadir: true, distinct_port: true, bind_address: dinhDanh.bind_address, test_port: port, owned_pid: mayChu.pid, database_name: "libriflow_integration_test", dedicated_user: true, version: dinhDanh.version };
     // Mọi DDL dưới đây chỉ dùng connection mới đã xác minh UUID/datadir/cổng, không dùng pool chính.
     if (chiXacThuc) {
         // Bootstrap chỉ trên instance mới; không để root mật khẩu trống trong thời gian chạy auth suite.
@@ -106,13 +109,36 @@ try {
     if (chiXacThuc) {
         await kiemTraQuanTriTest();
         await quanTriTest.query("REVOKE CREATE,REFERENCES,INDEX ON libriflow_integration_test.* FROM 'libriflow_it'@'127.0.0.1'");
-        baoCao.auth_runtime_privileges = ["SELECT", "INSERT", "UPDATE"];
+        const [grants] = await quanTriTest.query("SHOW GRANTS FOR 'libriflow_it'@'127.0.0.1'");
+        const grantTexts = grants.map(row => Object.values(row)[0]);
+        kiemTraQuyenCoSoDuLieu(grantTexts, "libriflow_integration_test");
+        const privileges = [...new Set(grantTexts.flatMap(text => (text.match(/^GRANT ([A-Z_, ]+) ON /i)?.[1] ?? "").split(",").map(value => value.trim()).filter(value => value && value !== "USAGE")))].sort();
+        if (JSON.stringify(privileges) !== JSON.stringify(["INSERT", "SELECT", "UPDATE"])) throw Object.assign(new Error("Auth runtime grants not narrowed"), { code: "AUTH_RUNTIME_GRANTS_MISMATCH" });
+        baoCao.auth_runtime_privileges = privileges;
     }
     await chayTienTrinh(process.execPath, [fileURLToPath(new URL(chiXacThuc ? "./chay-xac-thuc.mjs" : "./run.mjs", import.meta.url))], { env });
     baoCao.integration = "passed";
     const [[marker]] = await quanTriTest.query("SELECT guard_version,sql_fingerprint FROM libriflow_integration_test.__libriflow_integration_guard WHERE id=1");
     const [runs] = await quanTriTest.query("SELECT status,COUNT(*) AS total FROM libriflow_integration_test.__libriflow_integration_runs GROUP BY status");
     baoCao.guard = { version: marker.guard_version, fingerprint: marker.sql_fingerprint, runs };
+    if (chiXacThuc) {
+        // Chỉ đọc evidence của schema mới đã pin; không xuất ownership, hash hoặc credential.
+        await kiemTraQuanTriTest();
+        const [results] = await quanTriTest.query("SELECT status,manifest FROM libriflow_integration_test.__libriflow_integration_runs");
+        if (results.length !== 1) throw Object.assign(new Error("Unexpected auth run count"), { code: "AUTH_EVIDENCE_MISMATCH" });
+        const manifest = typeof results[0].manifest === "string" ? JSON.parse(results[0].manifest) : results[0].manifest;
+        if (results[0].status !== "passed" || manifest.purpose !== "BE-AUTH-SETUP-01" || manifest.users?.length !== 2 || manifest.scenarios?.length !== 10 || manifest.scenarios.some(item => item.status !== "passed")) throw Object.assign(new Error("Auth scenarios incomplete"), { code: "AUTH_EVIDENCE_MISMATCH" });
+        let inactive = 0;
+        for (const user of manifest.users) {
+            const [[row]] = await quanTriTest.execute("SELECT COUNT(*) AS total FROM libriflow_integration_test.NguoiDung WHERE user_id=? AND email=? AND name=? AND status='inactive'", [user.id, user.email, user.name]);
+            inactive += Number(row.total);
+        }
+        const [[users]] = await quanTriTest.query("SELECT COUNT(*) AS total FROM libriflow_integration_test.NguoiDung");
+        const [[events]] = await quanTriTest.query("SELECT COUNT(*) AS total FROM libriflow_integration_test.LichSuSuDung WHERE action_type='login'");
+        if (inactive !== 2 || Number(users.total) !== 2 || Number(events.total) !== 2) throw Object.assign(new Error("Auth fixture cleanup or login persistence mismatch"), { code: "AUTH_CLEANUP_EVIDENCE_MISMATCH" });
+        baoCao.auth_scenarios = manifest.scenarios;
+        baoCao.auth_fixture_cleanup = { expected: 2, inactive, total_users: Number(users.total), login_events: Number(events.total), verified: true };
+    }
     maThoat = 0;
 } catch (loi) {
     baoCao.failure_code = typeof loi.code === "string" && /^[A-Z0-9_]+$/.test(loi.code) ? loi.code : "ISOLATED_RUN_FAILED";

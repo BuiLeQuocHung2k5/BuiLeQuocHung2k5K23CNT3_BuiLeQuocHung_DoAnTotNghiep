@@ -3,11 +3,9 @@ import { matchPath, Outlet, useLocation } from 'react-router'
 import { dieuHuongNenTang, cacTrangTrongKhung } from "../ung-dung/dinh-tuyen/cau-hinh-tuyen.js"
 import ThanhBen from "./ThanhBen.jsx"
 import DauTrang from "./DauTrang.jsx"
-import useDieuHuongDesktop from "./useDieuHuongDesktop.js"
 
 export default function KhungUngDung({ navigationGroups: cacNhomDieuHuong = dieuHuongNenTang }) {
   const viTri = useLocation()
-  const laDesktop = useDieuHuongDesktop()
   const thamChieuNoiDung = useRef(null)
   const duongDanTruoc = useRef(viTri.pathname)
   const trang = cacTrangTrongKhung.find(muc => matchPath({ path: muc.to, end: true }, viTri.pathname))
@@ -25,11 +23,11 @@ export default function KhungUngDung({ navigationGroups: cacNhomDieuHuong = dieu
   }, [viTri.pathname, title])
 
   return (
-    <div className={`app-shell ${laDesktop ? 'app-shell--desktop' : 'app-shell--compact'}`}>
+    <div className="app-shell">
       <a href="#app-main-content" className="app-skip-link" onClick={() => thamChieuNoiDung.current?.focus()}>Đến nội dung chính</a>
-      {laDesktop && <ThanhBen groups={cacNhomDieuHuong} />}
+      <ThanhBen groups={cacNhomDieuHuong} />
       <div className="app-shell-body">
-        <DauTrang pageTitle={title} groups={cacNhomDieuHuong} isDesktop={laDesktop} routeKey={viTri.pathname} mainRef={thamChieuNoiDung} />
+        <DauTrang pageTitle={title} />
         <main id="app-main-content" className="app-main" tabIndex={-1} ref={thamChieuNoiDung}>
           <div className="app-content"><Outlet /></div>
         </main>

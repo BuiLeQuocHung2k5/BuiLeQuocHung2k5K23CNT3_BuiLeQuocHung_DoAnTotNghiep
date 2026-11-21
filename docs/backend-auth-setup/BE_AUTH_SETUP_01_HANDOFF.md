@@ -1,44 +1,40 @@
 # BE-AUTH-SETUP-01 — Handoff
 
-Xác minh **2026-11-20**. **Đạt phần chuẩn bị; chưa đạt nghiệm thu Auth MySQL end-to-end.** Đang chờ phê duyệt tạo instance/database/account theo mục 6. Chưa sửa Frontend hoặc triển khai FE-06.
+Xác minh **2026-11-21**. **Hoàn tất kiểm chứng Authentication end-to-end trong phạm vi test đã duyệt; dừng chờ nghiệm thu.** Không tự triển khai FE-06. [Test report](BE_AUTH_SETUP_01_TEST_REPORT.md), [evidence JSON](evidence/BE_AUTH_SETUP_01_2026-11-21.json).
 
-## Phần đã hoàn thành
+## Kết quả
 
-- Đối chiếu source và BE-AUTH-PREP. Baseline HEAD 9bd5f45 sạch, Backend 175/175 test đạt.
-- Thêm [plan chỉ đọc](../../Backend/integration/ke-hoach-xac-thuc.mjs), [launcher](../../Backend/integration/chay-xac-thuc.mjs), [suite 10 scenario](../../Backend/integration/xac-thuc.mjs), [3 guard tests](../../Backend/test/moi-truong-xac-thuc.test.js), [env example](../../Backend/integration/.env.example).
-- Mở rộng instance-isolee.mjs bằng --auth-only và --allow-create-isolated; thiếu một trong hai cờ sẽ từ chối trước startup. Chuẩn bị verify target mới, password bootstrap CSPRNG, runtime ba quyền và cleanup. Chưa thực thi nhánh provision.
-- Sau chuẩn bị, 178/178 unit/safety và targeted auth 18/18 đạt. Syntax/import/export/casing/cycles: 78 file, 201 cạnh import, 264 import bindings, không lỗi/vòng.
-- Plan SELECT xác minh main MySQL 8.0.40/users = 0, binary 8.0 sẵn có; metadata/count hashes khớp. TEST_DB_* thiếu; launcher từ chối trước kết nối/ghi.
+- Người dùng phê duyệt có điều kiện kế hoạch ngày 2026-11-21. Baseline tiếp tục HEAD 8c224e8 sạch; không commit/push hoặc đổi index.
+- Một instance MySQL 8.0.40 mới: loopback 127.0.0.1, port 61458, UUID/datadir/cổng khác main, datadir mới không chồng lấn. Target database/account chưa tồn tại trước setup.
+- Setup nạp 16 bảng DDL/seed hiện hữu không sửa và 2 bảng guard/run. Runtime SHOW GRANTS xác minh chỉ INSERT/SELECT/UPDATE trong schema test, không global/admin/GRANT OPTION.
+- **10/10 scenario đạt**, Node 11/11 gồm test cha, 0 fail/skip. Register/login, HS256/900 giây/claims, me, RBAC và logout stateless đều có bằng chứng thật. Hai diagnostic thiếu config/ECONNREFUSED được nêu riêng, không báo outage MySQL thật.
+- Backend unit/safety **178/178 trước và sau**; guard targeted 3/3. Syntax/import/export/casing/cycles: 78 file, 201 cạnh import, 265 bindings, không lỗi/vòng.
+- Main chỉ SELECT; identity và metadata/count hashes trước/sau khớp. 97/97 file Frontend, 59/59 Backend/src, 6/6 SQL, 4/4 env/example khớp SHA-256 baseline.
 
-## Tài liệu
+## Cleanup
 
-[Environment](BE_AUTH_SETUP_01_ENVIRONMENT.md), [test database/kế hoạch duyệt](BE_AUTH_SETUP_01_TEST_DATABASE.md), [accounts](BE_AUTH_SETUP_01_TEST_ACCOUNTS.md), [Auth integration](BE_AUTH_SETUP_01_AUTH_INTEGRATION.md), [session policy](BE_AUTH_SETUP_01_SESSION_POLICY.md), [test report](BE_AUTH_SETUP_01_TEST_REPORT.md).
+Đúng 2 fixture reader và reader+librarian, không admin hoặc đổi role permissions. Sau suite, runner SELECT xác nhận 2/2 inactive, tổng 2 user và 2 login events; 1 run passed, 10 scenario passed.
 
-Mục 14 đã chỉ định memory-only, không localStorage/sessionStorage, reload login lại, không refresh. Chỉ hoàn thiện tài liệu, chưa triển khai Frontend. Giữ HS256, 900 giây, claims, password hashing, middleware, permissions và API contract.
+HTTP/pools đóng, instance test đã dừng. Kiểm OS: PID 53212 không còn, port 61458 không listen. Không DELETE/DROP/TRUNCATE/reset. Datadir/result giữ tại %TEMP%/libriflow-integration-BOn3tG để audit theo kế hoạch, không đưa data/hash vào repo. Không có credential bền hoặc Backend demo được bàn giao.
 
-## Phạm vi xin phê duyệt
+## File thay đổi trong lần tiếp tục
 
-Tạo một MySQL instance mới dưới OS temp, chỉ loopback, khác main về cổng/UUID/datadir. Tạo libriflow_integration_test và SQL account riêng; đặt bootstrap password ngẫu nhiên; nạp 16 bảng từ DDL/seed không sửa và 2 bảng guard. Setup được sáu quyền, sau đó thu hẹp runtime còn SELECT/INSERT/UPDATE.
+- Backend/integration/instance-isolee.mjs: guard identity/path/bind loopback, đọc quyền runtime thực tế, SELECT xác minh scenario/fixture cleanup và ghi evidence; không đổi auth runtime hoặc suite 10 scenario.
+- docs/backend-auth-setup/{BE_AUTH_SETUP_01_ENVIRONMENT,BE_AUTH_SETUP_01_TEST_DATABASE,BE_AUTH_SETUP_01_TEST_ACCOUNTS,BE_AUTH_SETUP_01_AUTH_INTEGRATION,BE_AUTH_SETUP_01_TEST_REPORT,BE_AUTH_SETUP_01_HANDOFF}.md: cập nhật kết quả thực tế.
+- Thêm docs/backend-auth-setup/evidence/BE_AUTH_SETUP_01_2026-11-21.json, chỉ dữ liệu đã lược bỏ đường dẫn riêng và không credential.
+- Backend/README.md và docs/{PROJECT_CONTEXT,DATABASE,DECISIONS,TASKS,HANDOFF}.md: cập nhật trạng thái/hướng bàn giao.
 
-Tạo hai fixture reader và reader+librarian qua API thật, không tạo admin hoặc sửa role permissions. Chạy 10 scenario; deactivate fixture, đóng HTTP/pools và dừng đúng instance mới. Giữ datadir/result để kiểm tra; không DROP/TRUNCATE/DELETE hoặc reset database.
+Không sửa Frontend, Backend/src, API contract, schema/seed nguồn, env, package/lock hoặc tests/suite hiện hữu. Không stage/reset/unstage/commit/push. [Session policy](BE_AUTH_SETUP_01_SESSION_POLICY.md) memory-only theo mục 14 vẫn giữ nguyên, chưa triển khai Frontend.
 
-Chỉ sau khi được phê duyệt mới chạy từ Backend:
+Kiểm cuối: 13 file hiện hữu sửa, 1 evidence JSON mới, không xóa; đúng whitelist. 143 local links tại 13 docs, UTF-8/whitespace và git diff --check đạt; HEAD/index giữ nguyên. Không thấy mẫu JWT đầy đủ/bcrypt hash/private key trong file thay đổi/evidence/mysql.log, không coi scan theo mẫu là chứng nhận bảo mật toàn diện.
 
-~~~powershell
-node integration/instance-isolee.mjs --auth-only --allow-create-isolated
-~~~
+## Điều kiện bắt đầu FE-06 và giới hạn
 
-Mục 6 yêu cầu dừng trước tạo database/thay quyền cấp instance và báo kế hoạch để người dùng duyệt; xem [kế hoạch chi tiết](BE_AUTH_SETUP_01_TEST_DATABASE.md). Chưa dùng cờ opt-in hoặc chạy provision. Lệnh legacy không tham số không được dùng để né gate.
+**Đủ bằng chứng Backend auth để bắt đầu xây dựng FE-06 sau khi người dùng nghiệm thu.** Chưa cung cấp Backend dev lâu dài/credential cho browser; để chạy tích hợp FE-06 cần target dev riêng và cấu hình JWT/account/vòng đời riêng. Không tự sửa main để đáp ứng việc này.
 
-## Rủi ro, giới hạn và bước tiếp theo
+- P0: không phát hiện P0 mới trong các kiểm tra đã chạy; không thay cho pentest.
+- P1 vận hành: chưa có môi trường dev auth lâu dài; main JWT/account vẫn không được dùng để thử. Không còn blocker cho kết luận run E2E test đã duyệt.
+- P2: browser/CORS enforcement, actual MySQL outage, TLS/proxy, tải/concurrency và production hardening chưa kiểm.
+- P3: datadir test được giữ; quản lý vòng đời/xóa nếu cần phải theo phạm vi được duyệt, không tự reset.
 
-- P0: chưa xác định vấn đề P0 mới trong phạm vi khảo sát này; không thay cho pentest.
-- P1: chưa duyệt provision, TEST_DB_* chưa có; chưa có MySQL login mới hoặc môi trường auth demo. JWT main vẫn thiếu/account main = 0; không sửa main để thử.
-- P2: nhánh mới chưa thực thi trên instance thật. Runner kiểm thử tạm không phải Backend dev lâu dài; browser/TLS/production hardening còn task riêng.
-- P3: vận hành đúng lệnh auth và guard; tài liệu cũ là snapshot, session policy theo chỉ dẫn mới.
-
-Tạo 7 docs setup và 5 file helper/test/example đã liên kết ở trên. Sửa Backend/integration/instance-isolee.mjs, Backend/README.md và docs/{PROJECT_CONTEXT,DATABASE,DECISIONS,TASKS,HANDOFF}.md. Không sửa runtime auth, SQL/schema nguồn, env thật, package/lock, Frontend hoặc tài liệu task trước; không stage/reset/unstage/commit/push.
-
-Kiểm cuối: 97/97 file Frontend khớp blob HEAD qua Git filters; 100 file Backend ngoài README/instance runner không có diff. Chỉ 7 file cũ sửa và 12 file mới đúng phạm vi, không xóa; HEAD/index giữ nguyên. 132 local links tại 13 docs, UTF-8/whitespace và git diff --check đạt. Lượt targeted cuối 21/21 (18 auth + 3 guard), toàn bộ Backend 178/178.
-
-Sau phê duyệt, chạy MySQL thật rồi cập nhật status/claims/grants/fixtures/events, main before/after và cleanup. Hiện chưa đủ bằng chứng nghiệm thu Authentication end-to-end cho FE-06; không tự mở FE-06.
+Lịch sử chuẩn bị 2026-11-20 ở [TASKS](../TASKS.md). Tài liệu liên quan: [environment](BE_AUTH_SETUP_01_ENVIRONMENT.md), [database](BE_AUTH_SETUP_01_TEST_DATABASE.md), [accounts](BE_AUTH_SETUP_01_TEST_ACCOUNTS.md), [integration](BE_AUTH_SETUP_01_AUTH_INTEGRATION.md). Dừng chờ nghiệm thu; không tự chạy thêm hoặc triển khai FE-06.
