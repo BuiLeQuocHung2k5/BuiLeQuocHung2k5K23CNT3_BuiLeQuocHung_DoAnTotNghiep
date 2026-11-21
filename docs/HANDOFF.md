@@ -1,5 +1,24 @@
 # Bàn giao hiện tại
 
+## GIT-003 — Đã được duyệt kết thúc merge (2026-11-21)
+
+- Người dùng cho phép tạo merge commit, không push/pull. Phê duyệt này thay gate chờ duyệt ở GIT-002 bên dưới; AutoGit tiếp tục tắt.
+- Trước commit đã rà đúng 4 file staged (settings và ba tài liệu Git), không unstaged/unmerged hoặc thay đổi source/SQL; diff-check đạt. Lượt này chỉ cập nhật TASKS/HANDOFF trong cùng merge commit.
+- Hai parent cần bảo toàn: local `accece0`, remote `0acca85`. Thông điệp: `Merge origin/main: resolve layout conflicts and preserve latest LibriFlow source`.
+- Backup hiện có được giữ nguyên; đọc/kiểm lại 1.427 snapshot files khớp manifest. Không ghi thêm log hay tệp vào backup.
+- Bước kiểm tra ngay sau commit: status/log, hai parent, không còn MERGE_HEAD/unmerged paths, source/SQL không đổi và backup fingerprint giữ nguyên. Kết quả lệnh được báo trực tiếp cho người dùng; không chạy thêm nghiệp vụ hoặc push/pull. Chi tiết [GIT-003](TASKS.md); các snapshot bên dưới là lịch sử.
+
+## GIT-002 — Git đã hết conflict, chờ duyệt commit (2026-11-21)
+
+- `main` vẫn tại `accece0`, merge với `0acca85` chưa commit theo quy tắc người dùng; không rebase/cherry-pick/pull/push/abort. Không còn unmerged paths. Kết quả và nguồn xác minh: [GIT-002](TASKS.md).
+- Đã bảo toàn 277 tệp HEAD, source Backend/Frontend hiện hành, tính năng FE06–09/desktop, ảnh bìa, SQL, env và toàn bộ lịch sử. 14 file SQL/assets/env/example giữ nguyên byte; chỉ phục hồi source từ marker về phiên bản local đã xác minh.
+- Đối chiếu đủ 245 remote files: 213 trùng HEAD, 32 trùng local cũ `8c224e8`. Giữ cấu trúc gốc, giải quyết 226 bản local; bỏ 11 bản lồng đã xác minh và 2 file mobile từng xóa có chủ đích ở FE-DESKTOP-01. Không còn thư mục `LibriFlow/` lồng.
+- Sao lưu độc lập đã kiểm SHA-256: `C:/Users/pc/AppData/Local/Temp/LibriFlow-git-recovery-2026-11-21T06-01-19-168Z/` gồm snapshot 1.427 file, Git state, manifest, patches, plan/result và logs; không gồm node_modules/dist. Giữ backup ngoài Git; có bản sao cấu hình riêng tư, không chia sẻ công khai.
+- File thay đổi cuối task: `.vscode/settings.json` (AutoGit=false), `docs/DECISIONS.md`, `docs/TASKS.md`, `docs/HANDOFF.md`. Source/SQL và các bàn giao nghiệp vụ bên dưới giữ nguyên.
+- Kiểm tra đạt: Backend 178/178; Frontend 280/280 tại 16 file, lint/build; đủ file/ảnh/SQL, không conflict marker và diff-check. Chưa chạy browser/E2E hoặc DB integration; không truy vấn/ghi DB.
+- Upstream đã đúng: `main → origin/main`; remote kiểm chỉ đọc qua ls-remote tại `0acca85`. Không đổi upstream hoặc tạo remote branch; thông báo IDE thiếu tracking không phản ánh nhánh main hiện tại.
+- Tiếp theo: người dùng duyệt merge commit sau khi rà staged diff. Giữ AutoGit tắt để tránh commit/sync tự động. Push cần chỉ dẫn riêng, tuyệt đối không force. Các snapshot nghiệp vụ dưới đây là lịch sử, không phải yêu cầu tự tiếp tục.
+
 ## FE-ASSETS-01 — Thêm ảnh bìa sách (2026-11-21)
 
 Đã chuẩn bị [Frontend/public/Anh/BiaSach/](../Frontend/public/Anh/BiaSach/) với .gitkeep và [bia-sach-mac-dinh.svg](../Frontend/public/Anh/BiaSach/bia-sach-mac-dinh.svg) dùng màu Warm Wooden Library. Chưa có ảnh cho hai đầu sách, chưa gắn ảnh vào giao diện/dữ liệu.

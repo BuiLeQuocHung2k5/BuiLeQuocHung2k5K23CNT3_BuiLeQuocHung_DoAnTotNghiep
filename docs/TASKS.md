@@ -1,5 +1,29 @@
 # Theo dõi task
 
+## GIT-003 — Phê duyệt kết thúc merge (2026-11-21)
+
+- Người dùng đã cho phép tạo một merge commit sau rà staged; không push/pull, không sửa Backend/Frontend/DB và giữ nguyên backup. Phê duyệt này thay trạng thái chờ duyệt của GIT-002.
+- Kiểm tra trước commit: đúng 4 file staged `.vscode/settings.json`, `docs/DECISIONS.md`, `docs/TASKS.md`, `docs/HANDOFF.md`; không có unstaged/unmerged paths hoặc thay đổi source/SQL. `git diff --cached --check` đạt; HEAD `accece0`, MERGE_HEAD `0acca85` đúng kỳ vọng.
+- File cập nhật trong lượt này: `docs/TASKS.md`, `docs/HANDOFF.md`; đưa vào cùng merge commit, không tạo commit tài liệu riêng. Giữ AutoGit=false.
+- Backup: xác minh lại đủ 1.427 file snapshot bằng manifest; tổng 1.442 file hiện có trong thư mục backup. Chỉ đọc, không ghi bổ sung hoặc thay đổi backup.
+- Thông điệp commit được chuẩn bị: `Merge origin/main: resolve layout conflicts and preserve latest LibriFlow source`; hai parent cần giữ là `accece0` và `0acca85`.
+- Kiểm tra kết thúc: chạy `git status -sb`, `git log -1 --oneline`, kiểm hai parent, MERGE_HEAD không còn và unmerged paths rỗng; kết quả thực tế được báo sau khi lệnh hoàn tất. Không chạy lại test ứng dụng vì source không đổi; kết quả 178/280 tests, lint/build ở GIT-002 giữ nguyên phạm vi.
+- Bước tiếp theo: chỉ kiểm tra kết quả commit và báo cáo; mọi push/pull vẫn ngoài phạm vi được phép.
+
+## GIT-002 — Khắc phục xung đột vị trí/nội dung (2026-11-21)
+
+- Trạng thái: đã xử lý hết 238 unmerged paths; merge còn chờ người dùng duyệt commit. Không commit, pull, push, abort hoặc viết lại lịch sử.
+- Ban đầu: `main` tại `accece0`, `MERGE_HEAD=0acca85`, ahead 17/behind 1 so với `origin/main`; không rebase/cherry-pick. Có 225 AA, 1 UU, 2 UA, 10 DU và 1 SQL staged; không có file untracked ngoài ignore.
+- Nguyên nhân: remote chứa snapshot cũ dưới `LibriFlow/`, local dùng Backend/Frontend/docs ở gốc và đã phát triển tiếp. Git suy diễn di chuyển thư mục gây file-location/add-add/delete-modify; không phải 238 thay đổi nghiệp vụ mới.
+- Sao lưu ngoài working tree: `C:/Users/pc/AppData/Local/Temp/LibriFlow-git-recovery-2026-11-21T06-01-19-168Z/`; snapshot 1.427 file (6.408.753 byte), gồm Git metadata/index/object, working tree, file ignored/untracked; bỏ node_modules/dist. Đã đối chiếu SHA-256 nguồn/bản sao và kiểm nguồn không đổi lúc sao lưu. Manifest, patches, kế hoạch từng file và logs kiểm tra nằm cùng thư mục; không đưa backup vào Git.
+- Căn cứ xử lý: toàn bộ 245 tệp remote sau quy đổi đường dẫn có 213 blob trùng HEAD và 32 blob trùng local `8c224e8`; không có nội dung remote chưa được bảo toàn trong lịch sử local. 238 working files khớp từng phía/projection marker, không có chỉnh sửa ngoài marker bị loại. 202 xung đột hai phía giống blob; 24 khác biệt là bản remote cũ đã được thay ở local.
+- Kết quả: giữ 226 bản local đã xác minh; gỡ 11 bản lồng (10 conflict + SQL trùng), giữ ở gốc; gỡ 2 file mobile cũ mà FE-DESKTOP-01 đã chủ động xóa. Không chọn ours/theirs hàng loạt khi chưa xác minh. Source/SQL/tài liệu nghiệp vụ sau giải quyết trùng HEAD, không sửa logic hoặc DB.
+- File sửa thêm: `.vscode/settings.json` tắt `vscode-autoGit.enabled` để tránh tự commit/sync; `docs/DECISIONS.md`, `docs/TASKS.md`, `docs/HANDOFF.md` ghi quyết định và kết quả. Danh sách 238 đường dẫn và lựa chọn từng file: `resolution-plan.json` trong backup.
+- Upstream: `main` đã theo dõi `origin/main` từ đầu task; `git ls-remote --heads origin main` xác minh remote tồn tại tại `0acca85`, khớp MERGE_HEAD. Không cần đổi tracking; lỗi thiếu upstream nêu trong IDE không tái hiện ở nhánh hiện tại. Không tự cấu hình các nhánh backup/integrate hoặc tạo remote branch.
+- Kiểm tra: đủ 277 tệp HEAD; 14 file SQL/public-assets/env/example nguyên byte so snapshot; Backend/Frontend/ảnh/SQL còn đủ; không còn LibriFlow lồng hoặc conflict markers, `git ls-files -u` rỗng. Trước cập nhật bàn giao, index bằng HEAD; chỉ settings thay đổi ở working tree. HEAD/merge parents giữ nguyên.
+- Kiểm thử: `npm.cmd --prefix Backend test` đạt 178/178; Frontend `run build`, `run lint` đạt; `run test:run -- --maxWorkers=1` đạt 280/280 tại 16 file. Backend không có build script; không chạy integration/SQL/MySQL/browser. Build chỉ tái tạo dist đã ignore. Logs ngoài repo trong backup.
+- Tồn tại/bước tiếp theo: merge chưa thể kết thúc nếu chưa được duyệt `git commit`. Giữ AutoGit tắt. Rà staged diff và xin duyệt commit; push cần yêu cầu riêng. Không tự triển khai task nghiệp vụ mới.
+
 ## FE-ASSETS-01 — Chuẩn bị thư mục ảnh bìa sách (2026-11-21)
 
 - Hoàn tất, chờ người dùng bổ sung ảnh. Baseline Git sạch, HEAD c4e94fa; đã kiểm cấu trúc Frontend, Vite và palette hiện có, chưa có public/ảnh bìa.

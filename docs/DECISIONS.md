@@ -1,5 +1,11 @@
 # Quyết định và căn cứ
 
+## GIT-002 — Giữ cấu trúc gốc và tắt đồng bộ tự động (2026-11-21)
+
+- Theo task người dùng, chỉ xử lý conflict có bằng chứng và không commit/pull/push/abort. Đã xác minh mọi blob remote ở đường dẫn quy đổi trùng HEAD hoặc local cũ `8c224e8`; giữ bản local hiện hành và các lần xóa mobile có chủ đích của FE-DESKTOP-01. Không đổi nghiệp vụ/schema.
+- Tạm đặt `vscode-autoGit.enabled=false` trong `.vscode/settings.json` để ngăn tiện ích tự commit/sync khi sửa merge; backup chứa cấu hình trước sửa. Không tự bật lại hoặc hoàn tất commit. Upstream `main → origin/main` đã đúng, giữ nguyên.
+- Nguồn kiểm tra và trạng thái chờ duyệt: [GIT-002](TASKS.md), [bàn giao](HANDOFF.md); kế hoạch đối chiếu từng file trong backup độc lập được chỉ rõ ở task.
+
 ## FE-DESKTOP-01 — Ưu tiên desktop (2026-11-21)
 
 - Căn cứ: người dùng yêu cầu tinh giản Frontend, giữ Sidebar + Header + Main, ưu tiên laptop/desktop và không tiếp tục giao diện điều hướng riêng cho điện thoại. Chỉ dẫn đã được xác định trong task; phần lập trình chờ nghiệm thu.
