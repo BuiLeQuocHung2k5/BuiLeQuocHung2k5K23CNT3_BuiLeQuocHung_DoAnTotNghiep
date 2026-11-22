@@ -1,11 +1,14 @@
 # Database
 
+<<<<<<< HEAD:docs/DATABASE.md
 ## FE-14 · Kiểm chứng ngày 22/11/2026
 
 MySQL 8.0.40 local có hai schema riêng. Truy vấn `information_schema.columns` xác nhận database chính giữ ISBN trên bản sao. Bốn bảng sách, bản sao, người dùng và phiếu mượn của database chính đều có 0 bản ghi lúc tiếp tục task. Trong `libriflow_demo`, ISBN nullable/unique thuộc `Sach`, barcode unique thuộc `BanSaoSach`. Kiểm kê sau khi bổ sung ngày UTC 21/11 cho thấy 11 sách, 22 bản sao, 3 tài khoản và 37 phiếu mượn. Runtime demo dùng account cục bộ được cấp quyền đọc/ghi riêng cho schema demo.
 
 Script tạo schema chuẩn và migration cho database cũ nằm trong [Backend/sql](../Backend/sql/README.md). Phạm vi kiểm chứng, dữ liệu trình diễn và giá trị SMA7 ghi ở [bàn giao FE-14](../Frontend/docs/FE14_HANDOFF.md).
 
+=======
+>>>>>>> 411c8e4b6c23e5c1bdeae8debb7d768ea7b913be:LibriFlow/docs/DATABASE.md
 ## BE-AUTH-SETUP-01 — MySQL test đã chạy và dừng (2026-11-21)
 
 - Sau phê duyệt có điều kiện, tạo đúng một instance MySQL 8.0.40 mới dưới OS temp; SELECT xác minh bind 127.0.0.1, port 61458, datadir/UUID/cổng khác main và đường dẫn không chồng lấn. Database/account test chưa tồn tại trước setup.

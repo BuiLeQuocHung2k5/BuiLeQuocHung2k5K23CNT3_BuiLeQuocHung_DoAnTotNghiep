@@ -1,5 +1,6 @@
 # Theo dõi task
 
+<<<<<<< HEAD:docs/TASKS.md
 ## FE-14 — Tích hợp và chuẩn hóa ISBN · 22/11/2026
 
 Đã hoàn thành phần demo và kiểm chứng với Chrome/MySQL local. Lệnh gốc chạy cả hai ứng dụng. ISBN theo đầu sách và barcode theo bản sao. Đã xác nhận lưu qua reload, RBAC, mượn/trả từng phần, lịch sử cá nhân, 7 chỉ số và SMA7. Frontend 302/302, lint/build đạt. Backend 179/179 và 21/21 kịch bản MySQL độc lập đạt. Khi tiếp tục ngày 22/11 đã giữ nguyên 11 sách, 22 bản sao và 3 tài khoản, chỉ bổ sung hai phiếu demo của ngày vừa khép lại. Các thay đổi và giới hạn ở [FE14_HANDOFF](../Frontend/docs/FE14_HANDOFF.md). Chờ nghiệm thu.
@@ -47,6 +48,8 @@
 - Parse/import 77 file không lỗi/casing; ảnh dev/production 200/MIME/bytes khớp, route SPA shell 200, server tạm đã đóng. 107 Backend giữ hash; HEAD/index không đổi. Chưa browser/Backend MySQL E2E: host unavailable/cổng3000 đóng/chưa account dev.
 - Chỉ thay ảnh/runtime Frontend nêu trên và TASKS/HANDOFF, thêm đúng FE10_HANDOFF; không DB/schema/API/env/package/commit/push. Tiếp theo: người dùng nghiệm thu, cần môi trường dev cô lập và account hợp lệ; không tự FE11.
 
+=======
+>>>>>>> 411c8e4b6c23e5c1bdeae8debb7d768ea7b913be:LibriFlow/docs/TASKS.md
 ## GIT-003 — Phê duyệt kết thúc merge (2026-11-21)
 
 - Người dùng đã cho phép tạo một merge commit sau rà staged; không push/pull, không sửa Backend/Frontend/DB và giữ nguyên backup. Phê duyệt này thay trạng thái chờ duyệt của GIT-002.

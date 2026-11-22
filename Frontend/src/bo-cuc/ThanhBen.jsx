@@ -6,11 +6,19 @@ import DieuHuongUngDung from "./DieuHuongUngDung.jsx"
 function NoiDungThanhBen({ groups: cacNhom }) {
   return (
     <div className="app-sidebar-content">
+<<<<<<< HEAD:Frontend/src/bo-cuc/ThanhBen.jsx
       <Link to={DUONG_DAN_UNG_DUNG} className="app-brand" aria-label="LibriFlow — trang chủ thư viện">
+=======
+      <Link to={DUONG_DAN_UNG_DUNG} className="app-brand" aria-label="LibriFlow — khung ứng dụng">
+>>>>>>> 411c8e4b6c23e5c1bdeae8debb7d768ea7b913be:LibriFlow/Frontend/src/bo-cuc/ThanhBen.jsx
         <span className="app-brand-mark"><BieuTuong icon={thuongHieuUngDung.icon} size={25} /></span>
         <span><span className="app-brand-name">{thuongHieuUngDung.name}</span><span className="app-brand-caption">{thuongHieuUngDung.caption}</span></span>
       </Link>
       <DieuHuongUngDung groups={cacNhom} />
+<<<<<<< HEAD:Frontend/src/bo-cuc/ThanhBen.jsx
+=======
+      <div className="app-sidebar-footnote"><NhanTrangThai>FE-04 · Layout</NhanTrangThai><p>Khung giao diện độc lập.<br />Chức năng sẽ được tích hợp sau.</p></div>
+>>>>>>> 411c8e4b6c23e5c1bdeae8debb7d768ea7b913be:LibriFlow/Frontend/src/bo-cuc/ThanhBen.jsx
     </div>
   )
 }
