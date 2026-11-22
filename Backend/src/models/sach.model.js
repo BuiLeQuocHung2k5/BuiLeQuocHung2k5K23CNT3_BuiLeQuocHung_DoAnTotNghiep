@@ -1,6 +1,8 @@
+import { LoiHttp } from "../utils/loi-http.js";
+
 // Tên cột lấy từ schema.sql; giá trị luôn truyền bằng tham số SQL.
-const CAC_COT = "book_id, category_id, series_id, title, author, publisher, description, publication_year, created_at, updated_at";
-const CAC_COT_DUOC_GHI = ["category_id", "series_id", "title", "author", "publisher", "description", "publication_year"];
+const CAC_COT = "book_id, category_id, series_id, isbn, title, author, publisher, description, publication_year, created_at, updated_at";
+const CAC_COT_DUOC_GHI = ["category_id", "series_id", "isbn", "title", "author", "publisher", "description", "publication_year"];
 
 function chuanHoaBanGhi(dongDuLieu) {
     if (!dongDuLieu) return null;
@@ -24,6 +26,7 @@ export function taoMoHinhSach(boKetNoi) {
             return ketQua;
         } catch (loi) {
             try { await ketNoi.rollback(); } catch { /* Giữ nguyên lỗi ban đầu. */ }
+            if (loi.code === "ER_DUP_ENTRY") throw new LoiHttp(409, "DUPLICATE_ISBN", "ISBN này đã thuộc về một đầu sách.", [{ field: "isbn", message: "ISBN đã tồn tại." }]);
             throw loi;
         } finally {
             ketNoi.release();

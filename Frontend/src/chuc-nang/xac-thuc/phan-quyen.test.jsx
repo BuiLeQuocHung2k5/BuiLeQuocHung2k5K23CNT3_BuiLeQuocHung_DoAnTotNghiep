@@ -51,7 +51,7 @@ describe('FE-07 — guard, trang 403 và điều hướng qua principal mock đ�
     expect(noiDungDaMount).not.toHaveBeenCalled()
     expect(document.title).toBe('403 · LibriFlow')
     await userEvent.click(screen.getByRole('button', { name: 'Về trang chính' }))
-    expect(await screen.findByRole('heading', { name: 'Khung ứng dụng' })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: 'Trang chủ thư viện' })).toBeVisible()
     expect(screen.getByText('Người dùng kiểm thử')).toBeVisible()
   })
 
@@ -88,7 +88,7 @@ describe('FE-07 — guard, trang 403 và điều hướng qua principal mock đ�
     const lanDau = render(<NguCanhXacThuc.Provider value={{ nguoiDung: nguoiDungThu, daDangNhap: true, dangXuat: vi.fn() }}><MemoryRouter initialEntries={['/403']}><DinhTuyenUngDung /></MemoryRouter></NguCanhXacThuc.Provider>)
     expect(screen.getByRole('heading', { name: /^403/ })).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Về trang chính' }))
-    expect(await screen.findByRole('heading', { name: 'Khung ứng dụng' })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: 'Trang chủ thư viện' })).toBeVisible()
     lanDau.unmount()
     render(<NguCanhXacThuc.Provider value={{ nguoiDung: null, daDangNhap: false }}><MemoryRouter initialEntries={['/403']}><DinhTuyenUngDung /></MemoryRouter></NguCanhXacThuc.Provider>)
     expect(await screen.findByRole('heading', { name: 'Đăng nhập' })).toBeVisible()
@@ -99,7 +99,7 @@ describe('FE-07 — sidebar desktop lọc theo principal', () => {
   it.each(['admin', 'librarian', 'reader'])('shows real shared menus and separate tools for %s', vaiTro => {
     render(<NguCanhXacThuc.Provider value={{ nguoiDung: { ...nguoiDungThu, roles: [vaiTro] }, daDangNhap: true }}><MemoryRouter><ThanhBen groups={dieuHuongNenTang} /></MemoryRouter></NguCanhXacThuc.Provider>)
     const menu = screen.getByRole('navigation', { name: 'Điều hướng chính' })
-    expect(within(menu).getAllByRole('link')).toHaveLength(7)
+    expect(within(menu).getAllByRole('link')).toHaveLength(vaiTro === 'reader' ? 10 : vaiTro === 'admin' ? 9 : 8)
     expect(within(menu).getByText('Không gian ứng dụng')).toBeVisible()
     expect(within(menu).getByText('Công cụ phát triển')).toBeVisible()
     expect(within(menu).getByRole('link', { name: 'Quản lý sách' })).toHaveAttribute('href', '/app/sach')

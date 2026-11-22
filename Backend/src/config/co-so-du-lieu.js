@@ -23,10 +23,18 @@ const boKetNoi = mysql.createPool({
     queueLimit: 50,
     connectTimeout: 10000,
     charset: "utf8mb4",
+    ...(process.env.LIBRIFLOW_DEMO_UTC === "1" ? { timezone: "Z" } : {}),
     enableKeepAlive: true,
     supportBigNumbers: true,
     bigNumberStrings: true,
 });
+
+// DATETIME/timestamps của database demo được ghi và đọc theo cùng múi giờ với dự báo.
+if (process.env.LIBRIFLOW_DEMO_UTC === "1") {
+    boKetNoi.on("connection", ketNoi => {
+        ketNoi.query("SET SESSION time_zone = '+00:00'", loi => { if (loi) ketNoi.destroy(); });
+    });
+}
 
 export async function kiemTraKetNoiCoSoDuLieu() {
     await boKetNoi.query("SELECT 1");

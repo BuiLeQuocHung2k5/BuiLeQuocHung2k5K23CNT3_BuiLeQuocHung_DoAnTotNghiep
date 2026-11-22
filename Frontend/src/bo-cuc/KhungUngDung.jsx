@@ -31,7 +31,7 @@ export default function KhungUngDung({ navigationGroups: cacNhomDieuHuong = dieu
         <main id="app-main-content" className="app-main" tabIndex={-1} ref={thamChieuNoiDung}>
           <div className="app-content"><Outlet /></div>
         </main>
-        <footer className="app-footer"><span>LibriFlow · Warm Wooden Library</span><span>FE-04 / Khung giao diện</span></footer>
+        <footer className="app-footer"><span>LibriFlow · Warm Wooden Library</span></footer>
       </div>
     </div>
   )

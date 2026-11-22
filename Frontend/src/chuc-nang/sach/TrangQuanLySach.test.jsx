@@ -141,7 +141,7 @@ it('validates a create form before transport and refreshes the real list envelop
   expect(await screen.findByRole('button', { name: 'Sách mới', exact: true })).toBeVisible()
   expect(toast.success).toHaveBeenCalledWith('Đã thêm sách.')
   const body = JSON.parse(daGoi.find(muc => muc.method === 'post').data)
-  expect(body).toEqual({ title: 'Sách mới', author: 'Tác giả mới', publisher: null, category_id: '42', series_id: null, description: null, publication_year: null })
+  expect(body).toEqual({ isbn: null, title: 'Sách mới', author: 'Tác giả mới', publisher: null, category_id: '42', series_id: null, description: null, publication_year: null })
 })
 it('lookup Enter does not submit the book and an existing category outside search results is preserved', async () => {
   hienThi(); await choDanhSach()
@@ -161,7 +161,7 @@ it('PUT preserves nulls, year zero and large reference IDs, without timestamps o
   await userEvent.clear(ten); await userEvent.type(ten, 'Đã sửa')
   await userEvent.click(within(hopThoai).getByRole('button', { name: 'Lưu thay đổi' }))
   expect(await screen.findByRole('button', { name: 'Đã sửa', exact: true })).toBeVisible()
-  expect(JSON.parse(daGoi.find(muc => muc.method === 'put').data)).toEqual({ title: 'Đã sửa', author: banGoc.author, publisher: null, category_id: '42', series_id: banGoc.series_id, description: null, publication_year: 0 })
+  expect(JSON.parse(daGoi.find(muc => muc.method === 'put').data)).toEqual({ isbn: null, title: 'Đã sửa', author: banGoc.author, publisher: null, category_id: '42', series_id: banGoc.series_id, description: null, publication_year: 0 })
 })
 it('does not send DELETE before confirmation, permits cancellation and refreshes after confirmed deletion', async () => {
   hienThi(); await choDanhSach()

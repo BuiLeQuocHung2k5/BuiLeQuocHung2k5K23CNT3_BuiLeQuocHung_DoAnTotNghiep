@@ -1,5 +1,52 @@
 # Theo dõi task
 
+## FE-14 — Tích hợp và chuẩn hóa ISBN · 22/11/2026
+
+Đã hoàn thành phần demo và kiểm chứng với Chrome/MySQL local. Lệnh gốc chạy cả hai ứng dụng. ISBN theo đầu sách và barcode theo bản sao. Đã xác nhận lưu qua reload, RBAC, mượn/trả từng phần, lịch sử cá nhân, 7 chỉ số và SMA7. Frontend 302/302, lint/build đạt. Backend 179/179 và 21/21 kịch bản MySQL độc lập đạt. Khi tiếp tục ngày 22/11 đã giữ nguyên 11 sách, 22 bản sao và 3 tài khoản, chỉ bổ sung hai phiếu demo của ngày vừa khép lại. Các thay đổi và giới hạn ở [FE14_HANDOFF](../Frontend/docs/FE14_HANDOFF.md). Chờ nghiệm thu.
+
+## FE-13 — Thống kê và dự báo tần suất (2026-11-21)
+
+- Hoàn tất Frontend theo contract, chờ nghiệm thu; [FE13_HANDOFF](../Frontend/docs/FE13_HANDOFF.md) ghi API/quyền/đơn vị/giới hạn.
+- Đọc AGENTS/5 docs dự án, FE12/matrix/contracts, source statistics/forecast/thuật toán/validation. Baseline HEAD0b2a455 có FE10–12 chưa commit; lưu hash297file/index, giữ các thay đổi có sẵn.
+- Thêm /app/thong-ke (report_view) với 7 metric, lọc ngày UTC≤366/ngày-tuần-tháng/user cho chuỗi, cột phiếu+bản sao và bảng, không điền bucket thiếu. /app/du-bao (forecast_view) đọc me/ID, ready hoặc insufficient_data, training/MAE, dự báo7ngày và lịch sử thật nếu có thêm report_view; không nối chuỗi/gap hoặc tạo số giả.
+- Backend SMA7 dự báo phiếu không hủy/người/ngày, persisted=false; generate POST luôn503, UI không có thao tác tạo/lưu. Chưa có ready/coverage/MAE MySQL thật được chứng minh mới trong task.
+- Tạo 2page/service/test/CSS và đúng FE13_HANDOFF; sửa route/lazy config, Admin dùng chung overview+shortcut, fixture FE12 đủ envelope thật. Không thư viện mới, không Backend/database/API/env/package/Auth changes.
+- **302/302 tại20file**,0fail/skip; thêm6mocktests, lint/build đạt. Lệnh: npm.cmd run test:run -- --maxWorkers=1; npm.cmd run lint; npm.cmd run build -- --logLevel=warn. Lỗi test tham chiếu bảng cũ đã sửa, không nới assertion/dữ liệu.
+- 3 production shells200, preview đóng. 107Backend giữ hash, HEAD/index không đổi; không truy vấn/ghi DB hoặc tạo fixture/account/coverage. Chưa browser/resize/AT/MySQL E2E vì host unavailable/TCP3000 đóng/chưa account dev.
+- Tiếp theo: người dùng nghiệm thu; demo/MySQL thật dành FE14 sau task mới. Không stage/commit/push hoặc tự FE14.
+
+## FE-12 — Khu vực Admin và giới hạn API người dùng (2026-11-21)
+
+- Hoàn tất giao diện khả thi, **chưa hoàn tất danh sách/CRUD người dùng vì Backend không có API**; [FE12_HANDOFF](../Frontend/docs/FE12_HANDOFF.md) ghi rõ phạm vi/chặn.
+- Đọc AGENTS/5 docs dự án, matrix/gaps, FE11, source auth/mount/routes/controllers/services/models và stats validation. Baseline HEAD 0b2a455 có FE10–11 chưa commit, lưu hash 293 file/index; giữ thay đổi có sẵn.
+- Thêm /app/admin (role admin) với identity, link theo grant và 3 aggregate report_view từ GET statistics/overview. Thêm /app/nguoi-dung (user_manage) là trang báo chưa hỗ trợ, không list/form/nút giả, không public-register/statistics-users thay CRUD. Không link trang thống kê chưa tồn tại.
+- Tạo 2 trang + 1 file test và đúng FE12_HANDOFF; sửa route/lazy config, 2 test menu FE07 và TASKS/HANDOFF. Không thêm library/CSS/hạ tầng, không đổi FE06–11 runtime.
+- Hồi quy **296/296 tại 19 file**, 0 fail/skip; baseline tham chiếu292, thêm4 mock tests; lint/build đạt. Lệnh: npm.cmd run test:run -- --maxWorkers=1; npm.cmd run lint; npm.cmd run build -- --logLevel=warn. Giữ test nghiệp vụ/bảo mật; chỉ cập nhật assertion menu có trang thật mới.
+- Hai production SPA shells200, preview đã đóng. Chưa UI/browser/AT/resize hoặc Backend/MySQL E2E: host unavailable/TCP3000 đóng/chưa account dev. 107 Backend khớp hash, HEAD/index giữ nguyên; không DB/env/package/Backend changes hoặc stage/commit/push.
+- Tiếp theo: người dùng nghiệm thu phần khả thi; muốn quản trị user đầy đủ cần task Backend API/contract/quyền riêng. Không tự triển khai FE13.
+
+## FE-11 — Giao diện độc giả (2026-11-21)
+
+- Hoàn tất phần lập trình, chờ nghiệm thu. [FE11_HANDOFF](../Frontend/docs/FE11_HANDOFF.md) ghi route/API/scope, file và giới hạn; không tự FE12.
+- Đọc AGENTS/5 docs dự án, matrix/handoff FE10 và source auth/borrow/catalog, guard/menu/API/FE06–10. Baseline HEAD 0b2a455 có FE10 chưa commit; lưu hash 286 file/index và giữ các thay đổi đó.
+- Thêm /app/doc-gia, /app/lich-su-muon (role reader từ me) và /app/tai-khoan (auth-only). Tái sử dụng sách/ảnh/bản sao FE08–10 và chi tiết phiếu FE10 read-only; không có chức năng ghi mới. Tổng quan dùng số phiếu thật và nhãn rõ phạm vi 5 phiếu cho sắp đến hạn.
+- GET borrows list/detail: reader thuần do Backend WHERE owner từ JWT; reader có borrow_manage gửi self user_id để Backend giới hạn. Phản hồi sai owner bị từ chối toàn bộ; không lọc dữ liệu nhạy cảm ở client. Tài khoản render allowlist từ FE06, không secrets/edit; 401/403 giữ cơ chế cũ.
+- Tạo 3 trang + service scope + 1 test + CSS và đúng FE11_HANDOFF. Sửa route/config, 2 test menu FE07 do có mục thật mới và TASKS/HANDOFF; giữ toàn bộ ca bảo mật/FE10 runtime/Backend/ảnh.
+- Baseline 287/287; cuối **292/292 tại 18 file**, 0 fail/skip; targeted mới 5/5, lint/build đạt. Lệnh: npm.cmd run test:run -- --maxWorkers=1; npm.cmd run lint; npm.cmd run build -- --logLevel=warn. Không tắt purity rule; đã sửa Date.now trong render bằng query dataUpdatedAt.
+- Parse/import 82 file không lỗi/casing; 5 production SPA shells 200 và preview đóng. Chưa browser/MySQL E2E/AT/resize: host unavailable, TCP3000 đóng/chưa account dev. Không truy vấn/ghi DB, tạo fixture, đổi Backend/API/env/package hoặc stage/commit/push.
+- Tiếp theo: nghiệm thu với browser/Backend dev cô lập và tài khoản reader/mixed-role hợp lệ. Không thêm reservation/renewal/profile edit vì chưa có API.
+
+## FE-ASSETS-02 + FE-10 — Ảnh bìa và mượn/trả (2026-11-21)
+
+- Hoàn tất phần lập trình theo API hiện hữu, chờ nghiệm thu; [FE10_HANDOFF](../Frontend/docs/FE10_HANDOFF.md) ghi file/API/quyền/giới hạn.
+- Baseline HEAD 0b2a455 sạch, lưu hash 277 file/index. Đọc 5 docs dự án, source Frontend FE08/09 và routes/controller/service/model/validator Borrow + Copy; không truy cập database.
+- Đổi doi-gio-hu.jpg.jpg → doi-gio-hu.jpg, byte cả 2 JPG giữ nguyên. Thêm AnhBiaSach và CSS: danh sách 60×90, detail 160×240, thẻ 120×180, contain/fallback; ghép chính xác tên+tác giả chuẩn hóa vì chưa có ID thật/field ảnh, không dựa thứ tự.
+- Thêm module /app/muon-tra, CSS/test; tích hợp route/menu cần borrow_manage, action trả cần return_process. Có list/filter/pagination/detail, chọn copy available/good, xem lại/xác nhận lập phiếu, trả một/nhiều/toàn bộ, trạng thái/lỗi/Toast/pending/cache invalidation. Giữ Auth/Authorization và FE09 runtime.
+- API chưa có lookup độc giả/name trong Borrow DTO: nhập user_id thật; không giả lookup. Trang quản lý không phải giao diện reader own; Backend vẫn quyết định scope/transaction.
+- Baseline 280/280; cuối **287/287 tại 17 file**, 0 fail/skip; lint/build đạt. Chỉ thêm 7 mock tests, không sửa/xóa test cũ. Lệnh: npm.cmd run test:run -- --maxWorkers=1, npm.cmd run lint, npm.cmd run build -- --logLevel=warn. Lỗi selector/key Table trung gian đã sửa, chi tiết tại handoff.
+- Parse/import 77 file không lỗi/casing; ảnh dev/production 200/MIME/bytes khớp, route SPA shell 200, server tạm đã đóng. 107 Backend giữ hash; HEAD/index không đổi. Chưa browser/Backend MySQL E2E: host unavailable/cổng3000 đóng/chưa account dev.
+- Chỉ thay ảnh/runtime Frontend nêu trên và TASKS/HANDOFF, thêm đúng FE10_HANDOFF; không DB/schema/API/env/package/commit/push. Tiếp theo: người dùng nghiệm thu, cần môi trường dev cô lập và account hợp lệ; không tự FE11.
+
 ## GIT-003 — Phê duyệt kết thúc merge (2026-11-21)
 
 - Người dùng đã cho phép tạo một merge commit sau rà staged; không push/pull, không sửa Backend/Frontend/DB và giữ nguyên backup. Phê duyệt này thay trạng thái chờ duyệt của GIT-002.

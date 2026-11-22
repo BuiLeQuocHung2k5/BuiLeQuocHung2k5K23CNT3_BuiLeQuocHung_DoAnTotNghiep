@@ -1,5 +1,6 @@
 # Dependencies at any depth
 node_modules/
+Backend/.demo-local/
 
 # Local environment; keep only the reviewed example
 .env

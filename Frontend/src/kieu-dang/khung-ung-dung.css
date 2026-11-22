@@ -20,8 +20,6 @@
   .app-nav-planned { display: grid; grid-template-columns: 20px minmax(0, 1fr); align-items: start; column-gap: var(--space-3); row-gap: var(--space-2); padding: var(--space-3); color: var(--foreground-muted); font-size: var(--text-label); line-height: 1.5; }
   .app-nav-planned > svg { margin-top: 2px; }
   .app-nav-planned > .ui-badge { grid-column: 2; justify-self: start; }
-  .app-sidebar-footnote { margin-top: auto; padding: var(--space-10) var(--space-3) 0; color: var(--foreground-muted); font-size: var(--text-caption); }
-  .app-sidebar-footnote p { margin: var(--space-3) 0 0; }
   .app-header { position: sticky; top: 0; z-index: 20; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, auto); align-items: center; gap: var(--space-6); min-height: 80px; padding: var(--space-4) var(--space-8); border-bottom: 1px solid var(--border); background: var(--surface); }
   .app-breadcrumb { min-width: 0; font-size: var(--text-label); }
   .app-breadcrumb ol { display: flex; align-items: center; flex-wrap: wrap; column-gap: var(--space-2); row-gap: var(--space-1); list-style: none; margin: 0; padding: 0; }

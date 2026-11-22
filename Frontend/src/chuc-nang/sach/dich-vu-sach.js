@@ -1,9 +1,10 @@
+import { chuanHoaIsbn } from "../../../../chung/isbn.mjs"
 import { ketNoiHttp } from '../../thu-vien/api/ket-noi-http.js'
 import { chuanHoaLoiApi } from '../../thu-vien/api/chuan-hoa-loi.js'
 import { laySachCongKhai } from '../api-cong-khai/dich-vu-cong-khai.js'
 import { coQuyenTruyCap } from '../xac-thuc/kiem-tra-quyen.js'
 
-const CAC_TRUONG = ['title', 'author', 'publisher', 'category_id', 'series_id', 'description', 'publication_year']
+const CAC_TRUONG = ['isbn', 'title', 'author', 'publisher', 'category_id', 'series_id', 'description', 'publication_year']
 export const khoaSach = { all: ['sach'], danhSach: thamSo => ['sach', 'danh-sach', thamSo], chiTiet: ma => ['sach', 'chi-tiet', ma] }
 const maHopLe = ma => typeof ma === 'string' && /^[1-9]\d{0,19}$/.test(ma) && BigInt(ma) <= 18446744073709551615n
 const chuoiHoacNull = giaTri => giaTri === null || typeof giaTri === 'string'
@@ -39,7 +40,7 @@ export async function layChiTietSach(ma, { signal } = {}) {
   return phanHoi
 }
 
-// PUT là thay thế đầy đủ: chọn đúng 7 trường được ghi, giữ null/chuỗi rỗng và mô tả nguyên văn.
+// PUT là thay thế đầy đủ: chọn đúng các trường được ghi, giữ null/chuỗi rỗng và mô tả nguyên văn.
 export function kiemTraBieuMauSach(giaTri) {
   const loi = {}, duLieu = {}
   for (const [khoa, toiDa, batBuoc] of [['title', 255, true], ['author', 150, true], ['publisher', 150, false]]) {
@@ -58,6 +59,8 @@ export function kiemTraBieuMauSach(giaTri) {
   if (moTa == null) duLieu.description = null
   else if (typeof moTa !== 'string' || !moTa.isWellFormed() || new TextEncoder().encode(moTa).length > 65535) loi.description = 'Mô tả phải là Unicode hợp lệ, tối đa 65535 byte UTF-8.'
   else duLieu.description = moTa
+  duLieu.isbn = chuanHoaIsbn(giaTri.isbn)
+  if (duLieu.isbn === undefined) loi.isbn = 'Nhập ISBN-10 hoặc ISBN-13 hợp lệ.'
   const nam = giaTri.publication_year
   if (nam == null || nam === '') duLieu.publication_year = null
   else if (!['number', 'string'].includes(typeof nam) || !String(nam).trim() || !Number.isInteger(Number(nam)) || Number(nam) < 0 || Number(nam) > 65535) loi.publication_year = 'Năm xuất bản là số nguyên từ 0 đến 65535, hoặc để trống.'
@@ -99,6 +102,7 @@ export function loiSachAnToan(loi, dangGhi = false) {
   if (loi?.code === 'BOOK_VALIDATION') { message = 'Kiểm tra lại các trường nhập.'; Object.assign(loiTruong, loi.loiTruong) }
   if (loi?.code === 'BOOK_ACTION_FORBIDDEN' || chuan.status === 403) message = 'Bạn không có quyền thực hiện thao tác này. Phiên đăng nhập vẫn được giữ.'
   if (chuan.status === 401) message = 'Phiên đăng nhập không còn hợp lệ. Vui lòng đăng nhập lại.'
+  if (chuan.code === 'DUPLICATE_ISBN') message = 'ISBN này đã thuộc về một đầu sách.'
   if (chuan.code === 'BOOK_NOT_FOUND') message = 'Không tìm thấy sách. Sách có thể đã được xóa.'
   if (['BOOK_HAS_COPIES', 'BOOK_IN_USE'].includes(chuan.code)) message = 'Sách có bản sao hoặc dữ liệu liên quan nên chưa thể xóa.'
   if (chuan.code === 'INVALID_REFERENCE') message = 'Thể loại hoặc bộ sách được tham chiếu không tồn tại. Kiểm tra lại mã đã chọn.'

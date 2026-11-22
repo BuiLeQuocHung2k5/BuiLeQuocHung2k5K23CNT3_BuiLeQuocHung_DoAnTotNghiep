@@ -11,17 +11,14 @@ function kiemTra(duoc) {
 }
 function hopLe(banSao, maSach) {
   return banSao && maHopLe(banSao.copy_id) && banSao.book_id === maSach && typeof banSao.barcode === 'string' &&
-    (banSao.isbn === null || typeof banSao.isbn === 'string') && Object.hasOwn(tinhTrangBanSao, banSao.condition_status) && Object.hasOwn(trangThaiBanSao, banSao.availability_status)
+    Object.hasOwn(tinhTrangBanSao, banSao.condition_status) && Object.hasOwn(trangThaiBanSao, banSao.availability_status)
 }
 export function kiemTraBieuMauBanSao(giaTri) {
   const loi = {}, duLieu = { book_id: giaTri.book_id, condition_status: giaTri.condition_status, availability_status: giaTri.availability_status }
   if (!maHopLe(giaTri.book_id)) loi.book_id = 'Mã đầu sách không hợp lệ.'
-  for (const [khoa, toiDa, batBuoc] of [['barcode', 50, true], ['isbn', 20, false]]) {
-    const chuoi = giaTri[khoa]
-    if (!batBuoc && chuoi == null) duLieu[khoa] = null
-    else if (typeof chuoi !== 'string' || !chuoi.isWellFormed() || [...chuoi.trim()].length > toiDa || (batBuoc && !chuoi.trim())) loi[khoa] = `Nhập ${batBuoc ? '1–' : 'tối đa '}${toiDa} ký tự Unicode hợp lệ.`
-    else duLieu[khoa] = chuoi.trim()
-  }
+  const maVach = giaTri.barcode
+  if (typeof maVach !== 'string' || !maVach.isWellFormed() || !maVach.trim() || [...maVach.trim()].length > 50) loi.barcode = 'Nhập mã vạch từ 1 đến 50 ký tự.'
+  else duLieu.barcode = maVach.trim()
   if (!Object.hasOwn(tinhTrangBanSao, giaTri.condition_status)) loi.condition_status = 'Chọn tình trạng hợp lệ.'
   if (!['available', 'maintenance'].includes(giaTri.availability_status)) loi.availability_status = 'Chỉ chuyển sang sẵn sàng hoặc bảo trì tại đây.'
   const ghiChu = giaTri.note
@@ -57,7 +54,7 @@ export function loiBanSaoAnToan(loi, dangGhi = false) {
   const chuan = chuanHoaLoiApi(loi)
   const thongBao = {
     COPY_RESPONSE_INVALID: 'Chưa đọc được phản hồi bản sao. Hãy tải lại.', COPY_ACTION_FORBIDDEN: 'Bạn không có quyền quản lý bản sao.',
-    DUPLICATE_VALUE: 'Mã vạch hoặc ISBN đã tồn tại. Hãy kiểm tra lại.', COPY_NOT_FOUND: 'Bản sao không còn tồn tại. Hãy tải lại danh sách.',
+    DUPLICATE_VALUE: 'Mã vạch đã tồn tại. Hãy kiểm tra lại.', COPY_NOT_FOUND: 'Bản sao không còn tồn tại. Hãy tải lại danh sách.',
     BOOK_NOT_FOUND: 'Đầu sách không còn tồn tại.', INVALID_REFERENCE: 'Đầu sách không còn tồn tại.',
     COPY_CIRCULATION_LOCKED: 'Bản sao đang mượn, bị mất hoặc có lượt mượn chưa hoàn tất nên chưa thể sửa/xóa.',
     CIRCULATION_STATE_MANAGED: 'Chỉ thay đổi giữa sẵn sàng và bảo trì tại đây.', COPY_BOOK_IMMUTABLE: 'Không thể chuyển bản sao sang đầu sách khác.',

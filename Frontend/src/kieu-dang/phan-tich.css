@@ -1,0 +1,25 @@
+@layer components {
+  .analytics-filter { padding: var(--space-5); }
+  .analytics-filter form { display: flex; align-items: end; flex-wrap: wrap; gap: var(--space-4); }
+  .analytics-filter .ui-field { flex: 1 1 170px; min-width: 0; }
+  .analytics-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); }
+  .analytics-cards .ui-card-title { font: 500 var(--text-label) / 1.5 var(--font-body); }
+  .analytics-cards strong { font: 400 2rem / 1.4 var(--font-heading); color: var(--primary); }
+  .analytics-legend { display: flex; flex-wrap: wrap; gap: var(--space-5); color: var(--primary); }
+  .analytics-copy-label { color: var(--foreground); }
+  .analytics-bars { max-height: 440px; overflow-y: auto; padding-right: var(--space-4); }
+  .analytics-bar-row { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: var(--space-3); margin-block: var(--space-3); }
+  .analytics-bar-track { display: grid; grid-template-columns: minmax(0, 1fr) 25ch; gap: var(--space-2); align-items: center; margin-block: 5px; }
+  .analytics-bar { height: 12px; display: block; background: var(--primary); min-width: 0; border-radius: 2px; }
+  .analytics-bar--copies { background: var(--brand-caramel); }
+  .analytics-bar-track b { white-space: nowrap; font-weight: 400; font-size: var(--text-caption); }
+  .forecast-figure { margin: var(--space-5) 0; }
+  .forecast-figure svg { display: block; width: 100%; min-width: 0; max-height: 350px; background: var(--background); border-radius: var(--radius-sm); }
+  .forecast-figure svg text { font: 12px var(--font-body); fill: var(--foreground-muted); }
+  .forecast-axis { fill: none; stroke: var(--border-strong); }
+  .forecast-history { fill: none; stroke: var(--primary); stroke-width: 3; }
+  .forecast-prediction { fill: none; stroke: var(--brand-coffee); stroke-width: 3; stroke-dasharray: 7 5; }
+  .forecast-history-point { fill: var(--primary); }
+  .forecast-prediction-point { fill: var(--surface); stroke: var(--brand-coffee); stroke-width: 2; }
+  .forecast-label { color: var(--brand-coffee); }
+}

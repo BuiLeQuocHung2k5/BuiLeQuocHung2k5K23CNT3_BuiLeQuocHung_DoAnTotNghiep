@@ -28,7 +28,7 @@ export function taoMauTimKiem(tuKhoa) { return `%${tuKhoa.replace(/[=%_]/g, "=$&
 export async function thucHienThaoTacDanhMuc(congViec, taiNguyen) {
     try { return await congViec(); }
     catch (loi) {
-        if (loi.code === "ER_DUP_ENTRY") throw new LoiHttp(409, "DUPLICATE_VALUE", taiNguyen === "CATEGORY" ? "Tên danh mục đã tồn tại." : "Barcode hoặc ISBN đã tồn tại.");
+        if (loi.code === "ER_DUP_ENTRY") throw new LoiHttp(409, "DUPLICATE_VALUE", taiNguyen === "CATEGORY" ? "Tên danh mục đã tồn tại." : "Mã vạch đã tồn tại.");
         if (["ER_NO_REFERENCED_ROW", "ER_NO_REFERENCED_ROW_2"].includes(loi.code)) throw new LoiHttp(400, "INVALID_REFERENCE", "Sách được tham chiếu không tồn tại.");
         if (["ER_ROW_IS_REFERENCED", "ER_ROW_IS_REFERENCED_2"].includes(loi.code)) throw new LoiHttp(409, `${taiNguyen}_IN_USE`, "Bản ghi có dữ liệu liên quan nên không thể xóa.");
         throw loi;

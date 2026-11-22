@@ -1,5 +1,59 @@
 # Bàn giao hiện tại
 
+## FE-14 — Demo sẵn sàng nghiệm thu · 22/11/2026
+
+Chạy `npm run dev` tại gốc rồi mở `http://127.0.0.1:5173/dang-nhap`. Dữ liệu giữ trong schema demo riêng. Đã dừng Express/Vite bằng Ctrl+C sau kiểm tra. Bản demo hiện có 11 đầu sách, 22 bản sao, 3 tài khoản và 37 phiếu. Ngày 22/11, preview từ 10 phiếu trong 7 ngày cho ra 1,43 phiếu/người/ngày. Database chính vẫn dùng cấu trúc ISBN cũ.
+
+[Hướng dẫn chạy](../README.md) · [File thay đổi, kiểm thử Chrome/MySQL, migration và giới hạn](../Frontend/docs/FE14_HANDOFF.md). Bước tiếp theo là nghiệm thu FE-14. Chức năng CRUD người dùng và lưu dự báo vẫn chờ API/quyền tương ứng.
+
+## FE-13 — Thống kê và dự báo (2026-11-21)
+
+**Hoàn tất phần Frontend theo API hiện hữu, chờ nghiệm thu.** [FE13_HANDOFF](../Frontend/docs/FE13_HANDOFF.md), [lịch sử](TASKS.md).
+
+- /app/thong-ke cần report_view: 7 metric thật, lọc ngày/nhóm/user đúng phạm vi, biểu đồ cột và bảng phân biệt phiếu/bản sao; không tạo số0 cho dữ liệu thiếu.
+- /app/du-bao cần forecast_view: preview SMA7 phiếu không hủy/người/ngày, 7ngày từ Backend khi ready; insufficient_data có giải thích, không dự báo giả. Lịch sử chỉ lấy khi có thêm report_view, vẽ riêng không nối qua gap/tương lai. MAE không được diễn giải thành tỷ lệ chính xác.
+- Admin thêm shortcut theo grant và dùng chung overview. Generate/persistence Backend vẫn khóa503, UI không gọi POST. Ready/coverage/MAE thật chưa kiểm chứng; FE12 user CRUD vẫn thiếu API.
+- **302/302 tests tại20file**, thêm6mocktests; lint/build đạt. 3 production shells200, preview đóng. 107Backend giữ hash, HEAD/index và thay đổi có sẵn giữ nguyên, không DB/env/dependency/commit/push.
+- Chưa browser/AT/resize/MySQL E2E: host unavailable, TCP3000 đóng/chưa account dev. Tiếp theo: nghiệm thu; FE14 kiểm demo/môi trường thật chỉ sau task mới, không tự triển khai.
+
+Các bàn giao dưới là lịch sử.
+
+## FE-12 — Khu vực Admin (2026-11-21)
+
+**Hoàn tất phần giao diện khả thi; luồng quản trị người dùng chưa hoàn tất do thiếu API Backend.** [FE12_HANDOFF](../Frontend/docs/FE12_HANDOFF.md), [lịch sử](TASKS.md).
+
+- /app/admin cần role admin thật; có hồ sơ hiện tại, lối tắt theo grant và 3 số tổng thư viện từ statistics/overview chỉ khi có report_view. Không Admin bypass, không dashboard chuyên sâu.
+- /app/nguoi-dung cần user_manage; hiện báo rõ dịch vụ chưa hỗ trợ, không mô phỏng danh sách rỗng, tìm kiếm hoặc CRUD. Backend chưa có list/detail/create/update/role/status/delete; không dùng register/statistics-users thay thế.
+- **296/296 tests tại 19 file**, 4 test mới; lint/build đạt. Hai route production trả shell200, preview đóng. FE06–11 runtime/ảnh và 107 Backend giữ hash; HEAD/index giữ nguyên, không DB/env/package/commit/push.
+- Chưa browser/API/MySQL E2E/AT/resize: host unavailable, TCP3000 đóng/chưa account dev. Tiếp theo: nghiệm thu giao diện khả thi; hoàn tất quản trị user cần nhiệm vụ Backend riêng cấp contract/quyền. Không tự FE13.
+
+Các bàn giao dưới đây là lịch sử.
+
+## FE-11 — Giao diện độc giả (2026-11-21)
+
+**Hoàn tất phần lập trình, chờ nghiệm thu.** [FE11_HANDOFF](../Frontend/docs/FE11_HANDOFF.md), [lịch sử](TASKS.md).
+
+- **/app/doc-gia** và **/app/lich-su-muon** dùng role reader thật từ me; **/app/tai-khoan** dành cho mọi phiên đăng nhập. Giữ menu quản lý và module sách/ảnh/bản sao/mượn-trả hiện có.
+- Trang chủ có lời chào, số phiếu thật, hạn trả trong 5 phiếu gần đây và lối tắt. Lịch sử có filter/pagination/detail read-only; account chỉ render profile allowlist, không sửa hồ sơ hoặc lộ secrets; logout Header giữ nguyên.
+- Backend giới hạn reader own bằng JWT/SQL. Reader có borrow_manage gửi self user_id cho list; phản hồi sai owner bị từ chối toàn bộ, không lọc hàng nhạy cảm ở Frontend. Không thêm API/permission hoặc Admin bypass.
+- **292/292 tests tại 18 file**, thêm 5 mock tests; lint/build đạt. Chỉ cập nhật 2 assertion menu FE07 cho mục mới, giữ ca bảo mật. 5 route shells production 200, preview đã đóng.
+- Chưa browser/MySQL end-to-end/AT/resize do host unavailable/cổng3000 đóng/chưa account dev. Không Backend/database/env/dependency/commit/push; giữ HEAD/index và FE10 chưa commit.
+- Tiếp theo: nghiệm thu với browser và môi trường dev cô lập/tài khoản thật; không tự FE12. Giới hạn “chưa có trang reader own” trong bàn giao FE10 bên dưới đã được FE11 giải quyết.
+
+Các bàn giao bên dưới là lịch sử.
+
+## FE-ASSETS-02 + FE-10 — Ảnh bìa và mượn/trả (2026-11-21)
+
+**Hoàn tất phần lập trình, chờ nghiệm thu.** [FE10_HANDOFF](../Frontend/docs/FE10_HANDOFF.md) ghi API/quyền/file và giới hạn; [lịch sử](TASKS.md).
+
+- Hai ảnh JPG giữ nguyên byte; Đồi gió hú đã bỏ đuôi .jpg trùng. /app/sach có ảnh danh sách/chi tiết 60×90/160×240, variant thẻ 120×180, contain và fallback; map chính xác cặp tên+tác giả chuẩn hóa, chưa có ID thực tế được bàn giao.
+- **/app/muon-tra** + Sidebar cần borrow_manage; lập phiếu, list/filter/detail/pagination và trả một/nhiều/toàn bộ cần thêm return_process. Có xem lại/xác nhận, validation, pending, error/Toast và refetch sau thành công; không optimistic hoặc tự replay ghi.
+- Backend chưa có lookup/tên độc giả trong Borrow DTO: dùng user_id thật. Chưa có trang reader own; không suy permission từ Admin. FE06/07/09 runtime giữ nguyên, 401/403 theo provider hiện hữu.
+- **287/287 tests tại 17 file**, thêm 7 mock tests; lint/build đạt, 280 test cũ giữ nguyên. Ảnh dev/production 200/MIME/bytes khớp; server tạm đóng. 107 Backend giữ hash, HEAD/index không đổi; không database/schema/API/env/dependency/commit/push.
+- Chưa browser/Backend/MySQL E2E vì host unavailable, TCP3000 đóng và chưa account dev. Tiếp theo: nghiệm thu desktop với môi trường dev cô lập và IDs/grants thật, không tự FE11.
+
+Các bàn giao dưới là lịch sử, gồm hướng dẫn ảnh chưa tích hợp của FE-ASSETS-01 đã được thay bằng phần hiện tại.
+
 ## GIT-003 — Đã được duyệt kết thúc merge (2026-11-21)
 
 - Người dùng cho phép tạo merge commit, không push/pull. Phê duyệt này thay gate chờ duyệt ở GIT-002 bên dưới; AutoGit tiếp tục tắt.

@@ -14,7 +14,7 @@ import { khoaSach } from './dich-vu-sach.js'
 import { khoaBanSao, layBanSaoTheoSach, ghiBanSao, kiemTraBieuMauBanSao, loiBanSaoAnToan, tinhTrangBanSao, trangThaiBanSao } from './dich-vu-ban-sao.js'
 
 function BieuMauBanSao({ banSao, maSach, dangGui, duQuyen, loiServer, onSave: luu, onCancel: huy }) {
-  const [giaTri, datGiaTri] = useState(() => ({ book_id: maSach, barcode: banSao?.barcode ?? '', isbn: banSao?.isbn ?? null, condition_status: banSao?.condition_status ?? 'good', availability_status: banSao?.availability_status ?? 'available', note: null }))
+  const [giaTri, datGiaTri] = useState(() => ({ book_id: maSach, barcode: banSao?.barcode ?? '', condition_status: banSao?.condition_status ?? 'good', availability_status: banSao?.availability_status ?? 'available', note: null }))
   const [loi, datLoi] = useState({})
   const [xacNhanGhiChu, datXacNhan] = useState(false)
   const khoa = dangGui || !duQuyen || loiServer?.chuaRo
@@ -32,7 +32,6 @@ function BieuMauBanSao({ banSao, maSach, dangGui, duQuyen, loiServer, onSave: lu
     {!duQuyen && <ThongBao variant="warning" title="Không đủ quyền">Bạn không có quyền lưu bản sao.</ThongBao>}
     <div className="book-form-grid">
       <ONhap label="Mã vạch" required autoFocus value={giaTri.barcode} disabled={khoa} onChange={suKien => doi('barcode', suKien.target.value)} error={loiTruong('barcode')} />
-      <ONhap label="ISBN" value={giaTri.isbn ?? ''} disabled={khoa} onChange={suKien => doi('isbn', suKien.target.value)} error={loiTruong('isbn')} />
       <DanhSachChon label="Tình trạng bản sao" value={giaTri.condition_status} disabled={khoa} options={Object.entries(tinhTrangBanSao).map(([value, label]) => ({ value, label }))} onChange={suKien => doi('condition_status', suKien.target.value)} error={loiTruong('condition_status')} />
       <DanhSachChon label="Trạng thái bản sao" value={giaTri.availability_status} disabled={khoa} options={['available', 'maintenance'].map(value => ({ value, label: trangThaiBanSao[value] }))} onChange={suKien => doi('availability_status', suKien.target.value)} error={loiTruong('availability_status')} />
       <div className="book-form-wide"><VungNhap label={banSao ? 'Ghi chú thay thế' : 'Ghi chú nội bộ'} value={giaTri.note ?? ''} disabled={khoa} onChange={suKien => doi('note', suKien.target.value)} error={loiTruong('note')} /></div>
@@ -85,7 +84,7 @@ export default function QuanLyBanSao({ maSach, onBusyChange: baoDangGui }) {
     }
   }
   const cacCot = [
-    { key: 'copy_id', header: 'Mã bản sao' }, { key: 'barcode', header: 'Mã vạch' }, { key: 'isbn', header: 'ISBN', render: giaTri => giaTri ?? '—' },
+    { key: 'copy_id', header: 'Mã bản sao' }, { key: 'barcode', header: 'Mã vạch' },
     { key: 'condition_status', header: 'Tình trạng', render: giaTri => tinhTrangBanSao[giaTri] },
     { key: 'availability_status', header: 'Trạng thái', render: giaTri => <NhanTrangThai>{trangThaiBanSao[giaTri]}</NhanTrangThai> },
     ...(duQuyen ? [{ key: 'actions', header: 'Thao tác', render: (_, hang) => ['available', 'maintenance'].includes(hang.availability_status) ? <div className="book-row-actions"><NutBam size="sm" variant="ghost" disabled={Boolean(thaoTac)} onClick={() => mo('sua', hang)} aria-label={`Sửa bản sao ${hang.barcode}`}>Sửa</NutBam><NutBam size="sm" variant="danger" disabled={Boolean(thaoTac)} onClick={() => mo('xoa', hang)} aria-label={`Xóa bản sao ${hang.barcode}`}>Xóa</NutBam></div> : <span className="ui-helper">Chỉ xem</span> }] : []),

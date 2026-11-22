@@ -29,7 +29,7 @@ describe('Application Shell and routing', () => {
     expect(screen.getByRole('navigation', { name: 'Điều hướng chính' })).toBeVisible()
     expect(screen.getByRole('navigation', { name: 'Đường dẫn trang' })).toBeVisible()
     expect(screen.getAllByRole('main')).toHaveLength(1)
-    expect(screen.getByRole('main')).toContainElement(screen.getByRole('heading', { level: 1, name: 'Khung ứng dụng' }))
+    expect(screen.getByRole('main')).toContainElement(screen.getByRole('heading', { level: 1, name: 'Trang chủ thư viện' }))
     expect(screen.getByText('Bạn đọc kiểm thử')).toBeVisible()
     expect(screen.getByRole('button', { name: /đăng xuất/i })).toBeVisible()
     expect(kiemTraSucKhoe).not.toHaveBeenCalled()
@@ -39,11 +39,11 @@ describe('Application Shell and routing', () => {
     const nguoiThaoTac = userEvent.setup()
     await hienThiKhung()
     const vungDieuHuong = screen.getByRole('navigation', { name: 'Điều hướng chính' })
-    expect(within(vungDieuHuong).getByRole('link', { name: 'Khung ứng dụng', exact: true })).toHaveAttribute('aria-current', 'page')
+    expect(within(vungDieuHuong).getByRole('link', { name: 'Trang chủ thư viện', exact: true })).toHaveAttribute('aria-current', 'page')
     await nguoiThaoTac.click(within(vungDieuHuong).getByRole('link', { name: 'Khu vực nội dung' }))
     expect(await screen.findByRole('heading', { name: 'Khu vực nội dung', level: 1 })).toBeVisible()
     expect(window.location.pathname).toBe('/app/workspace')
-    expect(within(vungDieuHuong).getByRole('link', { name: 'Khung ứng dụng', exact: true })).not.toHaveAttribute('aria-current')
+    expect(within(vungDieuHuong).getByRole('link', { name: 'Trang chủ thư viện', exact: true })).not.toHaveAttribute('aria-current')
     expect(within(vungDieuHuong).getByRole('link', { name: 'Khu vực nội dung' })).toHaveAttribute('aria-current', 'page')
     expect(screen.getByRole('banner')).toBeVisible()
     expect(screen.getByRole('main')).toHaveFocus()
@@ -51,9 +51,9 @@ describe('Application Shell and routing', () => {
 
   it.each(['/app', '/app/'])('renders the index route directly at %s without redirects', async duongDanTep => {
     await hienThiKhung(duongDanTep)
-    expect(screen.getByRole('heading', { name: 'Khung ứng dụng', level: 1 })).toBeVisible()
+    expect(screen.getByRole('heading', { name: 'Trang chủ thư viện', level: 1 })).toBeVisible()
     expect(window.location.pathname).toBe(duongDanTep)
-    expect(screen.getByRole('link', { name: 'Khung ứng dụng', exact: true })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('link', { name: 'Trang chủ thư viện', exact: true })).toHaveAttribute('aria-current', 'page')
   })
 
   it('keeps a shell-scoped Not Found page and returns safely to the index', async () => {
@@ -64,7 +64,7 @@ describe('Application Shell and routing', () => {
     expect(within(dieuHuong).getAllByRole('link').every(lienKet => !lienKet.hasAttribute('aria-current'))).toBe(true)
     expect(screen.getByRole('main')).not.toContainElement(screen.getByRole('complementary'))
     await userEvent.click(screen.getByRole('link', { name: 'Về khung ứng dụng' }))
-    expect(await screen.findByRole('heading', { name: 'Khung ứng dụng', level: 1 })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: 'Trang chủ thư viện', level: 1 })).toBeVisible()
   })
 
   it('preserves the global Not Found route outside the shell', async () => {
@@ -171,7 +171,7 @@ describe('Role layout preview is presentation only', () => {
     await hienThiKhung('/app/layouts')
     await nguoiThaoTac.selectOptions(screen.getByRole('combobox', { name: 'Bố cục dự kiến' }), 'admin')
     const vungDieuHuong = screen.getByRole('navigation', { name: 'Điều hướng chính' })
-    await nguoiThaoTac.click(within(vungDieuHuong).getByRole('link', { name: 'Khung ứng dụng', exact: true }))
+    await nguoiThaoTac.click(within(vungDieuHuong).getByRole('link', { name: 'Trang chủ thư viện', exact: true }))
     await nguoiThaoTac.click(within(vungDieuHuong).getByRole('link', { name: 'Bố cục theo vai trò' }))
     expect(screen.getByRole('combobox', { name: 'Bố cục dự kiến' })).toHaveValue('')
   })

@@ -1,5 +1,9 @@
 # Quyết định và căn cứ
 
+## FE-14 · ISBN và môi trường demo · 22/11/2026
+
+Theo yêu cầu nghiệp vụ đã duyệt, ISBN nhận dạng đầu sách, barcode nhận dạng từng bản sao. Hợp đồng giữ ISBN dạng chuỗi, cho phép null và bảo toàn số 0 đầu hoặc X của ISBN-10. Đã triển khai schema chuẩn, migration có kiểm tra xung đột và kiểm tra dùng chung ở React/Express. Bản demo sử dụng schema riêng trên MySQL local, tài khoản runtime giới hạn trong schema đó và dữ liệu trình diễn có đánh dấu. SMA7 tiếp tục dùng preview Backend. [Schema và migration](../Backend/sql/README.md) · [Kết quả](../Frontend/docs/FE14_HANDOFF.md)
+
 ## GIT-002 — Giữ cấu trúc gốc và tắt đồng bộ tự động (2026-11-21)
 
 - Theo task người dùng, chỉ xử lý conflict có bằng chứng và không commit/pull/push/abort. Đã xác minh mọi blob remote ở đường dẫn quy đổi trùng HEAD hoặc local cũ `8c224e8`; giữ bản local hiện hành và các lần xóa mobile có chủ đích của FE-DESKTOP-01. Không đổi nghiệp vụ/schema.

@@ -49,7 +49,9 @@ describe('FE-07 — kiểm tra quyền từ principal, không suy grant từ tê
 describe('FE-07 — menu thật hiện chỉ gồm trang dùng chung và công cụ', () => {
   it.each(['admin', 'librarian', 'reader'])('keeps implemented shared routes for %s without inventing unsupported menus', vaiTro => {
     const menu = locDieuHuongTheoQuyen(dieuHuongNenTang, { ...nguoiDungThu, roles: [vaiTro] }, true)
-    expect(menu[0].items.map(muc => muc.to)).toEqual(['/app', '/app/sach'])
+    expect(menu[0].items.map(muc => muc.to)).toEqual(vaiTro === 'reader'
+      ? ['/app', '/app/sach', '/app/doc-gia', '/app/lich-su-muon', '/app/tai-khoan']
+      : vaiTro === 'admin' ? ['/app', '/app/sach', '/app/tai-khoan', '/app/admin'] : ['/app', '/app/sach', '/app/tai-khoan'])
     expect(menu[1].items.map(muc => muc.to)).toEqual(['/app/layouts', '/app/workspace', '/app/api-check', '/', '/design-system'])
   })
 
