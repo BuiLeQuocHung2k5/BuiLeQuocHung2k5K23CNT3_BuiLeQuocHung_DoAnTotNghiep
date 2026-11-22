@@ -10,7 +10,7 @@ Entry [server.js](../../Backend/src/server.js) từ npm start/dev, mặc định
 
 - ID/`:id`: số nguyên dương dạng string, không số0 đầu, tối đa18446744073709551615. Body ID dạng number chỉ nhận safe integer; FE nên giữ string. FK nullable giữ null.
 - `P`: query page=1, limit=10 mặc định, limit≤100, page/offset phải safe integer; số query là chuỗi nguyên dương chuẩn. totalPages=ceil(total/limit), total0→totalPages0.
-- `S`: P + search trim≤255 ký tự Unicode; tìm literal substring. Books không nhận category_id/sort. Copies search barcode/isbn; categories search name/description.
+- `S`: P + search trim≤255 ký tự Unicode; tìm literal substring. Books không nhận category_id/sort. Copies search barcode; categories search name/description.
 - `D`: start_date/end_date UTC YYYY-MM-DD, mặc định30 ngày kết thúc hôm nay; inclusive/max366, ngày1000-01-01..9999-12-30. Response period={start_date,end_date,timezone:'UTC'}.
 - `L(X)`: {success:true,data:X[],pagination:{page,limit,total,totalPages}}. `O(X)`: {success:true,data:X}. Success DELETE/logout: {success:true,data:null,message:string}. Không bỏ metadata ngoài data trong adapter FE.
 - `—` = không dùng theo handler; không mặc định là bị từ chối. Catalog detail/auth và phần lớn mutation không reject query lạ; list validators reject unknown query; forecast và overdue detail reject mọi query. JSON body unknown fields bị từ chối trên các validator tương ứng; forecast generate không parse body vì gate luôn503.
@@ -30,8 +30,8 @@ Các alias body/DTO được định nghĩa ngay dưới; mỗi dòng gồm meth
 | POST | `/api/auth/logout` | — | — | JWT | 200 null+message | Không revoke token server, không cần body |
 | GET | `/api/books` | S | — | Public | 200 L(Book) | 400 validation |
 | GET | `/api/books/:id` | id | — | Public | 200 O(Book) | 404 BOOK_NOT_FOUND |
-| POST | `/api/books` | — | BookWrite | JWT + book_create | 201 O(Book), Location | 400 invalid reference |
-| PUT | `/api/books/:id` | id | BookWrite, replacement | JWT + book_update | 200 O(Book) | 404 BOOK_NOT_FOUND; 400 invalid reference |
+| POST | `/api/books` | — | BookWrite | JWT + book_create | 201 O(Book), Location | 400 invalid reference, 409 DUPLICATE_ISBN |
+| PUT | `/api/books/:id` | id | BookWrite, replacement | JWT + book_update | 200 O(Book) | 404 BOOK_NOT_FOUND, 400 invalid reference, 409 DUPLICATE_ISBN |
 | DELETE | `/api/books/:id` | id | — | JWT + book_delete | 200 null+message | 404 BOOK_NOT_FOUND; 409 BOOK_HAS_COPIES/BOOK_IN_USE |
 | GET | `/api/categories` | S | — | Public | 200 L(Category) | 400 validation |
 | GET | `/api/categories/:id` | id | — | Public | 200 O(Category) | 404 CATEGORY_NOT_FOUND |
@@ -68,9 +68,9 @@ Các alias body/DTO được định nghĩa ngay dưới; mỗi dòng gồm meth
 `?` sau trường = optional, không phải kiểu dữ liệu dấu hỏi; null chỉ ở các trường nêu rõ. Chuỗi Unicode phải well-formed, VARCHAR tính code point; TEXT tối đa65535byte UTF-8. Body phải JSON object, Content-Type application/json cho các mutation có validator body.
 
 - Register: name string trim1..100 không control, email string≤150 trim/lowercase đúng định dạng, password≥12ký tự và≤72byte (không trim), phone optional string≤20/null. Không nhận role/status/avatar. Login: email cùng quy tắc, password1..72byte.
-- BookWrite: title string trim1..255, author trim1..150; publisher? trim≤150/null, category_id?/series_id? ID/null, description? TEXT/null, publication_year? integer0..65535/null. PUT gửi đầy đủ title/author, optional thiếu→null.
+- BookWrite (FE-14, 22/11/2026): isbn? chuỗi ISBN-10/ISBN-13 có checksum hợp lệ hoặc null. Title string trim1..255, author trim1..150; publisher? trim≤150/null, category_id?/series_id? ID/null, description? TEXT/null, publication_year? integer0..65535/null. PUT gửi đầy đủ title/author, optional thiếu→null.
 - CategoryWrite: name trim1..100, description? TEXT/null. PUT replacement, thiếu description→null.
-- CopyWrite: book_id ID, barcode trim1..50; isbn? trim≤20/null, note? TEXT/null; condition_status good/damaged, availability_status available/maintenance. POST mặc định good/available khi thiếu, PUT bắt buộc hai trạng thái. PUT không đổi book_id. Read filters nhận availability borrowed/lost nữa; ghi hai trạng thái này409. ISBN và barcode UNIQUE theo từng copy. **GET ẩn note, PUT thiếu note→null: chưa triển khai form sửa đầy đủ trước khi giải quyết contract note.**
+- CopyWrite: book_id ID, barcode trim1..50; note? TEXT/null; condition_status good/damaged, availability_status available/maintenance. POST mặc định good/available khi thiếu, PUT bắt buộc hai trạng thái. PUT không đổi book_id. Read filters nhận availability borrowed/lost nữa; ghi hai trạng thái này409. Barcode UNIQUE theo bản sao. **GET ẩn note, PUT thiếu note→null: chưa triển khai form sửa đầy đủ trước khi giải quyết contract note.**
 - BorrowWrite: user_id ID, copy_ids mảng1..100 ID không trùng; due_date UTC chính xác YYYY-MM-DDTHH:mm:ssZ, không milliseconds/offset khác, năm≥1000 và tương lai cả Node/DB; note? TEXT/null. Chỉ active borrower và available/good copies.
 - ReturnWrite: hoặc items:[{copy_id,condition_after:'good'/'damaged'}]1..100 không trùng; hoặc {return_all:true,condition_after:'good'/'damaged'}. Không kết hợp; không nhận lost/cancelled. Trả damaged→maintenance, good→available; không tự tạo fine.
 - FineWrite: borrow_detail_id ID, fine_rule_id ID, reason? trim≤255/null; không nhận amount/fine_type/paid_at. Server tính late fixed/per_day và damage fixed sau trả; lost/other giữ fail-closed. Payment chỉ ghi trạng thái paid toàn bộ, không phải thanh toán ngân hàng.
@@ -83,9 +83,9 @@ Các khóa dưới là khóa trả về, không tự tạo body từ tất cả 
 | DTO | Trường |
 |---|---|
 | User | user_id:string,name,email,phone:null/string,avatar:null/string,status,created_at,updated_at,roles:string[],permissions:string[]; không password/hash |
-| Book | book_id:string,category_id:null/string,series_id:null/string,title,author,publisher:null/string,description:null/string,publication_year:null/number,created_at,updated_at |
+| Book | book_id:string,isbn:null/string,category_id:null/string,series_id:null/string,title,author,publisher:null/string,description:null/string,publication_year:null/number,created_at,updated_at |
 | Category | category_id:string,name,description:null/string,created_at |
-| CopyPublic | copy_id:string,book_id:string,isbn:null/string,barcode,condition_status,availability_status,created_at,updated_at; không note |
+| CopyPublic | copy_id:string,book_id:string,barcode,condition_status,availability_status,created_at,updated_at; không note |
 | CopyStaff | CopyPublic + note:null/string, chỉ response POST/PUT |
 | BorrowHeader | borrow_id:string,user_id:string,borrow_date,due_date,status,note:null/string,created_at |
 | Borrow | BorrowHeader + details:[{borrow_detail_id:string,copy_id:string,returned_at:null/string,condition_before,condition_after:null/string,status}]; không detail note |

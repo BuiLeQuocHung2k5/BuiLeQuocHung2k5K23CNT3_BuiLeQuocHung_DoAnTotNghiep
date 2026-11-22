@@ -1,5 +1,117 @@
 # Bàn giao hiện tại
 
+## HOTFIX ADMIN-01 — Sẵn sàng nghiệm thu · 22/11/2026
+
+Đăng nhập bằng tài khoản có `user_manage`, vào **Quản lý người dùng**. Trang cho phép tìm, lọc, phân trang, xem chi tiết, tạo, sửa và kích hoạt/vô hiệu hóa. API quản trị bảo vệ vai trò và trạng thái của người đang thực hiện. Lịch sử mượn giữ nguyên khi tài khoản bị khóa. Không có thao tác xóa cứng hoặc đặt lại mật khẩu ở màn hình này.
+
+Kiểm thử MySQL demo và Chrome đã đạt. Tài khoản kiểm thử ID 10 đã vô hiệu hóa. Backend 185/185, Frontend 318/318, lint và build đạt. Theo lựa chọn nghiệm thu, giữ tiến trình cũ ở 5173/3000. Bản nghiệm thu đang chạy tại [cổng 5189](http://127.0.0.1:5189/app/nguoi-dung) và gọi Express cổng 3109. [Kết quả, file và giới hạn](TASKS.md) · [API](../Backend/docs/frontend-api-handover.md)
+
+## HOTFIX UI-06 — Đang thực hiện (2026-11-22)
+
+Đã căn icon hiện/ẩn mật khẩu theo vùng input và giữ các tính năng của form. Auth tests 35/35, lint/build đạt. Upload bìa chưa triển khai. Metadata demo xác nhận Sach không có cột ảnh; cần chỉ dẫn rõ ràng trước khi đổi schema theo AGENTS.md. Chưa ghi database hoặc kiểm Chrome. [Chi tiết](TASKS.md).
+
+## HOTFIX AUTH-03 — Đồng bộ tài khoản demo (2026-11-22)
+
+Đã đồng bộ bcrypt cho librarian và reader theo JSON sau khi xác minh database demo, role và trạng thái. Hash cũ được sao lưu trong thư mục demo-local được ignore. Hash Admin, hồ sơ khác và checksum dữ liệu nghiệp vụ/lịch sử/phân quyền được giữ nguyên.
+
+Ba vai trò đều login/me/logout thành công qua HTTP dùng MySQL demo, mật khẩu sai trả 401. Hook ghi lịch sử được thay bằng no-op trong app factory kiểm thử để giữ dữ liệu lịch sử. Chrome chưa kiểm do browser host/native pipe unavailable. [Chi tiết và cách kiểm](TASKS.md).
+
+## HOTFIX AUTH-02 — Xác thực demo (2026-11-22)
+
+Admin demo đã được đồng bộ hash theo tài khoản JSON và kiểm bằng bcrypt cùng HTTP login/me/logout thật trên MySQL demo. Bản sao hash cũ nằm trong thư mục demo-local được ignore. Các bảng nghiệp vụ/lịch sử/RBAC giữ checksum. Thủ thư và độc giả có mật khẩu JSON không khớp hash, hiện trả 401. Chưa đồng bộ hai tài khoản vì yêu cầu giới hạn thao tác vào tài khoản demo được chỉ định. [Chi tiết](TASKS.md).
+
+Đăng nhập và đăng ký có nút Hiện/Ẩn mật khẩu. Backend auth 18/18, Frontend auth/admin 42/42, lint/build đạt. Chrome chưa kiểm do browser host/native pipe không khả dụng.
+
+## HOTFIX UI-05 — CSS xác thực (2026-11-22)
+
+CSS toàn cục nạp trước Footer để Tailwind base đứng trước Design System. Đăng nhập và đăng ký dùng bố cục hai cột hiện có với khoảng đệm được cân lại, Footer nằm dưới nội dung. Frontend 317/317, ESLint, build, thứ tự CSS production và Vite HTTP smoke đạt. [Nguyên nhân, file và cách kiểm](TASKS.md).
+
+MySQL demo được kiểm chỉ đọc, có 11 sách, 22 bản sao, 37 phiếu và 7 tài khoản. Chờ kiểm trực quan và đăng nhập demo qua Chrome khi môi trường trình duyệt khả dụng. Các mục dưới là lịch sử.
+
+## HOTFIX UI-04 — Footer, Admin và hồ sơ cá nhân (2026-11-22)
+
+Footer dùng chung trong AppShell, đăng nhập và đăng ký. `/admin` chuyển qua guard của `/app/admin`. Trang Tài khoản lưu số Việt Nam dạng chuỗi và ảnh JPEG/PNG/WebP vào Backend. Hồ sơ MySQL được đồng bộ với Header ngay sau khi lưu. [Danh sách file và kiểm tra](TASKS.md).
+
+MySQL demo đã lưu và đọc lại số điện thoại/ảnh của fixture ID 9 sau khi khởi động lại. PNG trả đúng byte và MIME. Đã kiểm giới hạn tải, từ chối định dạng sai, quyền sở hữu và thay ảnh. Schema hiện hữu đáp ứng. 11 sách, 22 bản sao và 37 phiếu mượn giữ nguyên trong kiểm chứng. Frontend 317/317, Backend 183/183, ESLint và production build đạt.
+
+Chrome và hộp thoại chọn ảnh Windows chưa kiểm được do kết nối công cụ browser. Có thể nghiệm thu trên dev sau khi khởi động lại Backend. Các bàn giao dưới đây giữ theo ngày xác minh riêng.
+
+## HOTFIX-UI-02 — Trang chủ và đăng ký demo · 22/11/2026
+
+Sidebar mọi role đã bỏ Công cụ phát triển/5link kỹ thuật; giữ route/component trực tiếp để bảo trì. `/app` có Hero chào theo tên/minh họa CSS,4sách từ API thật/ảnh hiện hữu, lối tắt theo quyền, loading/empty/error/retry; card mở chi tiết/bản sao FE08–09 bằng `?sach=ID`. Layout riêng trang chủ tối đa1440px, palette/tokens/Sidebar/Header/logout giữ nguyên. [File và lệnh kiểm](TASKS.md).
+
+Đăng ký Frontend+Backend: **4–12 ký tự Unicode**, không complexity, xác nhận phải khớp; bcrypt12/reader/JWT giữ nguyên, không đổi mật khẩu cũ hoặc giới hạn login. **Frontend310/310 tại21file, Backend179/179**, lint/build/diff-check đạt. MySQL demo xác nhận tài khoản thử **ID7**, chỉ reader/book_view, đăng ký4ký tự/login thật đạt; giữ11sách/22bản sao/37phiếu và checksum nghiệp vụ. Chỉ thêm1user/reader mapping/1login event (users5→6 ở baseline thực), không main/schema/resetdemo.
+
+Chưa nghiệm thu visual1366×768/1920×1080 vì browser host/native pipe unavailable; HTTP module/ảnh/API200 không thay browser QA. Khởi động lại Backend/dev để nhận validator mới khi kiểm tra. Không commit/push hoặc FE15; chờ người dùng nghiệm thu. Các mục dưới là lịch sử.
+
+## HOTFIX-AUTH-01 — Trang chủ/đăng ký · 22/11/2026
+
+`/` chuyển đến `/dang-nhap` khi chưa đăng nhập và `/app` khi có phiên memory; trang FE02 chuyển sang `/kiem-tra-nen-tang`. Login giữ thiết kế, có **Đăng ký ngay**; `/dang-ky` gửi name/email/password đến API auth/register hiện có, thành công trở về login. Không Backend/schema/README hoặc JWT persistence changes; các route/permission FE08–14 giữ nguyên. [File/cách kiểm tra](TASKS.md).
+
+Đã đăng ký thật một fixture **user_id=4**, marker HOTFIX-AUTH-01, trong demo; chỉ reader/book_view, bcrypt12, login/me/logout/duplicate/role-injection/owner/401/403 đều đạt. Admin/thủ thư/độc giả demo cũ login/me đạt. Demo giữ11sách/22bản sao/37phiếu; checksum nghiệp vụ/dự báo và fingerprint account cũ giữ nguyên. User3→4; thêm4login events, không kết nối main. Không ghi password/token vào tài liệu.
+
+**Frontend305/305 tại20file**,0fail/skip; lint/build và Backend179/179 đạt. Chrome chưa kiểm được do CUA host/native pipe unavailable. Dịch vụ3000/5173 có sẵn trả200, root runner mới báo EADDRINUSE nên giữ nguyên tiến trình người dùng; kiểm API trên backend demo3001 do mình mở và đã dừng. Không commit/push; chờ nghiệm thu, không FE15. Các mục dưới là lịch sử.
+
+## HOTFIX-CONFLICT-01 — Khởi động Frontend sau conflict · 22/11/2026
+
+Đã gỡ đúng 7 đoạn conflict trong Sidebar, CSS khung và 4 docs, bảo toàn nội dung FE10–14. Source Frontend/Backend/chung sau sửa không có diff so với bản FE14 `29ab8e2`; role/permission `/auth/me`, route sách+bản sao, mượn/trả, độc giả/Admin và thống kê/dự báo giữ nguyên. [Chi tiết file/cách đối chiếu](TASKS.md).
+
+**302/302 tests tại20file**, 0 fail/skip; ESLint/build/diff-check đạt, toàn cây không còn marker (bỏ .git/node_modules/dist). `npm.cmd run dev` từ gốc lên MySQL/Express/Vite, HTTP shells/module/health đều200, Ctrl+C đã dừng cả hai listener. Không thay Backend/database/dữ liệu demo, không login/CRUD E2E hoặc browser tương tác trong hotfix. Giữ settings có sẵn, không commit/push hay thao tác merge/rebase/reset. Bước tiếp: người dùng kiểm tra lại từ gốc; dừng chờ, không FE15. Các bàn giao dưới giữ lịch sử.
+
+## FE-14 — Demo sẵn sàng nghiệm thu · 22/11/2026
+
+Chạy `npm run dev` tại gốc rồi mở `http://127.0.0.1:5173/dang-nhap`. Dữ liệu giữ trong schema demo riêng. Đã dừng Express/Vite bằng Ctrl+C sau kiểm tra. Bản demo hiện có 11 đầu sách, 22 bản sao, 3 tài khoản và 37 phiếu. Ngày 22/11, preview từ 10 phiếu trong 7 ngày cho ra 1,43 phiếu/người/ngày. Database chính vẫn dùng cấu trúc ISBN cũ.
+
+[Hướng dẫn chạy](../README.md) · [File thay đổi, kiểm thử Chrome/MySQL, migration và giới hạn](../Frontend/docs/FE14_HANDOFF.md). Bước tiếp theo là nghiệm thu FE-14. Chức năng CRUD người dùng và lưu dự báo vẫn chờ API/quyền tương ứng.
+
+## FE-13 — Thống kê và dự báo (2026-11-21)
+
+**Hoàn tất phần Frontend theo API hiện hữu, chờ nghiệm thu.** [FE13_HANDOFF](../Frontend/docs/FE13_HANDOFF.md), [lịch sử](TASKS.md).
+
+- /app/thong-ke cần report_view: 7 metric thật, lọc ngày/nhóm/user đúng phạm vi, biểu đồ cột và bảng phân biệt phiếu/bản sao; không tạo số0 cho dữ liệu thiếu.
+- /app/du-bao cần forecast_view: preview SMA7 phiếu không hủy/người/ngày, 7ngày từ Backend khi ready; insufficient_data có giải thích, không dự báo giả. Lịch sử chỉ lấy khi có thêm report_view, vẽ riêng không nối qua gap/tương lai. MAE không được diễn giải thành tỷ lệ chính xác.
+- Admin thêm shortcut theo grant và dùng chung overview. Generate/persistence Backend vẫn khóa503, UI không gọi POST. Ready/coverage/MAE thật chưa kiểm chứng; FE12 user CRUD vẫn thiếu API.
+- **302/302 tests tại20file**, thêm6mocktests; lint/build đạt. 3 production shells200, preview đóng. 107Backend giữ hash, HEAD/index và thay đổi có sẵn giữ nguyên, không DB/env/dependency/commit/push.
+- Chưa browser/AT/resize/MySQL E2E: host unavailable, TCP3000 đóng/chưa account dev. Tiếp theo: nghiệm thu; FE14 kiểm demo/môi trường thật chỉ sau task mới, không tự triển khai.
+
+Các bàn giao dưới là lịch sử.
+
+## FE-12 — Khu vực Admin (2026-11-21)
+
+**Hoàn tất phần giao diện khả thi; luồng quản trị người dùng chưa hoàn tất do thiếu API Backend.** [FE12_HANDOFF](../Frontend/docs/FE12_HANDOFF.md), [lịch sử](TASKS.md).
+
+- /app/admin cần role admin thật; có hồ sơ hiện tại, lối tắt theo grant và 3 số tổng thư viện từ statistics/overview chỉ khi có report_view. Không Admin bypass, không dashboard chuyên sâu.
+- /app/nguoi-dung cần user_manage; hiện báo rõ dịch vụ chưa hỗ trợ, không mô phỏng danh sách rỗng, tìm kiếm hoặc CRUD. Backend chưa có list/detail/create/update/role/status/delete; không dùng register/statistics-users thay thế.
+- **296/296 tests tại 19 file**, 4 test mới; lint/build đạt. Hai route production trả shell200, preview đóng. FE06–11 runtime/ảnh và 107 Backend giữ hash; HEAD/index giữ nguyên, không DB/env/package/commit/push.
+- Chưa browser/API/MySQL E2E/AT/resize: host unavailable, TCP3000 đóng/chưa account dev. Tiếp theo: nghiệm thu giao diện khả thi; hoàn tất quản trị user cần nhiệm vụ Backend riêng cấp contract/quyền. Không tự FE13.
+
+Các bàn giao dưới đây là lịch sử.
+
+## FE-11 — Giao diện độc giả (2026-11-21)
+
+**Hoàn tất phần lập trình, chờ nghiệm thu.** [FE11_HANDOFF](../Frontend/docs/FE11_HANDOFF.md), [lịch sử](TASKS.md).
+
+- **/app/doc-gia** và **/app/lich-su-muon** dùng role reader thật từ me; **/app/tai-khoan** dành cho mọi phiên đăng nhập. Giữ menu quản lý và module sách/ảnh/bản sao/mượn-trả hiện có.
+- Trang chủ có lời chào, số phiếu thật, hạn trả trong 5 phiếu gần đây và lối tắt. Lịch sử có filter/pagination/detail read-only; account chỉ render profile allowlist, không sửa hồ sơ hoặc lộ secrets; logout Header giữ nguyên.
+- Backend giới hạn reader own bằng JWT/SQL. Reader có borrow_manage gửi self user_id cho list; phản hồi sai owner bị từ chối toàn bộ, không lọc hàng nhạy cảm ở Frontend. Không thêm API/permission hoặc Admin bypass.
+- **292/292 tests tại 18 file**, thêm 5 mock tests; lint/build đạt. Chỉ cập nhật 2 assertion menu FE07 cho mục mới, giữ ca bảo mật. 5 route shells production 200, preview đã đóng.
+- Chưa browser/MySQL end-to-end/AT/resize do host unavailable/cổng3000 đóng/chưa account dev. Không Backend/database/env/dependency/commit/push; giữ HEAD/index và FE10 chưa commit.
+- Tiếp theo: nghiệm thu với browser và môi trường dev cô lập/tài khoản thật; không tự FE12. Giới hạn “chưa có trang reader own” trong bàn giao FE10 bên dưới đã được FE11 giải quyết.
+
+Các bàn giao bên dưới là lịch sử.
+
+## FE-ASSETS-02 + FE-10 — Ảnh bìa và mượn/trả (2026-11-21)
+
+**Hoàn tất phần lập trình, chờ nghiệm thu.** [FE10_HANDOFF](../Frontend/docs/FE10_HANDOFF.md) ghi API/quyền/file và giới hạn; [lịch sử](TASKS.md).
+
+- Hai ảnh JPG giữ nguyên byte; Đồi gió hú đã bỏ đuôi .jpg trùng. /app/sach có ảnh danh sách/chi tiết 60×90/160×240, variant thẻ 120×180, contain và fallback; map chính xác cặp tên+tác giả chuẩn hóa, chưa có ID thực tế được bàn giao.
+- **/app/muon-tra** + Sidebar cần borrow_manage; lập phiếu, list/filter/detail/pagination và trả một/nhiều/toàn bộ cần thêm return_process. Có xem lại/xác nhận, validation, pending, error/Toast và refetch sau thành công; không optimistic hoặc tự replay ghi.
+- Backend chưa có lookup/tên độc giả trong Borrow DTO: dùng user_id thật. Chưa có trang reader own; không suy permission từ Admin. FE06/07/09 runtime giữ nguyên, 401/403 theo provider hiện hữu.
+- **287/287 tests tại 17 file**, thêm 7 mock tests; lint/build đạt, 280 test cũ giữ nguyên. Ảnh dev/production 200/MIME/bytes khớp; server tạm đóng. 107 Backend giữ hash, HEAD/index không đổi; không database/schema/API/env/dependency/commit/push.
+- Chưa browser/Backend/MySQL E2E vì host unavailable, TCP3000 đóng và chưa account dev. Tiếp theo: nghiệm thu desktop với môi trường dev cô lập và IDs/grants thật, không tự FE11.
+
+Các bàn giao dưới là lịch sử, gồm hướng dẫn ảnh chưa tích hợp của FE-ASSETS-01 đã được thay bằng phần hiện tại.
+
 ## GIT-003 — Đã được duyệt kết thúc merge (2026-11-21)
 
 - Người dùng cho phép tạo merge commit, không push/pull. Phê duyệt này thay gate chờ duyệt ở GIT-002 bên dưới; AutoGit tiếp tục tắt.

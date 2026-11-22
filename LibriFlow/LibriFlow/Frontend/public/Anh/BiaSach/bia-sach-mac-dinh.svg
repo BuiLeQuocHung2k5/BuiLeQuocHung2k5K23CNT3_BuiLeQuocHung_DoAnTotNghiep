@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="640" viewBox="0 0 480 640" role="img" aria-labelledby="tieu-de mo-ta">
+  <title id="tieu-de">Bìa sách mặc định LibriFlow</title>
+  <desc id="mo-ta">Biểu tượng sách mở trên nền kem, viền nâu gỗ. Dùng khi chưa có ảnh bìa.</desc>
+  <rect width="480" height="640" fill="#f7f1e8"/>
+  <rect x="24" y="24" width="432" height="592" rx="16" fill="#fffdf8" stroke="#5d4037" stroke-width="2"/>
+  <path d="M240 246c-40-28-88-36-136-24v160c48-12 96-4 136 24 40-28 88-36 136-24V222c-48-12-96-4-136 24Z" fill="#f7f1e8" stroke="#5d4037" stroke-width="8" stroke-linejoin="round"/>
+  <path d="M240 246v160M136 260c26-3 50 2 72 14m-72 24c26-3 50 2 72 14m-72 24c26-3 50 2 72 14m64-76c22-12 46-17 72-14m-72 52c22-12 46-17 72-14m-72 52c22-12 46-17 72-14" fill="none" stroke="#795548" stroke-width="6" stroke-linecap="round"/>
+  <path d="M184 464h112" stroke="#b8895a" stroke-width="4" stroke-linecap="round"/>
+  <text x="240" y="514" text-anchor="middle" fill="#5d4037" font-family="Georgia, serif" font-size="28">LibriFlow</text>
+</svg>

@@ -7,7 +7,7 @@ import { locDieuHuongTheoQuyen } from '../chuc-nang/xac-thuc/kiem-tra-quyen.js'
 export default function DieuHuongUngDung({ groups: cacNhom, label = 'Điều hướng chính' }) {
   const { pathname: duongDan } = useLocation()
   const { nguoiDung, daDangNhap } = useXacThuc()
-  const cacNhomDuocXem = locDieuHuongTheoQuyen(cacNhom, nguoiDung, daDangNhap)
+  const cacNhomDuocXem = locDieuHuongTheoQuyen(cacNhom.filter(nhom => nhom.id !== 'tools'), nguoiDung, daDangNhap)
   return (
     <nav className="app-navigation" aria-label={label}>
       {cacNhomDuocXem.map(nhom => <div className="app-nav-group" key={nhom.id}>

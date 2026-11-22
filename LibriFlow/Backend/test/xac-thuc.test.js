@@ -9,12 +9,13 @@ import boKetNoi from "../src/config/co-so-du-lieu.js";
 import { taoDichVuJwt } from "../src/utils/jwt.js";
 import { LoiHttp } from "../src/utils/loi-http.js";
 import { taoMoHinhXacThuc } from "../src/models/xac-thuc.model.js";
-import { kiemTraDangKy } from "../src/utils/kiem-tra-xac-thuc.js";
+import { kiemTraDangKy, kiemTraDangNhap } from "../src/utils/kiem-tra-xac-thuc.js";
 
 // Chỉ dùng tài khoản giả lập; khóa JWT tạo ngẫu nhiên và không được in ra.
 const MAT_KHAU = "test-only-password-2026";
 const maBamMatKhau = await bcrypt.hash(MAT_KHAU, 12);
-const DU_LIEU_DANG_KY = { name: "Test reader", email: "new@example.test", password: MAT_KHAU };
+const MAT_KHAU_DANG_KY = "demo123";
+const DU_LIEU_DANG_KY = { name: "Test reader", email: "new@example.test", password: MAT_KHAU_DANG_KY };
 
 function taoNguCanhKiemThu() {
     const khoa = randomBytes(48).toString("base64url");
@@ -36,7 +37,7 @@ function taoNguCanhKiemThu() {
             if ([...cacNguoiDung.values()].some(nguoiDung => nguoiDung.email === duLieu.email)) throw new LoiHttp(409, "EMAIL_ALREADY_EXISTS", "Duplicate fixture email");
             assert.ok(!Object.hasOwn(duLieu, "password"));
             assert.equal(bcrypt.getRounds(maBam), 12);
-            assert.ok(await bcrypt.compare(MAT_KHAU, maBam));
+            assert.ok(await bcrypt.compare(MAT_KHAU_DANG_KY, maBam));
             trangThaiKiemThu.registrations++;
             const nguoiDung = { ...duLieu, user_id: "6", status: "active", roles: ["reader"], permissions: ["book_view"], password: maBam };
             cacNguoiDung.set("6", nguoiDung);
@@ -107,9 +108,12 @@ test("register rejects privilege injection and malformed schema fields", () => {
         assert.throws(() => kiemTraDangKy({ ...DU_LIEU_DANG_KY, [tenTruong]: "admin" }), { status: 400 });
     }
     for (const noiDung of [{ ...DU_LIEU_DANG_KY, name: "" }, { ...DU_LIEU_DANG_KY, name: "x".repeat(101) }, { ...DU_LIEU_DANG_KY, email: "invalid" },
-        { ...DU_LIEU_DANG_KY, password: "short" }, { ...DU_LIEU_DANG_KY, password: "a".repeat(73) }, { ...DU_LIEU_DANG_KY, password: "😀".repeat(19) },
+        { ...DU_LIEU_DANG_KY, password: "abc" }, { ...DU_LIEU_DANG_KY, password: "a".repeat(13) }, { ...DU_LIEU_DANG_KY, password: "😀".repeat(13) },
         { ...DU_LIEU_DANG_KY, phone: "1".repeat(21) }, { ...DU_LIEU_DANG_KY, password: "\ud800" }, []]) assert.throws(() => kiemTraDangKy(noiDung), { status: 400 });
-    assert.equal(kiemTraDangKy({ ...DU_LIEU_DANG_KY, password: "a".repeat(72) }).password.length, 72);
+    for (const password of ["1234", "abcd", "demo123", "LibriFlow12", "a".repeat(12), "😀".repeat(12), " ab "]) {
+        assert.equal(kiemTraDangKy({ ...DU_LIEU_DANG_KY, password }).password, password);
+    }
+    assert.equal(kiemTraDangNhap({ email: DU_LIEU_DANG_KY.email, password: MAT_KHAU }).password, MAT_KHAU);
 });
 
 test("HTTP rejects role injection and unsupported content type before account creation", async () => {

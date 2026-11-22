@@ -45,7 +45,7 @@ async function voiNguCanh(congViec) {
 
 test("auth prep: password whitespace survives registration/login; me and logout keep the existing contract", async () => {
     await voiNguCanh(async (gui, trangThai) => {
-        const matKhau = ` ${randomBytes(24).toString("base64url")} `;
+        const matKhau = ` ${randomBytes(5).toString("hex")} `;
         const email = `${randomBytes(8).toString("hex")}@example.test`;
         const dangKy = await gui("/api/auth/register", { method: "POST", body: { name: "Synthetic auth prep reader", email, password: matKhau } });
         assert.equal(dangKy.status, 201);

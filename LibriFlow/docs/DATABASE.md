@@ -1,5 +1,25 @@
 # Database
 
+## HOTFIX UI-04 — Hồ sơ demo (2026-11-22)
+
+SELECT metadata tại `libriflow_demo` xác nhận `NguoiDung.phone VARCHAR(20)` và `avatar VARCHAR(255)` đều nullable. MySQL lưu số và URL nội bộ, file ảnh demo nằm tại `Backend/.demo-local/avatars/`. Thử ghi đúng một tài khoản tổng hợp mới ID 9 và đọc lại bằng API sau khi khởi động lại Backend. Fingerprint tài khoản cũ và checksum sách, bản sao, phiếu, dự báo, quyền không đổi trong lượt kiểm lại. Không cần migration. [Cách kiểm](TASKS.md).
+
+## HOTFIX-UI-02 · Kiểm chứng đăng ký 4 ký tự (2026-11-22)
+
+- Demo được guard UUID/DATABASE() theo cấu hình riêng; tạo1fixture user_id7 marker HOTFIX-UI-02 registration verification, chỉreader/book_view/bcrypt12. Register4ký tự/login/me/logout đạt;3/13ký tự400, duplicate409,rolesadmin400. Không lưu credential/email trong tài liệu.
+- Baseline thực users5/mapping5/events88 → users6/mapping6/events89;11sách/22copies/37phiếu, checksum bảng nghiệp vụ/dự báo/role/permission và fingerprint user cũ không đổi. Không kết nối database chính, không schema/seed/reset/demo:setup/cleanup. Không sửa tài khoản đã có; [cách kiểm/giới hạn](TASKS.md).
+
+## HOTFIX-AUTH-01 · Kiểm chứng đăng ký demo 2026-11-22
+
+- Qua cấu hình demo đã ghim UUID/DATABASE() đúng libriflow_demo, POST auth/register tạo1fixture user_id=4, marker HOTFIX-AUTH-01 reader verification; reader/book_view, active và bcrypt12 được xác nhận bằng SELECT/API. Không sửa schema/seed hoặc kết nối main.
+- Trước/sau:11sách,22bản sao,37phiếu giữ nguyên; users3→4; usage events83→87 do4login được yêu cầu kiểm. CHECKSUM TABLE nghiệp vụ/dự báo/role/permission và fingerprint các user cũ khớp. Fixture được giữ để bàn giao; không DELETE/cleanup hoặc tạo lại demo. Không lưu email/mật khẩu/token trong tài liệu. Cách kiểm và giới hạn tại [task](TASKS.md).
+
+## FE-14 · Kiểm chứng ngày 22/11/2026
+
+MySQL 8.0.40 local có hai schema riêng. Truy vấn `information_schema.columns` xác nhận database chính giữ ISBN trên bản sao. Bốn bảng sách, bản sao, người dùng và phiếu mượn của database chính đều có 0 bản ghi lúc tiếp tục task. Trong `libriflow_demo`, ISBN nullable/unique thuộc `Sach`, barcode unique thuộc `BanSaoSach`. Kiểm kê sau khi bổ sung ngày UTC 21/11 cho thấy 11 sách, 22 bản sao, 3 tài khoản và 37 phiếu mượn. Runtime demo dùng account cục bộ được cấp quyền đọc/ghi riêng cho schema demo.
+
+Script tạo schema chuẩn và migration cho database cũ nằm trong [Backend/sql](../Backend/sql/README.md). Phạm vi kiểm chứng, dữ liệu trình diễn và giá trị SMA7 ghi ở [bàn giao FE-14](../Frontend/docs/FE14_HANDOFF.md).
+
 ## BE-AUTH-SETUP-01 — MySQL test đã chạy và dừng (2026-11-21)
 
 - Sau phê duyệt có điều kiện, tạo đúng một instance MySQL 8.0.40 mới dưới OS temp; SELECT xác minh bind 127.0.0.1, port 61458, datadir/UUID/cổng khác main và đường dẫn không chồng lấn. Database/account test chưa tồn tại trước setup.

@@ -1,0 +1,6 @@
+@layer components {
+  .book-cover { display: block; flex-shrink: 0; aspect-ratio: 2 / 3; object-fit: contain; background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  .book-cover--danh-sach { width: 60px; height: 90px; }
+  .book-cover--chi-tiet { width: 160px; height: 240px; margin-bottom: var(--space-5); }
+  .book-cover--the { width: 120px; height: 180px; }
+}

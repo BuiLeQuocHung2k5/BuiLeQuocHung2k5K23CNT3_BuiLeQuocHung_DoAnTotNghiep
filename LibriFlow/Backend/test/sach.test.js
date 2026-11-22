@@ -106,6 +106,14 @@ test("validation follows SQL boundaries and preserves unsigned BIGINT", () => {
     assert.equal(kiemTraNoiDungSach(NOI_DUNG_HOP_LE).series_id, null);
 });
 
+test("ISBN retains leading zeros and X, validates prefixes and checksums", () => {
+    const isbn = value => kiemTraNoiDungSach({ ...NOI_DUNG_HOP_LE, isbn: value }).isbn;
+    assert.equal(isbn("0-8044-2957-x"), "080442957X");
+    assert.equal(isbn("978 0 14 143955 6"), "9780141439556");
+    assert.equal(isbn(" "), null);
+    for (const value of ["0804429571", "9780141439557", "4006381333931", 9780141439556, "---"]) assert.throws(() => isbn(value));
+});
+
 test("database errors map to safe JSON without leaking SQL", async (t) => {
     for (const [maLoi, trangThai, maLoiApi] of [
         ["ER_DUP_ENTRY", 409, "DUPLICATE_VALUE"], ["ER_NO_REFERENCED_ROW_2", 400, "INVALID_REFERENCE"],
@@ -193,11 +201,11 @@ test("model insert/read preserves large insertId; update no-op is successful", a
     const duLieu = kiemTraNoiDungSach(NOI_DUNG_HOP_LE);
     const giaTriLon = "18446744073709551615";
     const ketQuaTao = taoKetNoiTheoKichBan([
-        { sql: /^INSERT INTO Sach .* VALUES \(\?, \?, \?, \?, \?, \?, \?\)$/, result: { insertId: giaTriLon } },
+        { sql: /^INSERT INTO Sach .* VALUES \(\?, \?, \?, \?, \?, \?, \?, \?\)$/, result: { insertId: giaTriLon } },
         { sql: /WHERE book_id = \?$/, result: [{ ...DU_LIEU_MAU, ...duLieu, book_id: giaTriLon }] },
     ]);
     assert.equal((await ketQuaTao.model.taoMoi(duLieu)).book_id, giaTriLon);
-    assert.deepEqual(ketQuaTao.calls[1].params, [null, null, duLieu.title, duLieu.author, null, null, null]);
+    assert.deepEqual(ketQuaTao.calls[1].params, [null, null, duLieu.isbn, duLieu.title, duLieu.author, null, null, null]);
     assert.deepEqual(ketQuaTao.calls[2].params, [giaTriLon]);
     const ketQuaCapNhat = taoKetNoiTheoKichBan([
         { sql: /FOR UPDATE$/, result: [DU_LIEU_MAU] }, { sql: /^UPDATE Sach SET .* WHERE book_id = \?$/, result: { affectedRows: 0 } },

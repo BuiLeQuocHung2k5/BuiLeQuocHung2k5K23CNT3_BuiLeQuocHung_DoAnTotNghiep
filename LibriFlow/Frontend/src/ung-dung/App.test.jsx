@@ -11,7 +11,7 @@ vi.mock("../cau-hinh/moi-truong.js", () => ({
 }))
 
 beforeEach(() => {
-  window.history.replaceState({}, '', '/')
+  window.history.replaceState({}, '', '/kiem-tra-nen-tang')
   moiTruong.error = null
 })
 
@@ -27,9 +27,9 @@ describe('FE-02 foundation', () => {
     window.history.replaceState({}, '', '/unknown-foundation-route')
     render(<App />)
     expect(screen.getByRole('heading', { name: 'Không tìm thấy trang' })).toBeVisible()
-    await userEvent.click(screen.getByRole('link', { name: 'Về trang kiểm tra kỹ thuật' }))
-    expect(screen.getByRole('heading', { name: 'Nền tảng LibriFlow' })).toBeVisible()
-    expect(window.location.pathname).toBe('/')
+    await userEvent.click(screen.getByRole('link', { name: 'Về trang chủ' }))
+    expect(await screen.findByRole('heading', { name: 'Đăng nhập' })).toBeVisible()
+    expect(window.location.pathname).toBe('/dang-nhap')
     expect(kiemTraSucKhoe).not.toHaveBeenCalled()
   })
 

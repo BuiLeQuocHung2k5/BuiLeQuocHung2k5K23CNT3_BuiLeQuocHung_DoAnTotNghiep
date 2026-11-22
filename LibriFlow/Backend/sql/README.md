@@ -1,5 +1,11 @@
 # Chuẩn bị database LibriFlow
 
+## ISBN đầu sách trong FE-14 · 22/11/2026
+
+Schema khởi tạo hiện đặt ISBN nullable/unique ở `Sach` và giữ barcode unique ở `BanSaoSach`. Các bản SQL gốc là bản lịch sử. Dùng lệnh ở [README gốc](../../README.md) khi chuẩn bị demo.
+
+Database cũ cần mở một phiên riêng trên bản sao độc lập hoặc sau khi đã kiểm tra khả năng phục hồi bản sao lưu. Dừng các tiến trình ghi, chọn đúng schema, bật dừng khi lỗi, kiểm tra `SELECT DATABASE()` và đặt hai biến xác nhận theo đầu file migration. Chạy toàn bộ script trong cùng phiên. Migration khóa hai bảng, kiểm tra checksum, hai chiều xung đột và dữ liệu đích trước khi bỏ cột nguồn. Khi gặp lỗi, đóng phiên để nhả khóa và kiểm tra dữ liệu. Ngày 21/11 đã thử chuyển và chạy lại trên schema thử riêng. Database chính vẫn giữ cấu trúc trước FE-14. [Migration 002](migrations/002_isbn_dau_sach.sql)
+
 Xác minh ngày 2026-11-05 bằng so sánh file và truy vấn SELECT metadata MySQL 8.0.40. Chưa thực thi các script bên dưới.
 
 ## Migration 001 — category_manage (TASK-011, 2026-11-06)

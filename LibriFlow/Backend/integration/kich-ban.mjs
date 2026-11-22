@@ -48,7 +48,7 @@ test("real MySQL: isolated auth/catalog/circulation lifecycle", { timeout: 12000
         });
     }
     function xacNhanMaHttp(phanHoi, trangThai) { assert.equal(phanHoi.status, trangThai, "Unexpected HTTP status (response deliberately not logged).");return phanHoi.body.data; }
-    const matKhau = randomBytes(24).toString("hex");
+    const matKhau = randomBytes(6).toString("hex");
     const cacNguoiDung = {}, dichVuToken = {};
     let maDanhMuc, maSach, banSaoDuyNhat, phieuMotBanSao, phieuMuonNhieuBanSao, cacBanSaoTrongLo, phieuCanhTranh, banSaoCanhTranh, phieuRiengTu;
     const hanTra = () => new Date(Date.now() + 7 * 86400000).toISOString().replace(/\.\d{3}Z$/, "Z");
@@ -67,6 +67,9 @@ test("real MySQL: isolated auth/catalog/circulation lifecycle", { timeout: 12000
         }
         return phanHoi;
     }
+    const dauIsbn = "978" + BigInt("0x" + maLanChay.slice(0, 8)).toString().padStart(10, "0").slice(-9);
+    const tongIsbn = [...dauIsbn].reduce((tong, so, i) => tong + Number(so) * (i % 2 ? 3 : 1), 0);
+    const isbn = dauIsbn + (10 - tongIsbn % 10) % 10;
     const soPhieu = () => giaTriDon("SELECT COUNT(*) FROM PhieuMuon WHERE user_id IN (?, ?)", [cacNguoiDung.readerA, cacNguoiDung.readerB]);
     const soChiTiet = () => giaTriDon("SELECT COUNT(*) FROM ChiTietPhieuMuon d JOIN PhieuMuon p ON p.borrow_id = d.borrow_id WHERE p.user_id IN (?, ?)", [cacNguoiDung.readerA, cacNguoiDung.readerB]);
 
@@ -96,9 +99,9 @@ test("real MySQL: isolated auth/catalog/circulation lifecycle", { timeout: 12000
         xacNhanMaHttp(await guiYeuCau("/api/health/db"), 200);
         maDanhMuc = xacNhanMaHttp(await guiYeuCau("/api/categories", "POST", { name: tienTo }, dichVuToken.staff), 201).category_id;bangKeKiemThu.categories.push(maDanhMuc);await luuBangKe();
         assert.equal(await giaTriDon("SELECT COUNT(*) FROM DanhMuc WHERE category_id = ? AND name = ?", [maDanhMuc, tienTo]), 1);
-        maSach = xacNhanMaHttp(await guiYeuCau("/api/books", "POST", { title: `${tienTo}_book`, author: "Synthetic integration fixture", category_id: maDanhMuc }, dichVuToken.staff), 201).book_id;bangKeKiemThu.books.push(maSach);await luuBangKe();
+        maSach = xacNhanMaHttp(await guiYeuCau("/api/books", "POST", { title: `${tienTo}_book`, author: "Synthetic integration fixture", isbn, category_id: maDanhMuc }, dichVuToken.staff), 201).book_id;bangKeKiemThu.books.push(maSach);await luuBangKe();
         assert.equal(await giaTriDon("SELECT COUNT(*) FROM Sach WHERE book_id = ? AND title = ?", [maSach, `${tienTo}_book`]), 1);
-        banSaoDuyNhat = await taoBanSaoMau({ isbn: maLanChay.slice(0, 13) });
+        banSaoDuyNhat = await taoBanSaoMau();
         assert.equal(await giaTriDon("SELECT COUNT(*) FROM Sach WHERE book_id = ? AND category_id = ?", [maSach, maDanhMuc]), 1);
         assert.equal(await giaTriDon("SELECT COUNT(*) FROM BanSaoSach WHERE copy_id = ? AND book_id = ?", [banSaoDuyNhat.copy_id, maSach]), 1);
     });
@@ -107,11 +110,11 @@ test("real MySQL: isolated auth/catalog/circulation lifecycle", { timeout: 12000
     await chayKichBan("real UNIQUE and FK constraints reject invalid inserts without persisting rows", async () => {
         xacNhanMaHttp(await guiYeuCau("/api/categories", "POST", { name: tienTo }, dichVuToken.staff), 409);
         xacNhanMaHttp(await guiYeuCau("/api/book-copies", "POST", { book_id: maSach, barcode: banSaoDuyNhat.barcode }, dichVuToken.staff), 409);
-        xacNhanMaHttp(await guiYeuCau("/api/book-copies", "POST", { book_id: maSach, barcode: `${tienTo}_dup_isbn`, isbn: banSaoDuyNhat.isbn }, dichVuToken.staff), 409);
+        xacNhanMaHttp(await guiYeuCau("/api/books", "POST", { title: tienTo, author: tienTo, isbn }, dichVuToken.staff), 409);
         assert.equal(await giaTriDon("SELECT COUNT(*) FROM Sach WHERE book_id = ?", ["18446744073709551615"]), 0);
         xacNhanMaHttp(await guiYeuCau("/api/book-copies", "POST", { book_id: "18446744073709551615", barcode: `${tienTo}_bad_fk` }, dichVuToken.staff), 400);
         await assert.rejects(coSoDuLieu.execute("INSERT INTO BanSaoSach (book_id, barcode) VALUES (?, ?)", ["18446744073709551615", `${tienTo}_sql_bad_fk`]), laLoiKhoaNgoai);
-        assert.equal(await giaTriDon("SELECT COUNT(*) FROM BanSaoSach WHERE barcode IN (?, ?, ?)", [`${tienTo}_dup_isbn`, `${tienTo}_bad_fk`, `${tienTo}_sql_bad_fk`]), 0);
+        assert.equal(await giaTriDon("SELECT COUNT(*) FROM BanSaoSach WHERE barcode IN (?, ?)", [ `${tienTo}_bad_fk`, `${tienTo}_sql_bad_fk`]), 0);
     });
 
     await chayKichBan("borrow one copy and verify committed header/detail/copy state via SELECT", async () => {

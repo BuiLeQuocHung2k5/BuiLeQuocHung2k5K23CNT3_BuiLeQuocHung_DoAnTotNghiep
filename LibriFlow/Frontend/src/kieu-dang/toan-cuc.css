@@ -37,7 +37,9 @@ button:not(:disabled), a {
   outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
 }
-button, input, textarea, select { font: inherit; }
+@layer base {
+  button, input, textarea, select { font: inherit; }
+}
 button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
 button { touch-action: manipulation; }
 input, select, textarea { accent-color: var(--primary); }

@@ -1,7 +1,8 @@
+import { chuanHoaIsbn } from "../../../chung/isbn.mjs";
 import { LoiHttp } from "./loi-http.js";
 
 const MA_TOI_DA = 18446744073709551615n;
-const CAC_TRUONG = new Set(["category_id", "series_id", "title", "author", "publisher", "description", "publication_year"]);
+const CAC_TRUONG = new Set(["category_id", "series_id", "isbn", "title", "author", "publisher", "description", "publication_year"]);
 
 function baoDuLieuKhongHopLe(tenTruong, thongBao) {
     throw new LoiHttp(400, "VALIDATION_ERROR", "Dữ liệu không hợp lệ.", [{ field: tenTruong, message: thongBao }]);
@@ -35,7 +36,10 @@ function kiemTraChuoiGioiHan(giaTri, tenTruong, doDaiToiDa, batBuoc = false) {
 export function kiemTraNoiDungSach(noiDung) {
     if (!noiDung || typeof noiDung !== "object" || Array.isArray(noiDung)) baoDuLieuKhongHopLe("body", "Phải là một JSON object.");
     for (const tenTruong of Object.keys(noiDung)) if (!CAC_TRUONG.has(tenTruong)) baoDuLieuKhongHopLe(tenTruong, "Trường không được phép ghi.");
+    const isbn = chuanHoaIsbn(noiDung.isbn);
+    if (isbn === undefined) baoDuLieuKhongHopLe("isbn", "Nhập ISBN-10 hoặc ISBN-13 hợp lệ.");
     const duLieu = {
+        isbn,
         title: kiemTraChuoiGioiHan(noiDung.title, "title", 255, true),
         author: kiemTraChuoiGioiHan(noiDung.author, "author", 150, true),
         publisher: kiemTraChuoiGioiHan(noiDung.publisher, "publisher", 150),

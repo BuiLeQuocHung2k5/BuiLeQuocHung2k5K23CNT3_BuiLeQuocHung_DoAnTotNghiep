@@ -1,5 +1,131 @@
 # Theo dõi task
 
+## HOTFIX ADMIN-01 — Quản lý người dùng · 22/11/2026
+
+- Hoàn tất API và giao diện quản trị theo quyền. File chính gồm [router](../Backend/src/routes/nguoi-dung.routes.js), [model](../Backend/src/models/nguoi-dung.model.js), app-factory, validator dùng chung, [màn hình quản trị](../Frontend/src/chuc-nang/quan-tri/TrangNguoiDung.jsx), lối tắt Admin, cấu hình tuyến, làm mới hồ sơ của phiên và test FE/BE. [Hợp đồng đã cập nhật](../Backend/docs/frontend-api-handover.md).
+- `npm test` trong Backend đạt 185/185. Frontend `npm run test:run -- --maxWorkers=2` đạt 318/318. ESLint và production build đạt.
+- MySQL demo kiểm tra JWT/quyền, lọc theo tên/email, vai trò, trạng thái, phân trang, chi tiết, trường công khai, email trùng, băm bcrypt, đổi vai trò, đăng nhập và phiên cũ khi vô hiệu hóa. Tài khoản thử duy nhất ID 10 kết thúc với vai trò reader và trạng thái inactive. Thử vô hiệu hóa người đã có phiếu trong transaction rollback và đối chiếu số phiếu. Fingerprint tài khoản cũ, quyền và checksum sách, bản sao, phiếu/chi tiết và dự báo giữ nguyên. Database chính chưa truy cập.
+- Chrome headless kiểm tra bảng thật, chi tiết, lọc, dialog, nút mật khẩu ở 1366×768 và 1920×1080. Đã đổi vai trò, kích hoạt và vô hiệu hóa fixture qua xác nhận trên giao diện. Tạo mới/trùng email kiểm qua API thật, chưa bấm lưu tạo tài khoản thứ hai trên Chrome. Chờ nghiệm thu.
+
+## HOTFIX UI-06 — Nút mật khẩu và ảnh bìa (2026-11-22)
+
+- Trạng thái: đã căn chỉnh nút mật khẩu, phần upload bìa chưa triển khai. Thay ONhapMatKhau.jsx để nút nằm trong wrapper của chính input và sửa xac-thuc.css căn giữa theo chiều cao input. Giữ label, helper/error, thuộc tính accessibility và trạng thái nhập.
+- Đã đọc source Backend/src/models/sach.model.js, routes/sach.routes.js, Frontend/src/chuc-nang/sach/AnhBiaSach.jsx, Backend/sql/schema.sql. GET/CRUD sách chưa có trường ảnh hoặc endpoint upload. SELECT information_schema sau xác minh UUID/schema demo cho thấy bảng Sach không có cột ảnh. Cần thiết kế lưu đường dẫn liên kết book_id trong MySQL và thay schema demo trước khi thử thật. Database chính chưa truy cập.
+- Kiểm tra: Frontend auth `npm.cmd run test:run -- src/chuc-nang/xac-thuc/xac-thuc.test.jsx --maxWorkers=1` 35/35 đạt, `npm.cmd run lint` và `npm.cmd run build -- --logLevel=warn` đạt. Chưa kiểm browser/desktop, upload hoặc MySQL ghi. Không tạo dữ liệu hoặc sửa database.
+- Bước tiếp: cần chỉ dẫn rõ ràng cho phép thay schema database demo theo AGENTS.md, sau đó thiết kế migration và tích hợp upload có phân quyền. Không sửa database chính hoặc FE15.
+
+## HOTFIX AUTH-03 — Đồng bộ hai tài khoản demo (2026-11-22)
+
+- Hoàn tất. Đối chiếu `DATABASE()` và UUID với cấu hình demo, khóa từng dòng và xác nhận librarian/reader active, mỗi tài khoản đúng role trước khi cập nhật. Ghi hash bcrypt12 cho đúng hai tài khoản theo JSON trong một transaction. Hash cũ đã sao lưu vào `Backend/.demo-local/auth03-demo-hash-backup.json`, thư mục được ignore. Không ghi thông tin xác thực vào tài liệu.
+- Xác minh bcrypt sau commit, đối chiếu hash Admin trước/sau và fingerprint các trường hồ sơ khác. CHECKSUM sách, bản sao, phiếu, chi tiết phiếu, lịch sử, dự báo, liên kết role và bảng quyền giữ nguyên. Không đổi schema hoặc database chính.
+- API HTTP thật qua app factory với MySQL demo, hook ghi nhận login thay bằng no-op để giữ lịch sử theo yêu cầu. Admin, librarian và reader đều trả login200, me200 với role/quyền phù hợp và logout200. Mật khẩu sai401. Kiểm lại checksum sau HTTP khớp. Kiểm tra này không chứng minh giao diện Chrome.
+- Không đổi source. Chỉ cập nhật TASKS/HANDOFF, giữ thay đổi có sẵn, không commit/push. Không chạy test/lint/build vì không sửa code. Chrome chưa kiểm được do browser host/native pipe unavailable. Chờ người dùng nghiệm thu, không FE15.
+
+## HOTFIX AUTH-02 — Hiện mật khẩu và xác minh demo (2026-11-22)
+
+- Đã thêm ONhapMatKhau.jsx dùng chung cho đăng nhập, đăng ký và xác nhận, cùng CSS scoped trong xac-thuc.css. Nút độc lập, type button, nhãn Hiện/Ẩn mật khẩu, không xóa giá trị. Cập nhật TrangDangNhap.jsx, TrangDangKy.jsx và xac-thuc.test.jsx.
+- Đối chiếu MySQL demo bằng SELECT sau kiểm tra DATABASE()/UUID với cấu hình demo. Tài khoản admin/librarian/reader đều active, có role và permissions phù hợp, song cả ba mật khẩu JSON đều không khớp hash. chay.mjs chỉ đọc cau-hinh.json, tai-khoan.json dùng khi khoi-tao/seed và để tham khảo. Frontend gửi email/password theo contract.
+- Đã đồng bộ duy nhất hash Admin bằng bcrypt12 theo yêu cầu, với bản sao hash cũ trong Backend/.demo-local/auth02-admin-hash-backup.json (ignored, không ghi giá trị vào tài liệu). Khóa row, xác minh role admin và kiểm tra bcrypt sau commit. CHECKSUM sách/bản sao/phiếu/chi tiết/lịch sử/dự báo/RBAC không đổi. Không thay mật khẩu thủ thư/độc giả hay account đăng ký, không seed/migration.
+- HTTP test với app factory và MySQL demo thật, chỉ thay hook ghi log login thành no-op để giữ lịch sử theo yêu cầu: Admin login200/me đúng role/logout200, password sai401; librarian và reader trả401 INVALID_CREDENTIALS vì JSON không khớp. Chưa thể kết luận vì sao các hash lệch ban đầu. Cần chỉ dẫn rõ ràng trước khi đồng bộ hai account còn lại.
+- npm.cmd run dev tại gốc khởi động MySQL/Backend/Vite; đã dừng process của task. Backend auth tests 18/18, Frontend auth/admin 42/42, lint/build đạt. Chrome chưa kiểm vì browser host/native pipe unavailable; không thử login thật qua server demo thông thường vì login ghi lịch sử.
+- Chưa commit/push/FE15. Giữ các thay đổi trước task. Bước tiếp: người dùng đăng nhập Admin với JSON và quyết định phạm vi đồng bộ hai account còn lại.
+
+## HOTFIX UI-05 — CSS đăng nhập, đăng ký và Footer (2026-11-22)
+
+- Khi tiếp tục, kiểm tra Git và giữ nguyên thay đổi có sẵn. Không có file staged hoặc xung đột trong index. Nội dung chưa lưu trong editor chưa xác minh. Kết quả build/lint trước gián đoạn đạt, kết quả lần test dang dở không còn trong phiên chạy.
+- Nguyên nhân xác minh từ CSS production trước khi sửa thứ tự import: Footer đưa `@layer components` vào trước Tailwind `base` nên reset có thể ghi đè Card, input và button. Luật `font: inherit` ngoài lớp cũng lấn typography của Design System. `Frontend/src/main.jsx` nạp CSS toàn cục trước App, `toan-cuc.css` chuyển luật font vào base. `xac-thuc.css` cân lại bố cục hai cột và dành một hàng riêng cho Footer. `chan-trang.css` cho nội dung các cột co và xuống dòng.
+- Kiểm production CSS xác nhận `theme → base → components` và đủ selector form, Card, input, button, Footer. Vite tạm trả HTTP 200 cho `/dang-nhap`, `/dang-ky`, entry và hai stylesheet rồi đã dừng. `npm.cmd run test:run -- --maxWorkers=1` đạt 317/317 tại 22 file, gồm đăng nhập, đăng ký và đăng xuất qua API giả lập. `npm.cmd run lint`, `npm.cmd run build -- --logLevel=warn` và `git diff --check` đạt.
+- Chỉ SELECT trên MySQL demo sau xác minh UUID/schema. Có 11 sách, 22 bản sao, 37 phiếu, 7 tài khoản. Không ghi hoặc tạo thêm bản ghi test. Chrome ở 1366×768 và 1920×1080 cùng đăng nhập demo qua UI chưa xác minh vì browser host và native pipe không khả dụng. Bước tiếp theo là nghiệm thu trực quan. [Bàn giao](HANDOFF.md).
+
+## HOTFIX UI-04 — Footer, Admin và hồ sơ cá nhân (2026-11-22)
+
+- Footer chung và CSS mới tại `Frontend/src/bo-cuc/ChanTrang.jsx` và `Frontend/src/kieu-dang/chan-trang.css`. Tích hợp vào `KhungUngDung.jsx` và layout đăng nhập/đăng ký trong `DinhTuyenUngDung.jsx`. Bỏ footer cũ khỏi hai trang xác thực và CSS bố cục. Lucide hiện không có logo Facebook/X nên dùng nhãn mạng và biểu tượng mở liên kết ngoài.
+- `/admin` chuyển sang `/app/admin` trong `DinhTuyenUngDung.jsx`. Guard hiện có đưa khách về đăng nhập và hiển thị 403 cho độc giả. Test điều hướng và footer tại `quan-tri.test.jsx`, `khung-ung-dung.test.jsx`.
+- Hồ sơ tại `TrangTaiKhoan.jsx` có form số điện thoại dạng chuỗi, nút chọn ảnh từ máy, xem trước, lưu và hủy. `AnhDaiDien.jsx` và `ho-so.css` dùng chung với `DauTrang.jsx`. `BoCungCapXacThuc.jsx` và `dich-vu-xac-thuc.js` đồng bộ hồ sơ từ phản hồi Backend vào phiên hiện hành, hủy yêu cầu khi xóa phiên. Thêm `TrangTaiKhoan.test.jsx`.
+- Backend bổ sung PATCH `/api/auth/me` và PUT `/api/auth/me/avatar`, lấy ID từ JWT. Thay đổi ở app factory, route, controller, service, model và validator xác thực. Kho ảnh tại `Backend/src/utils/anh-dai-dien.js` xác minh cấu trúc JPEG/PNG/WebP tĩnh, tối đa 2 MiB và 4096 × 4096, đặt tên UUID. Ảnh thay thế chỉ dọn sau khi xác nhận cập nhật MySQL. Thêm `Backend/test/ho-so-ca-nhan.test.js`, quy tắc ignore ảnh và cập nhật hợp đồng tại [Auth API](../Backend/docs/xac-thuc-api.md).
+- MySQL demo xác nhận `phone VARCHAR(20)` và `avatar VARCHAR(255)` có sẵn. Thử trên đúng schema/UUID demo với một tài khoản tổng hợp ID 9, đăng nhập thật để cập nhật lần đầu. Lượt kiểm phát hiện Express trả 404 cho ảnh dưới thư mục ẩn. Đã sửa cách phục vụ ảnh sau khi kho giới hạn tên và đường dẫn. Kiểm lại bằng JWT demo trong RAM cho đúng fixture, tải và đối chiếu byte PNG, MIME và nosniff, kiểm ảnh cũ trả 404 và đọc lại hồ sơ qua GET sau khi khởi động lại Backend. ID đích tùy ý, số dạng Number, ảnh giả, ảnh quá dung lượng và MIME ngoài allowlist bị từ chối. Checksum nghiệp vụ/phân quyền và fingerprint tài khoản cũ khớp trong lượt kiểm lại. Demo vẫn có 11 sách, 22 bản sao và 37 phiếu mượn. Giữ fixture và một ảnh thử. Không migration hay kết nối database chính.
+- Frontend `npm.cmd run test:run -- --maxWorkers=1` đạt 317/317 tại 22 file. Backend `npm.cmd test` đạt 183/183. `npm.cmd run lint`, `npm.cmd run build -- --logLevel=warn`, `git diff --check` và Vite HTTP smoke cho route/module mới đạt.
+- Chưa kiểm Chrome và hộp thoại chọn tệp Windows vì công cụ browser và native pipe không kết nối được. Phần chọn tệp, xem trước, phản hồi lỗi và đồng bộ Header được kiểm qua Frontend test. Khởi động lại tiến trình dev để nạp Endpoint Backend mới khi nghiệm thu. Giữ các thay đổi có sẵn, không commit/push. [Bàn giao](HANDOFF.md).
+
+## HOTFIX-UI-02 — Trang chủ thư viện và đăng ký demo (2026-11-22)
+
+- Trạng thái: hoàn tất lập trình và hồi quy, chờ nghiệm thu trực quan. Giữ các thay đổi HOTFIX-AUTH/CONFLICT có sẵn, không commit/push/FE15.
+- Sidebar loại nhóm tools trước helper FE07, mọi role không còn5link kỹ thuật. Giữ route/component kỹ thuật trực tiếp và test bảo trì. Sửa `Frontend/src/bo-cuc/DieuHuongUngDung.jsx`, `KhungUngDung.jsx`; không đổi guard/grants/logout/header.
+- Trang chủ: Hero chào theo tên + minh họa CSS, CTA sách,4card từ GET books page1/limit12 (không dữ liệu giả), ảnh AnhBiaSach hiện hữu, loading/empty/error/retry; lối tắt theo quyền và lời nhắn đọc sách. Nới riêng trang chủ tối đa1440px, grid4/2 cột, hover nhẹ/reduced-motion. Sửa TrangTongQuanUngDung.jsx, thêm `kieu-dang/trang-chu.css`; `TrangQuanLySach.jsx` nhận `?sach=ID` để card mở detail/bản sao cũ, đóng giữ danh sách.
+- Đăng ký Frontend TrangDangKy.jsx và Backend utils/kiem-tra-xac-thuc.js đồng bộ4–12 Unicode code points, không trim/complexity, giữ xác nhận và bcrypt12/reader/JWT. Login vẫn1–72byte cho account cũ. Backend/docs/xac-thuc-api.md cập nhật contract/demo-only; fixture registration trong2test Backend và2suite integration đổi độ dài phù hợp, không chạy provision.
+- Tests: thêm4ca homepage API/empty/error/loading/detail/RBAC và1boundary đăng ký; cập nhật test shell/FE07/API-check theo menu mới, test Auth mock riêng homepage để giữ kiểm memory/TTL/401/cache. Không xóa test nghiệp vụ/bảo mật. Targeted homepage4/4, shell+API32/32, FE07/shell66/66, auth34/34 và Backend179/179 đạt. Frontend lượt đầu305pass/5fail do fixture/provider/menu/landmark cũ; đã sửa. Cuối `npm.cmd run test:run -- --maxWorkers=1`: **310/310 tại21file**,0fail/skip; `npm.cmd run lint`, `npm.cmd run build -- --logLevel=warn`, diff-check đạt. Không còn conflict markers.
+- MySQL demo: guard UUID/DATABASE() đúng libriflow_demo; tạo đúng1fixture **user_id=7**, marker HOTFIX-UI-02 registration verification. Password4digits chỉRAM; register201,3/13chars400,email trùng409,rolesadmin400,login/me/logout200,reader/book_view,bcrypt12;403stats rồi me200. Không password/token/email thật vào docs/log.
+- Baseline thực lúc kiểm:11books/22copies/37phiếu/users5/user_roles5/events88; sau11/22/37/users6/user_roles6/events89. CHECKSUM nghiệp vụ/dự báo/role/permission + fingerprints user cũ giữ nguyên. Chỉ thêm user/reader mapping và1login event; không kết nối main, không reset/seed/schema/demo:setup/cleanup. Backend riêng PORT3002 đã dừng bằng Ctrl+C.
+- HTTP dev hiện hữu: /app, module homepage/CSS và3ảnh trả200; API sách thật200. Chrome/visual1366×768 và1920×1080 **chưa kiểm** vì CUA native pipe/browser host unavailable; không coi HTTP/jsdom là visual pass. Bước tiếp: khởi động lại Backend/dev hiện hữu để nhận validator mới, nghiệm thu giao diện trong browser khả dụng; không FE15.
+- Tài liệu chỉ cập nhật TASKS/HANDOFF/PROJECT_CONTEXT/DECISIONS/DATABASE hiện hữu và API auth, không tạo báo cáo mới. HEAD5a5d7f4/index giữ nguyên.
+
+## HOTFIX-AUTH-01 — Trang chủ và đăng ký độc giả (2026-11-22)
+
+- Trạng thái: hoàn tất phần code và kiểm chứng API/MySQL demo, chờ nghiệm thu Chrome. Conflict của HOTFIX-CONFLICT-01 không tái xuất hiện, không sửa lại Sidebar/CSS. Giữ settings và các thay đổi hotfix có sẵn; không merge/rebase/reset/commit/push.
+- Sửa `Frontend/src/ung-dung/dinh-tuyen/DinhTuyenUngDung.jsx`, `cau-hinh-tuyen.js`: `/` chuyển theo phiên memory đến `/dang-nhap` hoặc `/app`; FE02 giữ tại `/kiem-tra-nen-tang`, FE04/design-system giữ đường dẫn. Thêm `src/chuc-nang/xac-thuc/TrangDangKy.jsx`; sửa TrangDangNhap.jsx, dich-vu-xac-thuc.js và TrangKhongTimThay.jsx. Tái dùng Design System; form gửi đúng name/email/password, kiểm xác nhận, chặn submit trùng, hủy chờ khi unmount, lỗi an toàn và chuyển về login kèm thông báo thành công; không tự tạo phiên/token.
+- API đã có: POST auth/register →201, bcrypt12, transaction NguoiDung + vai trò reader cố định, unique email→409; validator không nhận roles/permissions. Không sửa Backend/schema/seed/API/README. Giữ JWT memory, me/RBAC/401/403 cũ. Sửa 4 file test App/khung/xac-thuc/kiem-tra-quyen theo đường dẫn mới; thêm 3 ca root/register/duplicate, giữ assertions bảo mật.
+- MySQL demo xác minh identity UUID/schema từ cấu hình riêng. Tạo đúng **1 fixture đăng ký user_id=4**, name marker `HOTFIX-AUTH-01 reader verification`, email tổng hợp @example.test; mật khẩu ngẫu nhiên chỉ trong RAM, không log/lưu báo cáo. SELECT xác nhận lưu thật và định dạng bcrypt12; /me chỉ reader/book_view. Email trùng409, tự gửi roles admin400, vượt quyền403, /me sau403 vẫn200, thiếu JWT401, logout200; đọc phiếu khác404, list giới hạn owner. Ba account demo cũ login/me đạt.
+- CHECKSUM TABLE trước/sau của Sach/BanSaoSach/PhieuMuon/ChiTietPhieuMuon/DuBaoTanSuat và bảng role/permission giữ nguyên; fingerprint account cũ không đổi. Demo vẫn **11 sách/22 bản sao/37 phiếu**, user3→4, LichSuSuDung83→87 (4 sự kiện login). Chỉ thêm user/liên kết reader và login events đã cho phép, không demo:setup/cleanup hay kết nối database chính. GET sách/bản sao/mượn/thống kê/forecast-me thật200.
+- Kiểm tra: `npm.cmd run lint`, `npm.cmd run build -- --logLevel=warn` đạt; Backend `npm.cmd test` **179/179**. Frontend cuối `npm.cmd run test:run -- --maxWorkers=1`: **305/305 tại20file**,0fail/skip. Lượt đầu302 đạt/3 thất bại do expected URL menu kỹ thuật cũ; đã cập nhật chính xác URL mới. Quét marker không kết quả; diff-check đạt. Cập nhật TASKS/HANDOFF/PROJECT_CONTEXT/DATABASE/DECISIONS, không tạo tài liệu mới.
+- Khởi động gốc `npm.cmd run dev` thử2lần gặp EADDRINUSE: dịch vụ có sẵn đang giữ3000/5173 (PIDs97120/90740), không dừng tiến trình của người dùng. HTTP dev hiện hữu: /, login/register/app/admin/reader/technical và2module200; health/db3000=200. Khởi động backend demo riêng bằng PORT3001 + `npm.cmd run dev:backend`, kiểm chứng API ở3001, Ctrl+C đã dừng listener của mình.
+- Chưa kiểm Chrome/UI thực/resize: CUA báo native pipe và browser access host unavailable. Không coi HTTP shell200 hoặc jsdom là browser pass; root redirect/form được kiểm bằng RTL và API thật kiểm độc lập. Tiếp theo: nghiệm thu Chrome sau khi công cụ khả dụng, chạy lại lệnh gốc khi cổng rảnh; không FE15.
+
+## HOTFIX-CONFLICT-01 — Sửa marker conflict khi chạy Frontend (2026-11-22)
+
+- Trạng thái: hoàn tất hotfix, chờ người dùng kiểm tra. Đã sửa 7 đoạn conflict trong 6 file. HEAD đầu task `5a5d7f4` đã chứa marker trong file, không có unmerged paths. Đối chiếu `29ab8e2` (FE14) và `411c8e4:LibriFlow/...` cho thấy snapshot FE04 cũ đưa lại nhãn khung/footnote, còn tài liệu incoming không có nội dung mới.
+- Sửa `Frontend/src/bo-cuc/ThanhBen.jsx`, `Frontend/src/kieu-dang/khung-ung-dung.css`: giữ nhãn trang chủ FE14, Sidebar desktop và DieuHuongUngDung; bỏ footnote FE04 lỗi thời cùng CSS của nó. Gỡ marker tại `docs/PROJECT_CONTEXT.md`, `DATABASE.md`, `DECISIONS.md`, `TASKS.md`, giữ nguyên nội dung FE10–14; cập nhật `docs/HANDOFF.md`. Giữ thay đổi `.vscode/settings.json` có sẵn; không xóa file/tài liệu AI.
+- Xác minh: `git diff 29ab8e2 --stat -- Frontend/src Frontend/vite.config.js Backend/src chung` rỗng sau sửa; source trở về đúng bản FE14. Menu/guard tiếp tục lấy role/permission từ auth/me, giữ sách+bản sao, mượn/trả, độc giả, Admin, thống kê và dự báo. Build kiểm import/export của các module reachable.
+- `npm.cmd run test:run -- --maxWorkers=1`: **302/302 tests tại20file**, 0 fail/skip; `npm.cmd run lint` và `npm.cmd run build` đạt. Quét `rg --hidden --no-ignore` marker trên toàn cây (bỏ .git/node_modules/dist) không có kết quả; `git diff --check` đạt.
+- Gốc `npm.cmd run dev`: MySQL connected, Express3000/Vite5173 lên thành công; 11 SPA shells + 5 module/CSS Vite trả200, health và health/db trả200. Chỉ GET/SELECT kiểm kết nối; không demo:setup/migration/seed/login/ghi dữ liệu. Ctrl+C dừng runner exit0, cả hai cổng không còn listener.
+- Chưa chạy browser tương tác/CRUD E2E hoặc Backend tests (không sửa Backend). Không commit/push/merge/rebase/reset. Bước tiếp: người dùng chạy lại `npm run dev` và kiểm tra; dừng chờ, không FE15.
+
+## FE-14 — Tích hợp và chuẩn hóa ISBN · 22/11/2026
+
+Đã hoàn thành phần demo và kiểm chứng với Chrome/MySQL local. Lệnh gốc chạy cả hai ứng dụng. ISBN theo đầu sách và barcode theo bản sao. Đã xác nhận lưu qua reload, RBAC, mượn/trả từng phần, lịch sử cá nhân, 7 chỉ số và SMA7. Frontend 302/302, lint/build đạt. Backend 179/179 và 21/21 kịch bản MySQL độc lập đạt. Khi tiếp tục ngày 22/11 đã giữ nguyên 11 sách, 22 bản sao và 3 tài khoản, chỉ bổ sung hai phiếu demo của ngày vừa khép lại. Các thay đổi và giới hạn ở [FE14_HANDOFF](../Frontend/docs/FE14_HANDOFF.md). Chờ nghiệm thu.
+
+## FE-13 — Thống kê và dự báo tần suất (2026-11-21)
+
+- Hoàn tất Frontend theo contract, chờ nghiệm thu; [FE13_HANDOFF](../Frontend/docs/FE13_HANDOFF.md) ghi API/quyền/đơn vị/giới hạn.
+- Đọc AGENTS/5 docs dự án, FE12/matrix/contracts, source statistics/forecast/thuật toán/validation. Baseline HEAD0b2a455 có FE10–12 chưa commit; lưu hash297file/index, giữ các thay đổi có sẵn.
+- Thêm /app/thong-ke (report_view) với 7 metric, lọc ngày UTC≤366/ngày-tuần-tháng/user cho chuỗi, cột phiếu+bản sao và bảng, không điền bucket thiếu. /app/du-bao (forecast_view) đọc me/ID, ready hoặc insufficient_data, training/MAE, dự báo7ngày và lịch sử thật nếu có thêm report_view; không nối chuỗi/gap hoặc tạo số giả.
+- Backend SMA7 dự báo phiếu không hủy/người/ngày, persisted=false; generate POST luôn503, UI không có thao tác tạo/lưu. Chưa có ready/coverage/MAE MySQL thật được chứng minh mới trong task.
+- Tạo 2page/service/test/CSS và đúng FE13_HANDOFF; sửa route/lazy config, Admin dùng chung overview+shortcut, fixture FE12 đủ envelope thật. Không thư viện mới, không Backend/database/API/env/package/Auth changes.
+- **302/302 tại20file**,0fail/skip; thêm6mocktests, lint/build đạt. Lệnh: npm.cmd run test:run -- --maxWorkers=1; npm.cmd run lint; npm.cmd run build -- --logLevel=warn. Lỗi test tham chiếu bảng cũ đã sửa, không nới assertion/dữ liệu.
+- 3 production shells200, preview đóng. 107Backend giữ hash, HEAD/index không đổi; không truy vấn/ghi DB hoặc tạo fixture/account/coverage. Chưa browser/resize/AT/MySQL E2E vì host unavailable/TCP3000 đóng/chưa account dev.
+- Tiếp theo: người dùng nghiệm thu; demo/MySQL thật dành FE14 sau task mới. Không stage/commit/push hoặc tự FE14.
+
+## FE-12 — Khu vực Admin và giới hạn API người dùng (2026-11-21)
+
+- Hoàn tất giao diện khả thi, **chưa hoàn tất danh sách/CRUD người dùng vì Backend không có API**; [FE12_HANDOFF](../Frontend/docs/FE12_HANDOFF.md) ghi rõ phạm vi/chặn.
+- Đọc AGENTS/5 docs dự án, matrix/gaps, FE11, source auth/mount/routes/controllers/services/models và stats validation. Baseline HEAD 0b2a455 có FE10–11 chưa commit, lưu hash 293 file/index; giữ thay đổi có sẵn.
+- Thêm /app/admin (role admin) với identity, link theo grant và 3 aggregate report_view từ GET statistics/overview. Thêm /app/nguoi-dung (user_manage) là trang báo chưa hỗ trợ, không list/form/nút giả, không public-register/statistics-users thay CRUD. Không link trang thống kê chưa tồn tại.
+- Tạo 2 trang + 1 file test và đúng FE12_HANDOFF; sửa route/lazy config, 2 test menu FE07 và TASKS/HANDOFF. Không thêm library/CSS/hạ tầng, không đổi FE06–11 runtime.
+- Hồi quy **296/296 tại 19 file**, 0 fail/skip; baseline tham chiếu292, thêm4 mock tests; lint/build đạt. Lệnh: npm.cmd run test:run -- --maxWorkers=1; npm.cmd run lint; npm.cmd run build -- --logLevel=warn. Giữ test nghiệp vụ/bảo mật; chỉ cập nhật assertion menu có trang thật mới.
+- Hai production SPA shells200, preview đã đóng. Chưa UI/browser/AT/resize hoặc Backend/MySQL E2E: host unavailable/TCP3000 đóng/chưa account dev. 107 Backend khớp hash, HEAD/index giữ nguyên; không DB/env/package/Backend changes hoặc stage/commit/push.
+- Tiếp theo: người dùng nghiệm thu phần khả thi; muốn quản trị user đầy đủ cần task Backend API/contract/quyền riêng. Không tự triển khai FE13.
+
+## FE-11 — Giao diện độc giả (2026-11-21)
+
+- Hoàn tất phần lập trình, chờ nghiệm thu. [FE11_HANDOFF](../Frontend/docs/FE11_HANDOFF.md) ghi route/API/scope, file và giới hạn; không tự FE12.
+- Đọc AGENTS/5 docs dự án, matrix/handoff FE10 và source auth/borrow/catalog, guard/menu/API/FE06–10. Baseline HEAD 0b2a455 có FE10 chưa commit; lưu hash 286 file/index và giữ các thay đổi đó.
+- Thêm /app/doc-gia, /app/lich-su-muon (role reader từ me) và /app/tai-khoan (auth-only). Tái sử dụng sách/ảnh/bản sao FE08–10 và chi tiết phiếu FE10 read-only; không có chức năng ghi mới. Tổng quan dùng số phiếu thật và nhãn rõ phạm vi 5 phiếu cho sắp đến hạn.
+- GET borrows list/detail: reader thuần do Backend WHERE owner từ JWT; reader có borrow_manage gửi self user_id để Backend giới hạn. Phản hồi sai owner bị từ chối toàn bộ; không lọc dữ liệu nhạy cảm ở client. Tài khoản render allowlist từ FE06, không secrets/edit; 401/403 giữ cơ chế cũ.
+- Tạo 3 trang + service scope + 1 test + CSS và đúng FE11_HANDOFF. Sửa route/config, 2 test menu FE07 do có mục thật mới và TASKS/HANDOFF; giữ toàn bộ ca bảo mật/FE10 runtime/Backend/ảnh.
+- Baseline 287/287; cuối **292/292 tại 18 file**, 0 fail/skip; targeted mới 5/5, lint/build đạt. Lệnh: npm.cmd run test:run -- --maxWorkers=1; npm.cmd run lint; npm.cmd run build -- --logLevel=warn. Không tắt purity rule; đã sửa Date.now trong render bằng query dataUpdatedAt.
+- Parse/import 82 file không lỗi/casing; 5 production SPA shells 200 và preview đóng. Chưa browser/MySQL E2E/AT/resize: host unavailable, TCP3000 đóng/chưa account dev. Không truy vấn/ghi DB, tạo fixture, đổi Backend/API/env/package hoặc stage/commit/push.
+- Tiếp theo: nghiệm thu với browser/Backend dev cô lập và tài khoản reader/mixed-role hợp lệ. Không thêm reservation/renewal/profile edit vì chưa có API.
+
+## FE-ASSETS-02 + FE-10 — Ảnh bìa và mượn/trả (2026-11-21)
+
+- Hoàn tất phần lập trình theo API hiện hữu, chờ nghiệm thu; [FE10_HANDOFF](../Frontend/docs/FE10_HANDOFF.md) ghi file/API/quyền/giới hạn.
+- Baseline HEAD 0b2a455 sạch, lưu hash 277 file/index. Đọc 5 docs dự án, source Frontend FE08/09 và routes/controller/service/model/validator Borrow + Copy; không truy cập database.
+- Đổi doi-gio-hu.jpg.jpg → doi-gio-hu.jpg, byte cả 2 JPG giữ nguyên. Thêm AnhBiaSach và CSS: danh sách 60×90, detail 160×240, thẻ 120×180, contain/fallback; ghép chính xác tên+tác giả chuẩn hóa vì chưa có ID thật/field ảnh, không dựa thứ tự.
+- Thêm module /app/muon-tra, CSS/test; tích hợp route/menu cần borrow_manage, action trả cần return_process. Có list/filter/pagination/detail, chọn copy available/good, xem lại/xác nhận lập phiếu, trả một/nhiều/toàn bộ, trạng thái/lỗi/Toast/pending/cache invalidation. Giữ Auth/Authorization và FE09 runtime.
+- API chưa có lookup độc giả/name trong Borrow DTO: nhập user_id thật; không giả lookup. Trang quản lý không phải giao diện reader own; Backend vẫn quyết định scope/transaction.
+- Baseline 280/280; cuối **287/287 tại 17 file**, 0 fail/skip; lint/build đạt. Chỉ thêm 7 mock tests, không sửa/xóa test cũ. Lệnh: npm.cmd run test:run -- --maxWorkers=1, npm.cmd run lint, npm.cmd run build -- --logLevel=warn. Lỗi selector/key Table trung gian đã sửa, chi tiết tại handoff.
+- Parse/import 77 file không lỗi/casing; ảnh dev/production 200/MIME/bytes khớp, route SPA shell 200, server tạm đã đóng. 107 Backend giữ hash; HEAD/index không đổi. Chưa browser/Backend MySQL E2E: host unavailable/cổng3000 đóng/chưa account dev.
+- Chỉ thay ảnh/runtime Frontend nêu trên và TASKS/HANDOFF, thêm đúng FE10_HANDOFF; không DB/schema/API/env/package/commit/push. Tiếp theo: người dùng nghiệm thu, cần môi trường dev cô lập và account hợp lệ; không tự FE11.
+
 ## GIT-003 — Phê duyệt kết thúc merge (2026-11-21)
 
 - Người dùng đã cho phép tạo một merge commit sau rà staged; không push/pull, không sửa Backend/Frontend/DB và giữ nguyên backup. Phê duyệt này thay trạng thái chờ duyệt của GIT-002.

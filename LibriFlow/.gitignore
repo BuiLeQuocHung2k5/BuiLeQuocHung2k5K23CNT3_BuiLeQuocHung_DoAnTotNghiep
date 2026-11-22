@@ -1,5 +1,7 @@
 # Dependencies at any depth
 node_modules/
+Backend/.demo-local/
+Backend/uploads/avatars/
 
 # Local environment; keep only the reviewed example
 .env

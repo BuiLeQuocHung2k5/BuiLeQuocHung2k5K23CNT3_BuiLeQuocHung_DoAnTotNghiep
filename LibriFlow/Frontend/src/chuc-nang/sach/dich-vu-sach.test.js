@@ -35,10 +35,10 @@ describe('FE-08 — request contract qua Axios adapter mock', () => {
     expect(daGoi[0].signal).toBe(dieuKhien.signal)
   })
   it('PUT sends every writable field, preserves null/zero/reference IDs and excludes read-only fields', async () => {
-    await luuSach(ma, { ...sach, created_at: 'read-only', isbn: 'not-a-book-field' }, phien)
+    await luuSach(ma, { ...sach, created_at: 'read-only', isbn: '0-8044-2957-X' }, phien)
     expect(daGoi[0].method).toBe('put')
     expect(daGoi[0].headers.get('Authorization')).toBe('Bearer token-mock-fe08')
-    expect(JSON.parse(daGoi[0].data)).toEqual({ title: 'Sách thử', author: 'Tác giả thử', publisher: null, category_id: null, series_id: '9007199254740993', description: null, publication_year: 0 })
+    expect(JSON.parse(daGoi[0].data)).toEqual({ isbn: '080442957X', title: 'Sách thử', author: 'Tác giả thử', publisher: null, category_id: null, series_id: '9007199254740993', description: null, publication_year: 0 })
   })
   it('POST uses JSON and DELETE has no invented soft-delete body', async () => {
     await luuSach(null, sach, phien)

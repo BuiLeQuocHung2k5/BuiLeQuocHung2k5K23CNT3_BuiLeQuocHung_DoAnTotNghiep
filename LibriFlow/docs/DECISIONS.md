@@ -1,5 +1,27 @@
 # Quyết định và căn cứ
 
+## HOTFIX ADMIN-01 · 22/11/2026
+
+Đã triển khai theo yêu cầu bảo vệ quyền quản trị cuối cùng. Mọi thao tác quản trị cần `user_manage`. Khi ghi, các transaction cùng khóa bản ghi quyền rồi đọc lại principal. Người thực hiện chỉ có thể cấp các vai trò có tập quyền nằm trong quyền của mình. Tài khoản cần có vai trò Admin để quản lý một Admin khác. Người thực hiện luôn giữ nguyên vai trò và trạng thái hoạt động của chính mình. Vì vậy từng thay đổi đều giữ được ít nhất một người quản trị đang hoạt động. Khóa tài khoản giữ nguyên mã người dùng và quan hệ phiếu mượn. [Model](../Backend/src/models/nguoi-dung.model.js)
+
+## HOTFIX UI-04 — Hồ sơ tự phục vụ (2026-11-22)
+
+Theo phạm vi người dùng giao, cập nhật hồ sơ chỉ theo ID phiên JWT và dùng các cột hiện hữu. Upload nhị phân JPEG/PNG/WebP giúp giữ dữ liệu ảnh trong kho cục bộ và chỉ ghi URL vào MySQL. `/admin` là đường dẫn chuyển tiếp qua cùng guard đang dùng. Phần code đã triển khai, chờ nghiệm thu Chrome. [Hợp đồng API](../Backend/docs/xac-thuc-api.md).
+
+## HOTFIX-UI-02 — Chính sách đăng ký demo và trang chủ (2026-11-22)
+
+- Người dùng chỉ định đăng ký demo4–12 ký tự, không complexity; triển khai đồng bộ FE/BE, không thay hash/JWT/role/mật khẩu cũ hoặc login1–72byte. Đây là chính sách demo local, không phải khuyến nghị public Internet. Căn cứ source: TrangDangKy.jsx, Backend/src/utils/kiem-tra-xac-thuc.js; phần code hoàn tất, chờ nghiệm thu UI.
+- Theo yêu cầu, Sidebar bỏ nhóm tools, vẫn giữ technical routes/components cho bảo trì; homepage chỉ lấy sách thật và dùng grants FE07. Không thêm API/thống kê giả. [Kiểm tra/giới hạn](TASKS.md).
+
+## HOTFIX-AUTH-01 — Luồng vào sản phẩm và đăng ký (2026-11-22)
+
+- Căn cứ: người dùng yêu cầu `/` theo phiên, đăng ký public chỉ độc giả, giữ JWT memory và dữ liệu FE14. Triển khai trong phạm vi đã giao, chờ nghiệm thu: root→login/app, FE02→`/kiem-tra-nen-tang`, giữ các route thử nghiệm khác.
+- Dùng API auth/register có sẵn, không endpoint/schema mới; Backend tự quyết reader và unique email. Frontend không tự login sau đăng ký. Một fixture demo được tạo theo cho phép kiểm thử của task; checksum các dữ liệu nghiệp vụ giữ nguyên. [Bằng chứng/giới hạn](TASKS.md).
+
+## FE-14 · ISBN và môi trường demo · 22/11/2026
+
+Theo yêu cầu nghiệp vụ đã duyệt, ISBN nhận dạng đầu sách, barcode nhận dạng từng bản sao. Hợp đồng giữ ISBN dạng chuỗi, cho phép null và bảo toàn số 0 đầu hoặc X của ISBN-10. Đã triển khai schema chuẩn, migration có kiểm tra xung đột và kiểm tra dùng chung ở React/Express. Bản demo sử dụng schema riêng trên MySQL local, tài khoản runtime giới hạn trong schema đó và dữ liệu trình diễn có đánh dấu. SMA7 tiếp tục dùng preview Backend. [Schema và migration](../Backend/sql/README.md) · [Kết quả](../Frontend/docs/FE14_HANDOFF.md)
+
 ## GIT-002 — Giữ cấu trúc gốc và tắt đồng bộ tự động (2026-11-21)
 
 - Theo task người dùng, chỉ xử lý conflict có bằng chứng và không commit/pull/push/abort. Đã xác minh mọi blob remote ở đường dẫn quy đổi trùng HEAD hoặc local cũ `8c224e8`; giữ bản local hiện hành và các lần xóa mobile có chủ đích của FE-DESKTOP-01. Không đổi nghiệp vụ/schema.

@@ -41,12 +41,11 @@ export function kiemTraDanhMuc(noiDung) {
 }
 
 export function kiemTraBanSaoSach(noiDung, laCapNhat = false) {
-    kiemTraDoiTuong(noiDung, ["book_id", "isbn", "barcode", "condition_status", "availability_status", "note"]);
+    kiemTraDoiTuong(noiDung, ["book_id", "barcode", "condition_status", "availability_status", "note"]);
     const tinhTrang = kiemTraGiaTriEnum(noiDung.condition_status === undefined && !laCapNhat ? "good" : noiDung.condition_status, "condition_status", CAC_TINH_TRANG);
     const trangThai = kiemTraGiaTriEnum(noiDung.availability_status === undefined && !laCapNhat ? "available" : noiDung.availability_status, "availability_status", CAC_TRANG_THAI_SAN_SANG);
     if (!["available", "maintenance"].includes(trangThai)) throw new LoiHttp(409, "CIRCULATION_STATE_MANAGED", "Trạng thái borrowed/lost phải được xử lý qua module mượn/trả.");
-    const maIsbn = kiemTraChuoiGioiHan(noiDung.isbn, "isbn", 20);
-    return { book_id: kiemTraMa(noiDung.book_id, "book_id"), isbn: maIsbn, barcode: kiemTraChuoiGioiHan(noiDung.barcode, "barcode", 50, true), condition_status: tinhTrang, availability_status: trangThai, note: kiemTraVanBan(noiDung.note, "note") };
+    return { book_id: kiemTraMa(noiDung.book_id, "book_id"), barcode: kiemTraChuoiGioiHan(noiDung.barcode, "barcode", 50, true), condition_status: tinhTrang, availability_status: trangThai, note: kiemTraVanBan(noiDung.note, "note") };
 }
 
 export function kiemTraTruyVanBanSaoSach(truyVan, maSachTrongDuongDan) {

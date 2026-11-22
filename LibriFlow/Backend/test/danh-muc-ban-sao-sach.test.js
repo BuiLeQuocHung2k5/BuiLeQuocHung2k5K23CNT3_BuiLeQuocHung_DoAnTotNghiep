@@ -13,7 +13,7 @@ import { kiemTraDanhMuc, kiemTraBanSaoSach, kiemTraTruyVanBanSaoSach } from "../
 import { LoiHttp } from "../src/utils/loi-http.js";
 
 const DANH_MUC = { category_id: "1", name: "Test category", description: null, created_at: "2026-01-01" };
-const BAN_SAO = { copy_id: "1", book_id: "1", isbn: null, barcode: "TEST-001", condition_status: "good", availability_status: "available", note: "INTERNAL_NOTE_FIXTURE", created_at: "2026-01-01", updated_at: "2026-01-01" };
+const BAN_SAO = { copy_id: "1", book_id: "1", barcode: "TEST-001", condition_status: "good", availability_status: "available", note: "INTERNAL_NOTE_FIXTURE", created_at: "2026-01-01", updated_at: "2026-01-01" };
 const NOI_DUNG_BAN_SAO = { book_id: "1", barcode: "TEST-002" };
 const NOI_DUNG_THAY_THE = { ...NOI_DUNG_BAN_SAO, condition_status: "good", availability_status: "available" };
 
@@ -249,9 +249,9 @@ test("category service catches duplicate/foreign-reference errors and handles mi
 
 test("copy create checks and locks parent book, parameterizes UNIQUE fields", async () => {
     const duLieu = kiemTraBanSaoSach(NOI_DUNG_BAN_SAO);
-    const csdlKiemThu = taoCoSoDuLieuMoPhong([{ sql: /FROM Sach .* FOR SHARE$/, rows: [{ book_id: "1" }] }, { sql: /^INSERT INTO BanSaoSach .* VALUES \(\?, \?, \?, \?, \?, \?\)$/, rows: { insertId: "18446744073709551615" } }, { sql: /FROM BanSaoSach/, rows: [{ ...BAN_SAO, copy_id: "18446744073709551615" }] }]);
+    const csdlKiemThu = taoCoSoDuLieuMoPhong([{ sql: /FROM Sach .* FOR SHARE$/, rows: [{ book_id: "1" }] }, { sql: /^INSERT INTO BanSaoSach .* VALUES \(\?, \?, \?, \?, \?\)$/, rows: { insertId: "18446744073709551615" } }, { sql: /FROM BanSaoSach/, rows: [{ ...BAN_SAO, copy_id: "18446744073709551615" }] }]);
     const ketQua = await taoMoHinhBanSaoSach(csdlKiemThu.pool).taoMoi(duLieu);assert.equal(ketQua.copy_id, "18446744073709551615");
-    assert.deepEqual(csdlKiemThu.calls[2].params, ["1", null, "TEST-002", "good", "available", null]);assert.deepEqual(csdlKiemThu.calls.slice(-2), ["commit", "release"]);csdlKiemThu.xacNhanHetBuoc();
+    assert.deepEqual(csdlKiemThu.calls[2].params, ["1", "TEST-002", "good", "available", null]);assert.deepEqual(csdlKiemThu.calls.slice(-2), ["commit", "release"]);csdlKiemThu.xacNhanHetBuoc();
 });
 
 test("missing book aborts creation before INSERT", async () => {
@@ -260,12 +260,10 @@ test("missing book aborts creation before INSERT", async () => {
     assert.deepEqual(csdlKiemThu.calls.slice(-2), ["rollback", "release"]);csdlKiemThu.xacNhanHetBuoc();
 });
 
-test("duplicate barcode or ISBN causes rollback/release and safe 409", async () => {
-    for (const tenTruong of ["barcode", "isbn"]) {
-        const csdlKiemThu = taoCoSoDuLieuMoPhong([{ sql: /FOR SHARE$/, rows: [{ book_id: "1" }] }, { sql: /^INSERT INTO BanSaoSach/, error: Object.assign(new Error(`Private duplicate ${tenTruong}`), { code: "ER_DUP_ENTRY" }) }]);
-        await assert.rejects(taoDichVuBanSaoSach(taoMoHinhBanSaoSach(csdlKiemThu.pool)).taoMoi(kiemTraBanSaoSach(NOI_DUNG_BAN_SAO)), { status: 409, code: "DUPLICATE_VALUE" });
-        assert.deepEqual(csdlKiemThu.calls.slice(-2), ["rollback", "release"]);csdlKiemThu.xacNhanHetBuoc();
-    }
+test("duplicate barcode causes rollback/release and safe 409", async () => {
+    const csdlKiemThu = taoCoSoDuLieuMoPhong([{ sql: /FOR SHARE$/, rows: [{ book_id: "1" }] }, { sql: /^INSERT INTO BanSaoSach/, error: Object.assign(new Error("Private duplicate barcode"), { code: "ER_DUP_ENTRY" }) }]);
+    await assert.rejects(taoDichVuBanSaoSach(taoMoHinhBanSaoSach(csdlKiemThu.pool)).taoMoi(kiemTraBanSaoSach(NOI_DUNG_BAN_SAO)), { status: 409, code: "DUPLICATE_VALUE" });
+    assert.deepEqual(csdlKiemThu.calls.slice(-2), ["rollback", "release"]);csdlKiemThu.xacNhanHetBuoc();
 });
 
 test("borrowed/lost copies cannot be edited or deleted even with copy_manage", async () => {
@@ -295,7 +293,7 @@ test("usage history blocks deletion instead of silently detaching history", asyn
 test("copy update cannot reassign book; safe updates retain SQL no-op semantics", async () => {
     let csdlKiemThu = taoCoSoDuLieuMoPhong([{ sql: /FOR UPDATE$/, rows: [BAN_SAO] }, { sql: /returned_at IS NULL/, rows: [] }]);
     await assert.rejects(taoMoHinhBanSaoSach(csdlKiemThu.pool).thayThe("1", kiemTraBanSaoSach({ ...NOI_DUNG_THAY_THE, book_id: "2" }, true)), { status: 409, code: "COPY_BOOK_IMMUTABLE" });csdlKiemThu.xacNhanHetBuoc();
-    csdlKiemThu = taoCoSoDuLieuMoPhong([{ sql: /FOR UPDATE$/, rows: [BAN_SAO] }, { sql: /returned_at IS NULL/, rows: [] }, { sql: /^UPDATE BanSaoSach SET isbn = \?, barcode = \?/, rows: { affectedRows: 0 } }, { sql: /FROM BanSaoSach/, rows: [BAN_SAO] }]);
+    csdlKiemThu = taoCoSoDuLieuMoPhong([{ sql: /FOR UPDATE$/, rows: [BAN_SAO] }, { sql: /returned_at IS NULL/, rows: [] }, { sql: /^UPDATE BanSaoSach SET barcode = \?/, rows: { affectedRows: 0 } }, { sql: /FROM BanSaoSach/, rows: [BAN_SAO] }]);
     assert.equal((await taoMoHinhBanSaoSach(csdlKiemThu.pool).thayThe("1", kiemTraBanSaoSach(NOI_DUNG_THAY_THE, true))).copy_id, "1");assert.equal(csdlKiemThu.calls[3].params.at(-1), "1");csdlKiemThu.xacNhanHetBuoc();
 });
 

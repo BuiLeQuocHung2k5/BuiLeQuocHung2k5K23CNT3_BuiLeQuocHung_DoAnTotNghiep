@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { BookOpen, Plus, Search } from 'lucide-react'
+import { Plus, Search } from 'lucide-react'
 import NutBam from '../../thanh-phan/giao-dien/NutBam.jsx'
 import ONhap from '../../thanh-phan/giao-dien/ONhap.jsx'
 import DanhSachChon from '../../thanh-phan/giao-dien/DanhSachChon.jsx'
@@ -19,27 +20,29 @@ import { moiTruong } from '../../cau-hinh/moi-truong.js'
 import { khoaSach, layDanhSachSach, layChiTietSach, luuSach, xoaSach, loiSachAnToan } from './dich-vu-sach.js'
 import BieuMauSach from './BieuMauSach.jsx'
 import QuanLyBanSao from './QuanLyBanSao.jsx'
+import AnhBiaSach from './AnhBiaSach.jsx'
 import '../../kieu-dang/sach.css'
 
 const QUYEN_THAO_TAC = { them: 'book_create', sua: 'book_update', xoa: 'book_delete' }
 const vongDoiDoc = { retry: false, staleTime: 0, refetchOnWindowFocus: false, refetchOnReconnect: false, networkMode: 'always' }
 
 function NoiDungChiTietSach({ sach, tenTheLoai }) {
-  const cacTruong = [['Mã sách', sach.book_id], ['Tác giả', sach.author], ['Thể loại', tenTheLoai(sach.category_id)],
+  const cacTruong = [['Mã sách', sach.book_id], ['ISBN', sach.isbn ?? '—'], ['Tác giả', sach.author], ['Thể loại', tenTheLoai(sach.category_id)],
     ['Nhà xuất bản', sach.publisher ?? '—'], ['Năm xuất bản', sach.publication_year ?? '—'], ['Mã bộ sách', sach.series_id ?? '—']]
-  return <div className="book-detail"><BieuTuong icon={BookOpen} size={36} /><h2>{sach.title}</h2>
+  return <div className="book-detail"><AnhBiaSach sach={sach} size="chi-tiet" /><h2>{sach.title}</h2>
     <dl>{cacTruong.map(([nhan, giaTri]) => <div key={nhan}><dt>{nhan}</dt><dd>{giaTri}</dd></div>)}</dl>
     <h3>Mô tả</h3><p className="book-description">{sach.description ?? 'Chưa có mô tả.'}</p>
   </div>
 }
 
 export default function TrangQuanLySach({ title }) {
+  const [truyVanUrl, datTruyVanUrl] = useSearchParams()
   const phien = useXacThuc()
   const trinhTruyVan = useQueryClient()
   const [thamSo, datThamSo] = useState({ page: 1, limit: 10, search: '' })
   const [tuKhoa, datTuKhoa] = useState('')
   const [loiTim, datLoiTim] = useState('')
-  const [hopThoai, datHopThoai] = useState(null)
+  const [hopThoai, datHopThoai] = useState(() => truyVanUrl.get('sach') ? { loai: 'chi-tiet', ma: truyVanUrl.get('sach') } : null)
   const [dangGui, datDangGui] = useState(false)
   const [dangGhiBanSao, datDangGhiBanSao] = useState(false)
   const [loiThaoTac, datLoiThaoTac] = useState(null)
@@ -70,6 +73,7 @@ export default function TrangQuanLySach({ title }) {
   }
   function dongHopThoai() {
     if (yeuCauGhi.current || dangGhiBanSao) return
+    if (truyVanUrl.has('sach')) datTruyVanUrl(cu => { const moi = new URLSearchParams(cu); moi.delete('sach'); return moi }, { replace: true })
     if (loiThaoTac?.chuaRo) capNhatDanhSach()
     datHopThoai(null); datLoiThaoTac(null)
   }
@@ -121,7 +125,7 @@ export default function TrangQuanLySach({ title }) {
     return <><NoiDungChiTietSach sach={sach} tenTheLoai={tenTheLoai} /><QuanLyBanSao key={sach.book_id} maSach={sach.book_id} onBusyChange={datDangGhiBanSao} /></>
   }
   const cacCot = [
-    { key: 'title', header: 'Tên sách', render: (ten, hang) => <div className="book-title-cell"><BieuTuong icon={BookOpen} size={24} /><div><button className="book-title-button" onClick={() => moHopThoai('chi-tiet', hang)}>{ten}</button><span className="book-record-id">Mã: {hang.book_id}</span></div></div> },
+    { key: 'title', header: 'Tên sách', render: (ten, hang) => <div className="book-title-cell"><AnhBiaSach sach={hang} /><div><button className="book-title-button" onClick={() => moHopThoai('chi-tiet', hang)}>{ten}</button><span className="book-record-id">Mã: {hang.book_id}</span></div></div> },
     { key: 'author', header: 'Tác giả' },
     { key: 'category_id', header: 'Thể loại', render: tenTheLoai },
     { key: 'publisher', header: 'Nhà xuất bản', render: giaTri => giaTri ?? '—' },

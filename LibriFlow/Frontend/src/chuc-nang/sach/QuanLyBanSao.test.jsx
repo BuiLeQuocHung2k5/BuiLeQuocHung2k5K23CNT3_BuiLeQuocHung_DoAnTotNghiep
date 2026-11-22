@@ -13,7 +13,7 @@ vi.mock('../../cau-hinh/moi-truong.js', () => ({ moiTruong: { apiBaseUrl: 'http:
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }))
 const goc = ketNoiHttp.defaults.adapter
 const maSach = '18446744073709551610'
-const mau = { copy_id: '9007199254740993', book_id: maSach, barcode: 'LIB-001', isbn: null, condition_status: 'good', availability_status: 'available' }
+const mau = { copy_id: '9007199254740993', book_id: maSach, barcode: 'LIB-001', condition_status: 'good', availability_status: 'available' }
 let client, cacBanSao, goi, loiGhi, loiDoc
 const phien = permissions => ({ daDangNhap: true, tokenTruyCap: 'token-test', nguoiDung: { status: 'active', roles: ['admin'], permissions } })
 beforeEach(() => {
@@ -56,7 +56,7 @@ it('validates, creates a copy with pinned bearer and refreshes the list', async 
   expect(await screen.findByText('LIB-NEW')).toBeVisible()
   const ghi = goi.find(muc => muc.method === 'post')
   expect(ghi.url).toBe('/book-copies'); expect(ghi.headers.Authorization).toBe('Bearer token-test')
-  expect(JSON.parse(ghi.data)).toEqual({ book_id: maSach, barcode: 'LIB-NEW', isbn: null, condition_status: 'good', availability_status: 'maintenance', note: null })
+  expect(JSON.parse(ghi.data)).toEqual({ book_id: maSach, barcode: 'LIB-NEW', condition_status: 'good', availability_status: 'maintenance', note: null })
 })
 it('requires explicit note replacement on edit and disables saving if permission disappears', async () => {
   const trang = hienThi(); await screen.findByText('LIB-001')
@@ -99,8 +99,8 @@ it('retries read errors explicitly and blocks replay after an uncertain write', 
   expect(screen.queryByRole('button', { name: 'Xác nhận xóa bản sao' })).not.toBeInTheDocument()
 })
 it('enforces backend field limits and copy_manage before transport', async () => {
-  const giaTri = { ...mau, barcode: 'a'.repeat(51), isbn: 'a'.repeat(21), availability_status: 'lost', note: '\ud800' }
-  expect(Object.keys(kiemTraBieuMauBanSao(giaTri).loi)).toEqual(expect.arrayContaining(['barcode', 'isbn', 'availability_status', 'note']))
+  const giaTri = { ...mau, barcode: 'a'.repeat(51), availability_status: 'lost', note: '\ud800' }
+  expect(Object.keys(kiemTraBieuMauBanSao(giaTri).loi)).toEqual(expect.arrayContaining(['barcode', 'availability_status', 'note']))
   await expect(ghiBanSao('xoa', mau.copy_id, null, phien([]))).rejects.toMatchObject({ code: 'COPY_ACTION_FORBIDDEN' })
   expect(goi).toHaveLength(0)
 })

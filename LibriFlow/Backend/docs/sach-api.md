@@ -66,6 +66,7 @@ POST {{baseUrl}}/api/books
 {
   "title": "LibriFlow test book",
   "author": "Test author",
+  "isbn": null,
   "publisher": "Test publisher",
   "description": "Temporary test fixture",
   "publication_year": 2026,
@@ -85,7 +86,8 @@ Ví dụ response (ID và thời gian minh họa):
     "series_id": null,
     "title": "LibriFlow test book",
     "author": "Test author",
-    "publisher": "Test publisher",
+    "isbn": null,
+  "publisher": "Test publisher",
     "description": "Temporary test fixture",
     "publication_year": 2026,
     "created_at": "2026-11-05T00:00:00.000Z",
@@ -142,6 +144,7 @@ Sau đó GET cùng ID phải trả 404. Nếu sách có bản sao, trả 409 `BO
 | --- | --- |
 | `title` | Bắt buộc, chuỗi Unicode, trim, 1–255 ký tự |
 | `author` | Bắt buộc, chuỗi Unicode, trim, 1–150 ký tự |
+| `isbn` | Chuỗi ISBN-10 hoặc ISBN-13 có số kiểm tra hợp lệ, hoặc null. Chuẩn hóa khoảng trắng, gạch nối và X. Giá trị đã chuẩn hóa là duy nhất giữa các đầu sách. |
 | `publisher` | Chuỗi trim tối đa 150 ký tự hoặc null |
 | `description` | Unicode hợp lệ, tối đa 65535 byte UTF-8 (TEXT), hoặc null |
 | `publication_year` | JSON number nguyên 0–65535 (SMALLINT UNSIGNED), hoặc null; không suy diễn giới hạn năm nghiệp vụ |
@@ -149,7 +152,7 @@ Sau đó GET cùng ID phải trả 404. Nếu sách có bản sao, trả 409 `BO
 
 ID đường dẫn/FK tối đa `18446744073709551615`. Dùng chuỗi thập phân cho ID lớn; number vượt `Number.MAX_SAFE_INTEGER` bị từ chối. Response luôn biểu diễn ID bằng chuỗi để tránh mất chính xác. Không nhận trường lạ hoặc trường do server quản lý (`book_id`, timestamps).
 
-`Sach` không có UNIQUE/ENUM riêng: hai sách cùng tiêu đề vẫn có thể hợp lệ. ISBN, barcode và trạng thái thuộc `BanSaoSach`, không được gửi vào API sách. Middleware vẫn xử lý lỗi UNIQUE chung nếu database phát sinh lỗi này; không tự tạo thêm ràng buộc.
+FE-14, kiểm chứng 22/11/2026. GET danh sách và chi tiết trả về `isbn`. POST/PUT trùng ISBN trả 409 `DUPLICATE_ISBN`. Barcode thuộc bản sao. Hai đầu sách có thể cùng tiêu đề.
 
 Ví dụ lỗi validation:
 

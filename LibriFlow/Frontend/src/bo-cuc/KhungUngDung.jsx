@@ -3,6 +3,7 @@ import { matchPath, Outlet, useLocation } from 'react-router'
 import { dieuHuongNenTang, cacTrangTrongKhung } from "../ung-dung/dinh-tuyen/cau-hinh-tuyen.js"
 import ThanhBen from "./ThanhBen.jsx"
 import DauTrang from "./DauTrang.jsx"
+import ChanTrang from "./ChanTrang.jsx"
 
 export default function KhungUngDung({ navigationGroups: cacNhomDieuHuong = dieuHuongNenTang }) {
   const viTri = useLocation()
@@ -29,9 +30,9 @@ export default function KhungUngDung({ navigationGroups: cacNhomDieuHuong = dieu
       <div className="app-shell-body">
         <DauTrang pageTitle={title} />
         <main id="app-main-content" className="app-main" tabIndex={-1} ref={thamChieuNoiDung}>
-          <div className="app-content"><Outlet /></div>
+          <div className={`app-content${trang?.id === 'overview' ? ' app-content--home' : ''}`}><Outlet /></div>
         </main>
-        <footer className="app-footer"><span>LibriFlow · Warm Wooden Library</span><span>FE-04 / Khung giao diện</span></footer>
+        <ChanTrang />
       </div>
     </div>
   )

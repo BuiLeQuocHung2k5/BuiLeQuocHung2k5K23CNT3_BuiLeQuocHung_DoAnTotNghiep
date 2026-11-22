@@ -1,5 +1,18 @@
 # Hợp đồng bàn giao API cho Frontend — TASK-018
 
+## HOTFIX ADMIN-01 · 22/11/2026
+
+Bốn endpoint dưới đây yêu cầu JWT và quyền MySQL `user_manage`.
+
+| Endpoint | Dữ liệu và kết quả |
+| --- | --- |
+| GET /api/admin/users | `page`, `limit` (tối đa 100), `search` theo tên/email, `role`, `status`. Trả danh sách theo ID giảm dần, `pagination` và `assignable_roles` cho người gọi. |
+| GET /api/admin/users/:id | Trả `user_id` dạng chuỗi, `name`, `email`, `phone`, `roles`, `status`, `created_at`. |
+| POST /api/admin/users | `name`, `email`, `password` theo validation đăng ký, `role`, tùy chọn `phone`, `status` mặc định active. Trả 201 sau transaction tạo và gán vai trò. |
+| PATCH /api/admin/users/:id | Gửi riêng trường cần đổi trong `name/email/phone/role/status`. Bỏ qua `role` để giữ toàn bộ vai trò cũ. Gửi `role` để thay bằng một vai trò. Trả DTO đã cập nhật. |
+
+Trùng email trả 409 `EMAIL_ALREADY_EXISTS`. Tự đổi vai trò hoặc tự khóa trả 409 `SELF_ACCESS_CHANGE`. Backend kiểm tra tập quyền có thể cấp sau khi lấy khóa ghi quản trị. Chỉ người đang mang vai trò Admin và đủ quyền mới quản lý được Admin khác. [Router](../src/routes/nguoi-dung.routes.js) · [Model](../src/models/nguoi-dung.model.js)
+
 Xác minh **2026-11-07** từ `src/app-factory.js`, stack router thực tế, controller/validation/service/model và test. **40 cặp method/path**, không đổi URL hoặc JSON keys. Chi tiết kiểm thử: [báo cáo cuối](backend-final-report.md); điều kiện triển khai: [tồn đọng](backend-known-issues.md). Chưa triển khai React trong task này.
 
 ## Quy ước dùng chung
@@ -39,8 +52,8 @@ Token: `{"success":true,"data":{"accessToken":"<JWT-khong-duoc-ghi-log>","tokenT
 | --- | --- | --- | --- | --- |
 | GET /api/books | Public | P, search; không | 200 L(Book) | E; I và smoke chính |
 | GET /api/books/:id | Public | Không; không | 200 O(Book) | E, 404; U |
-| POST /api/books | JWT + book_create | Không; B1 | 201 O(Book), Location | E, 400 FK; I |
-| PUT /api/books/:id | JWT + book_update | Không; B1 đầy đủ | 200 O(Book) | E, 404/400 FK; U |
+| POST /api/books | JWT + book_create | Không; B1 | 201 O(Book), Location | E, 409 DUPLICATE_ISBN, 400 FK; I |
+| PUT /api/books/:id | JWT + book_update | Không; B1 đầy đủ | 200 O(Book) | E, 409 DUPLICATE_ISBN, 404/400 FK; U |
 | DELETE /api/books/:id | JWT + book_delete | Không; không | 200 X | E, 404/409 có copies/liên quan; U |
 | GET /api/categories | Public | P, search; không | 200 L(Category) | E; I và smoke chính |
 | GET /api/categories/:id | Public | Không; không | 200 O(Category) | E, 404; U |
@@ -50,22 +63,22 @@ Token: `{"success":true,"data":{"accessToken":"<JWT-khong-duoc-ghi-log>","tokenT
 | GET /api/book-copies | Public | P, search, book_id, condition_status, availability_status; không | 200 L(Copy), không note | E; I và smoke chính |
 | GET /api/book-copies/:id | Public | Không; không | 200 O(Copy), không note | E, 404; U |
 | GET /api/books/:id/copies | Public | P, search, condition_status, availability_status; không | 200 L(Copy), không note | E, 404 sách không có; U |
-| POST /api/book-copies | JWT + copy_manage | Không; CP1 | 201 O(Copy), có note, Location | E, 400 book FK, 409 barcode/ISBN trùng; I |
+| POST /api/book-copies | JWT + copy_manage | Không; CP1 | 201 O(Copy), có note, Location | E, 400 book FK, 409 barcode trùng; I |
 | PUT /api/book-copies/:id | JWT + copy_manage | Không; CP1 đầy đủ hai trạng thái | 200 O(Copy), có note | E, 404/409 đang mượn/đổi sách; U |
 | DELETE /api/book-copies/:id | JWT + copy_manage | Không; không | 200 X | E, 404/409 có lịch sử mượn/usage; chặn xóa I, xóa thành công U |
 
-**B1**: `{"title":"Sach minh hoa","author":"Tac gia minh hoa","category_id":"1","series_id":null,"publisher":null,"description":null,"publication_year":2026}`. Title 255, author 150 bắt buộc; publisher 150, description TEXT UTF-8, category_id/series_id là FK nullable; publication_year theo SMALLINT UNSIGNED và validation source. Search chỉ title/author/publisher; không hỗ trợ lọc category_id ở GET sách. Xem [validation sách](sach-api.md).
+**B1**: `{"isbn":null,"title":"Sach minh hoa","author":"Tac gia minh hoa","category_id":"1","series_id":null,"publisher":null,"description":null,"publication_year":2026}`. ISBN-10/ISBN-13 tùy chọn, unique theo đầu sách. Title 255, author 150 bắt buộc; publisher 150, description TEXT UTF-8, category_id/series_id là FK nullable; publication_year theo SMALLINT UNSIGNED và validation source. Search chỉ title/author/publisher; không hỗ trợ lọc category_id ở GET sách. Xem [validation sách](sach-api.md).
 
 **C1**: `{"name":"Danh muc minh hoa","description":null}`. Name bắt buộc, tối đa 100 và UNIQUE theo collation DB; description TEXT tùy chọn. Search tên/mô tả. Chặn xóa khi còn sách dù FK schema là SET NULL.
 
-**CP1**: `{"book_id":"1","barcode":"COPY-DEMO-001","isbn":null,"condition_status":"good","availability_status":"available","note":null}`. Book_id/barcode bắt buộc; barcode tối đa 50 UNIQUE, isbn tối đa 20 nullable UNIQUE **trên từng copy**; condition good/damaged. POST mặc định good/available; PUT phải gửi hai trạng thái. CRUD chỉ cho availability available/maintenance; borrowed/lost chỉ qua nghiệp vụ phù hợp, không sửa trực tiếp copy đang có lượt mượn mở. Không chuyển copy sang book khác. Search theo barcode/ISBN; ENUM filter đọc cho phép available/borrowed/lost/maintenance. Nested copies không nhận query book_id.
+**CP1**: `{"book_id":"1","barcode":"COPY-DEMO-001","condition_status":"good","availability_status":"available","note":null}`. Book_id/barcode bắt buộc; barcode tối đa 50 UNIQUE; condition good/damaged. POST mặc định good/available; PUT phải gửi hai trạng thái. CRUD chỉ cho availability available/maintenance; borrowed/lost chỉ qua nghiệp vụ phù hợp, không sửa trực tiếp copy đang có lượt mượn mở. Không chuyển copy sang book khác. Search theo barcode; ENUM filter đọc cho phép available/borrowed/lost/maintenance. Nested copies không nhận query book_id.
 
 **PUT là thay thế đầy đủ**: title/author, name hoặc book_id/barcode phải gửi lại; trường tùy chọn bỏ qua sẽ thành null. Không dùng PUT để gửi một trường như PATCH.
 
 Response Book/Category/Copy minh họa (timestamp có thể được bổ sung theo DTO source):
 
 ```json
-{"success":true,"data":{"book_id":"1","category_id":"1","series_id":null,"title":"Sach minh hoa","author":"Tac gia minh hoa","publisher":null,"description":null,"publication_year":2026}}
+{"success":true,"data":{"book_id":"1","category_id":"1","series_id":null,"isbn":null,"title":"Sach minh hoa","author":"Tac gia minh hoa","publisher":null,"description":null,"publication_year":2026}}
 ```
 
 ```json
@@ -73,7 +86,7 @@ Response Book/Category/Copy minh họa (timestamp có thể được bổ sung t
 ```
 
 ```json
-{"success":true,"data":{"copy_id":"21","book_id":"1","isbn":null,"barcode":"COPY-DEMO-001","condition_status":"good","availability_status":"available"}}
+{"success":true,"data":{"copy_id":"21","book_id":"1","barcode":"COPY-DEMO-001","condition_status":"good","availability_status":"available"}}
 ```
 
 ## Mượn/trả và quá hạn (6 API)

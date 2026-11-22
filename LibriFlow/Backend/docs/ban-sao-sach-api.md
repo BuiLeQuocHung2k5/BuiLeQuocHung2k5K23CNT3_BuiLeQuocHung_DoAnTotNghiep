@@ -29,7 +29,7 @@ GET {{baseUrl}}/api/books/1/copies?page=1&limit=10
 GET {{baseUrl}}/api/book-copies/{{copyId}}
 ```
 
-page mặc định 1, limit mặc định 10/tối đa 100; sắp xếp copy_id DESC. search (tối đa 255 ký tự) tìm chuỗi con barcode/isbn, `%`, `_`, `=` được escape literal. Tên tham số lọc trùng tên cột, enum theo bảng bên dưới. Route lồng lấy book_id từ URL và không nhận query book_id để tránh mâu thuẫn. Route danh sách chung lọc book_id không có bản ghi trả danh sách rỗng; route lồng trả 404 nếu sách không tồn tại. Tổng và danh sách là hai SELECT riêng, không cùng snapshot khi ghi đồng thời.
+page mặc định 1, limit mặc định 10/tối đa 100; sắp xếp copy_id DESC. search (tối đa 255 ký tự) tìm chuỗi con barcode, `%`, `_`, `=` được escape literal. Tên tham số lọc trùng tên cột, enum theo bảng bên dưới. Route lồng lấy book_id từ URL và không nhận query book_id để tránh mâu thuẫn. Route danh sách chung lọc book_id không có bản ghi trả danh sách rỗng; route lồng trả 404 nếu sách không tồn tại. Tổng và danh sách là hai SELECT riêng, không cùng snapshot khi ghi đồng thời.
 
 ```json
 { "success": true, "data": [], "pagination": { "page": 1, "limit": 10, "total": 0, "totalPages": 0 } }
@@ -43,10 +43,10 @@ Content-Type: application/json
 ```
 
 ```json
-{ "book_id": "1", "barcode": "TEST-COPY-001", "isbn": null, "condition_status": "good", "availability_status": "available", "note": "Synthetic test note" }
+{ "book_id": "1", "barcode": "TEST-COPY-001", "condition_status": "good", "availability_status": "available", "note": "Synthetic test note" }
 ```
 
-book_id phải trỏ tới sách fixture đã có. Thành công 201, Location `/api/book-copies/<id>`; response `{ "success": true, "data": { ... } }` gồm copy_id/book_id dạng chuỗi, isbn, barcode, hai trạng thái, note, created_at và updated_at. Lưu copyId từ `pm.response.json().data.copy_id` trong Post-response script chỉ khi status 201.
+book_id phải trỏ tới sách fixture đã có. Thành công 201, Location `/api/book-copies/<id>`; response `{ "success": true, "data": { ... } }` gồm copy_id/book_id dạng chuỗi, barcode, hai trạng thái, note, created_at và updated_at. Lưu copyId từ `pm.response.json().data.copy_id` trong Post-response script chỉ khi status 201.
 
 PUT (cùng book_id):
 
@@ -56,10 +56,10 @@ Content-Type: application/json
 ```
 
 ```json
-{ "book_id": "1", "barcode": "TEST-COPY-001", "isbn": null, "condition_status": "damaged", "availability_status": "maintenance", "note": "Synthetic maintenance fixture" }
+{ "book_id": "1", "barcode": "TEST-COPY-001", "condition_status": "damaged", "availability_status": "maintenance", "note": "Synthetic maintenance fixture" }
 ```
 
-PUT là thay thế: book_id/barcode và cả hai trạng thái phải gửi rõ ràng, không tự reset trạng thái khi thiếu; isbn/note thiếu thành null. book_id phải giữ nguyên, chuyển sang sách khác trả 409 COPY_BOOK_IMMUTABLE (chính sách API bảo toàn lịch sử, không phải ràng buộc mới trong schema). Thành công 200; cập nhật không đổi vẫn 200.
+PUT là thay thế: book_id/barcode và cả hai trạng thái phải gửi rõ ràng, không tự reset trạng thái khi thiếu; note thiếu thành null. book_id phải giữ nguyên, chuyển sang sách khác trả 409 COPY_BOOK_IMMUTABLE (chính sách API bảo toàn lịch sử, không phải ràng buộc mới trong schema). Thành công 200; cập nhật không đổi vẫn 200.
 
 DELETE:
 
@@ -75,14 +75,13 @@ Chỉ thành công nếu bản sao không có lưu thông đang mở và không 
 | --- | --- |
 | book_id | BIGINT UNSIGNED dương, bắt buộc; kiểm tra sách tồn tại khi tạo |
 | barcode | Chuỗi Unicode trim 1–50 ký tự, NOT NULL UNIQUE |
-| isbn | Chuỗi trim tối đa 20 ký tự hoặc null, UNIQUE khi khác null |
 | condition_status | Enum good/damaged; POST thiếu mặc định good, PUT bắt buộc |
 | availability_status | Enum DB available/borrowed/lost/maintenance; GET lọc đủ 4 giá trị; POST/PUT chỉ available/maintenance |
 | note | TEXT, null hoặc Unicode tối đa 65535 byte UTF-8; ẩn khỏi GET công khai |
 
-Từ chối trường lạ/copy_id/timestamps, ID sai và enum ngoài schema → 400. Không kiểm tra checksum ISBN hoặc tự đổi thiết kế: **schema hiện đặt UNIQUE isbn ở mỗi bản sao**, vì vậy nhiều bản sao không thể cùng ISBN khác null; dùng null khi chưa nhập, không thay schema trong task này. Chuỗi rỗng khác null và vẫn chịu UNIQUE.
+FE-14, kiểm chứng 22/11/2026. Mỗi bản sao tham chiếu đầu sách qua `book_id` và có `barcode` duy nhất. Gửi `isbn` vào body bản sao trả 400. Xem ISBN qua API sách.
 
-- POST khóa chia sẻ sách (FOR SHARE) trước INSERT; sách không tồn tại → 400 INVALID_REFERENCE. Trùng barcode/isbn → 409 DUPLICATE_VALUE.
+- POST khóa chia sẻ sách (FOR SHARE) trước INSERT; sách không tồn tại → 400 INVALID_REFERENCE. Trùng barcode → 409 DUPLICATE_VALUE.
 - PUT/DELETE khóa bản sao FOR UPDATE, đọc locking current read ChiTietPhieuMuon. Bản sao borrowed/lost bị chặn mọi sửa/xóa → 409 COPY_CIRCULATION_LOCKED.
 - Dù availability ghi available, nếu có dòng mượn với returned_at NULL hoặc status khác returned vẫn chặn sửa/xóa. Không tự sửa trạng thái bất nhất.
 - Chọn borrowed/lost trong POST/PUT → 409 CIRCULATION_STATE_MANAGED. Các trạng thái liên quan mượn/trả chỉ do module sau xử lý; không tạo lịch sử mượn/phiếu mượn ở đây.
@@ -92,6 +91,6 @@ Từ chối trường lạ/copy_id/timestamps, ID sai và enum ngoài schema →
 
 ## Kiểm thử và giới hạn
 
-Tổng `npm.cmd test`: 63/63 đạt, gồm regression auth/sách và test catalog. Test HTTP dùng JWT/RBAC thật với model mô phỏng; test model kiểm tra câu SQL có tham số, khóa hàng, rollback và không phát lệnh DELETE khi có lịch sử. Bao phủ 400/401/403/404/409, FK sách thiếu, UNIQUE barcode/ISBN, enum, trạng thái đang mượn, quyền từng vai trò, bảo mật note và chống SQL injection qua search/filter. Model không SELECT note trong GET list/detail; controller tiếp tục loại note để phòng model trả thừa trường.
+Tổng `npm.cmd test`: 63/63 đạt, gồm regression auth/sách và test catalog. Test HTTP dùng JWT/RBAC thật với model mô phỏng; test model kiểm tra câu SQL có tham số, khóa hàng, rollback và không phát lệnh DELETE khi có lịch sử. Bao phủ 400/401/403/404/409, FK sách thiếu, UNIQUE barcode, enum, trạng thái đang mượn, quyền từng vai trò, bảo mật note và chống SQL injection qua search/filter. Model không SELECT note trong GET list/detail; controller tiếp tục loại note để phòng model trả thừa trường.
 
 Smoke test MySQL thật: GET danh sách/lọc/tìm kiếm và health đạt; detail/nested không tồn tại trả 404, input lỗi 400, ghi không token 401. Metadata xác nhận FK/UNIQUE. Chỉ SELECT và request bị chặn trước ghi; đã đóng server/pool. Chưa có kiểm thử ghi trên DB độc lập, dữ liệu thật đầy đủ, UNIQUE/concurrency thật hoặc module mượn/trả. Không tạo DB, sửa `.env`, schema, seed, Git/remote hoặc commit/push. Không mở API ra Internet.

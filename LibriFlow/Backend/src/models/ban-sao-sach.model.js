@@ -1,9 +1,9 @@
 import { thucHienGiaoDich, truyVanPhanTrang, taoMauTimKiem } from "../utils/truy-van-danh-muc.js";
 import { LoiHttp } from "../utils/loi-http.js";
 
-const CAC_COT = "copy_id, book_id, isbn, barcode, condition_status, availability_status, note, created_at, updated_at";
-const CAC_COT_CONG_KHAI = "copy_id, book_id, isbn, barcode, condition_status, availability_status, created_at, updated_at";
-const CAC_COT_DUOC_GHI = ["book_id", "isbn", "barcode", "condition_status", "availability_status", "note"];
+const CAC_COT = "copy_id, book_id, barcode, condition_status, availability_status, note, created_at, updated_at";
+const CAC_COT_CONG_KHAI = "copy_id, book_id, barcode, condition_status, availability_status, created_at, updated_at";
+const CAC_COT_DUOC_GHI = ["book_id", "barcode", "condition_status", "availability_status", "note"];
 const chuanHoaBanGhi = dongDuLieu => dongDuLieu ? { ...dongDuLieu, copy_id: String(dongDuLieu.copy_id), book_id: String(dongDuLieu.book_id) } : null;
 
 export function taoMoHinhBanSaoSach(boKetNoi) {
@@ -27,7 +27,7 @@ export function taoMoHinhBanSaoSach(boKetNoi) {
             for (const tenTruong of ["book_id", "condition_status", "availability_status"]) {
                 if (truyVan[tenTruong] !== undefined) { cacDieuKien.push(`${tenTruong} = ?`); cacThamSo.push(truyVan[tenTruong]); }
             }
-            if (truyVan.search) { cacDieuKien.push("(barcode LIKE ? ESCAPE '=' OR isbn LIKE ? ESCAPE '=')"); cacThamSo.push(taoMauTimKiem(truyVan.search), taoMauTimKiem(truyVan.search)); }
+            if (truyVan.search) { cacDieuKien.push("barcode LIKE ? ESCAPE '='"); cacThamSo.push(taoMauTimKiem(truyVan.search)); }
             const dieuKienLoc = cacDieuKien.length ? ` WHERE ${cacDieuKien.join(" AND ")}` : "";
             return truyVanPhanTrang(boKetNoi, `SELECT COUNT(*) AS total FROM BanSaoSach${dieuKienLoc}`, `SELECT ${CAC_COT_CONG_KHAI} FROM BanSaoSach${dieuKienLoc} ORDER BY copy_id DESC LIMIT ? OFFSET ?`, cacThamSo, truyVan, chuanHoaBanGhi);
         },
@@ -35,7 +35,7 @@ export function taoMoHinhBanSaoSach(boKetNoi) {
             return thucHienGiaoDich(boKetNoi, async ketNoi => {
                 const [cacSach] = await ketNoi.execute("SELECT book_id FROM Sach WHERE book_id = ? FOR SHARE", [duLieu.book_id]);
                 if (!cacSach.length) throw new LoiHttp(400, "INVALID_REFERENCE", "Sách được tham chiếu không tồn tại.");
-                const [ketQua] = await ketNoi.execute(`INSERT INTO BanSaoSach (${CAC_COT_DUOC_GHI.join(", ")}) VALUES (?, ?, ?, ?, ?, ?)`, CAC_COT_DUOC_GHI.map(khoa => duLieu[khoa]));
+                const [ketQua] = await ketNoi.execute(`INSERT INTO BanSaoSach (${CAC_COT_DUOC_GHI.join(", ")}) VALUES (?, ?, ?, ?, ?)`, CAC_COT_DUOC_GHI.map(khoa => duLieu[khoa]));
                 return layTheoMa(String(ketQua.insertId), ketNoi, false, true);
             });
         },
@@ -45,7 +45,7 @@ export function taoMoHinhBanSaoSach(boKetNoi) {
                 if (!banSao) return null;
                 await kiemTraChoPhepChinhSua(banSao, ketNoi);
                 if (duLieu.book_id !== banSao.book_id) throw new LoiHttp(409, "COPY_BOOK_IMMUTABLE", "Không hỗ trợ chuyển bản sao sang sách khác; cần giữ nguyên liên kết lịch sử.");
-                await ketNoi.execute("UPDATE BanSaoSach SET isbn = ?, barcode = ?, condition_status = ?, availability_status = ?, note = ? WHERE copy_id = ?", [duLieu.isbn, duLieu.barcode, duLieu.condition_status, duLieu.availability_status, duLieu.note, ma]);
+                await ketNoi.execute("UPDATE BanSaoSach SET barcode = ?, condition_status = ?, availability_status = ?, note = ? WHERE copy_id = ?", [duLieu.barcode, duLieu.condition_status, duLieu.availability_status, duLieu.note, ma]);
                 return layTheoMa(ma, ketNoi, false, true);
             });
         },

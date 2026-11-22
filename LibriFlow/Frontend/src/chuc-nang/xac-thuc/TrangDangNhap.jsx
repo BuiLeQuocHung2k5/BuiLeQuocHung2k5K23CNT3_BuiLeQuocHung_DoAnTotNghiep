@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Link, Navigate } from 'react-router'
+import { Link, Navigate, useLocation } from 'react-router'
 import { BookOpen, ArrowRight } from 'lucide-react'
 import NutBam from '../../thanh-phan/giao-dien/NutBam.jsx'
 import ONhap from '../../thanh-phan/giao-dien/ONhap.jsx'
+import ONhapMatKhau from './ONhapMatKhau.jsx'
 import { The, DauThe, TieuDeThe, MoTaThe, NoiDungThe } from '../../thanh-phan/giao-dien/The.jsx'
 import ThongBao from '../../thanh-phan/giao-dien/ThongBao.jsx'
 import BieuTuong from '../../thanh-phan/giao-dien/BieuTuong.jsx'
@@ -11,6 +12,7 @@ import { moiTruong } from '../../cau-hinh/moi-truong.js'
 import { thongBaoLoiDangNhap } from './dich-vu-xac-thuc.js'
 
 export default function TrangDangNhap() {
+  const { state } = useLocation()
   const { daDangNhap, dangDangNhap, thongBaoPhien, dangNhap } = useXacThuc()
   const [email, datEmail] = useState('')
   const [matKhau, datMatKhau] = useState('')
@@ -55,19 +57,20 @@ export default function TrangDangNhap() {
           <DauThe><p className="auth-eyebrow">THƯ VIỆN LIBRIFLOW</p><TieuDeThe as="h2" className="auth-title">Đăng nhập</TieuDeThe><MoTaThe>Sử dụng email đã đăng ký với thư viện.</MoTaThe></DauThe>
           <NoiDungThe>
             <form className="auth-form" onSubmit={guiBieuMau} noValidate aria-label="Đăng nhập LibriFlow" aria-busy={dangDangNhap}>
+              {state?.daDangKy === true && <ThongBao variant="success" title="Đăng ký thành công" role="status">Bạn có thể đăng nhập bằng tài khoản vừa tạo.</ThongBao>}
               {thongBaoPhien && <ThongBao variant="warning" title="Vui lòng đăng nhập lại" role="status">{thongBaoPhien}</ThongBao>}
               {moiTruong.error && <ThongBao variant="warning" title="Chưa thể kết nối dịch vụ" role="status">Dịch vụ đăng nhập chưa được cấu hình. Vui lòng liên hệ người quản lý hệ thống.</ThongBao>}
               {loi && <ThongBao variant="error" title="Chưa đăng nhập được" role="alert">{loi}</ThongBao>}
               <ONhap label="Email" name="email" type="email" inputMode="email" autoComplete="username" required maxLength={150}
                 value={email} onChange={suKien => datEmail(suKien.target.value)} error={loiTruong.email} disabled={dangDangNhap} />
-              <ONhap label="Mật khẩu" name="password" type="password" autoComplete="current-password" required
+              <ONhapMatKhau label="Mật khẩu" name="password" autoComplete="current-password" required
                 value={matKhau} onChange={suKien => datMatKhau(suKien.target.value)} error={loiTruong.matKhau} disabled={dangDangNhap} />
               <NutBam type="submit" loading={dangDangNhap} disabled={Boolean(moiTruong.error)} icon={<BieuTuong icon={ArrowRight} size={18} />}>{dangDangNhap ? 'Đang đăng nhập…' : 'Đăng nhập'}</NutBam>
             </form>
+            <p className="auth-session-note">Chưa có tài khoản? <Link to="/dang-ky">Đăng ký ngay</Link></p>
             <p className="auth-session-note">Phiên đăng nhập chỉ được giữ trong tab hiện tại. Tải lại trang sẽ cần đăng nhập lại.</p>
           </NoiDungThe>
         </The>
-        <footer className="auth-footer"><span>LibriFlow · Warm Wooden Library</span><Link to="/">Kiểm tra nền tảng</Link></footer>
       </div>
     </main>
   )

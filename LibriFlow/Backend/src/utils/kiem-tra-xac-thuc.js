@@ -4,12 +4,12 @@ function baoDuLieuKhongHopLe(tenTruong, thongBao) {
     throw new LoiHttp(400, "VALIDATION_ERROR", "Dữ liệu xác thực không hợp lệ.", [{ field: tenTruong, message: thongBao }]);
 }
 
-function kiemTraDoiTuong(noiDung, cacTruongChoPhep) {
+export function kiemTraDoiTuong(noiDung, cacTruongChoPhep) {
     if (!noiDung || typeof noiDung !== "object" || Array.isArray(noiDung)) baoDuLieuKhongHopLe("body", "Phải là JSON object.");
     for (const khoa of Object.keys(noiDung)) if (!cacTruongChoPhep.includes(khoa)) baoDuLieuKhongHopLe(khoa, "Trường không được phép gửi.");
 }
 
-function kiemTraVanBan(giaTri, tenTruong, toiDa, batBuoc = true) {
+export function kiemTraVanBan(giaTri, tenTruong, toiDa, batBuoc = true) {
     if (!batBuoc && (giaTri === undefined || giaTri === null)) return null;
     if (typeof giaTri !== "string" || !giaTri.isWellFormed()) baoDuLieuKhongHopLe(tenTruong, "Phải là chuỗi Unicode hợp lệ.");
     giaTri = giaTri.trim();
@@ -17,15 +17,15 @@ function kiemTraVanBan(giaTri, tenTruong, toiDa, batBuoc = true) {
     return giaTri;
 }
 
-function kiemTraEmail(giaTri) {
+export function kiemTraEmail(giaTri) {
     giaTri = kiemTraVanBan(giaTri, "email", 150).toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(giaTri)) baoDuLieuKhongHopLe("email", "Email không đúng định dạng.");
     return giaTri;
 }
 
-function kiemTraMatKhau(giaTri, ketQuaDangKy) {
-    if (typeof giaTri !== "string" || !giaTri.isWellFormed() || [...giaTri].length < (ketQuaDangKy ? 12 : 1) || Buffer.byteLength(giaTri, "utf8") > 72) {
-        baoDuLieuKhongHopLe("password", ketQuaDangKy ? "Mật khẩu tối thiểu 12 ký tự, tối đa 72 byte UTF-8." : "Mật khẩu phải có từ 1 đến 72 byte UTF-8.");
+export function kiemTraMatKhau(giaTri, ketQuaDangKy) {
+    if (typeof giaTri !== "string" || !giaTri.isWellFormed() || [...giaTri].length < (ketQuaDangKy ? 4 : 1) || (ketQuaDangKy && [...giaTri].length > 12) || Buffer.byteLength(giaTri, "utf8") > 72) {
+        baoDuLieuKhongHopLe("password", ketQuaDangKy ? "Mật khẩu từ 4 đến 12 ký tự." : "Mật khẩu phải có từ 1 đến 72 byte UTF-8.");
     }
     return giaTri; // Không trim mật khẩu hoặc để bcrypt âm thầm cắt ngắn dữ liệu.
 }
@@ -38,4 +38,14 @@ export function kiemTraDangKy(noiDung) {
 export function kiemTraDangNhap(noiDung) {
     kiemTraDoiTuong(noiDung, ["email", "password"]);
     return { email: kiemTraEmail(noiDung.email), password: kiemTraMatKhau(noiDung.password, false) };
+}
+
+export function kiemTraCapNhatSoDienThoai(noiDung) {
+    kiemTraDoiTuong(noiDung, ["phone"]);
+    const { phone } = noiDung;
+    if (phone === null) return null;
+    if (typeof phone !== "string" || !/^(?:0[35789]\d{8}|02\d{9})$/.test(phone.trim())) {
+        baoDuLieuKhongHopLe("phone", "Nhập số điện thoại Việt Nam bắt đầu bằng 0. Số di động có 10 chữ số, số cố định có 11 chữ số.");
+    }
+    return phone.trim();
 }

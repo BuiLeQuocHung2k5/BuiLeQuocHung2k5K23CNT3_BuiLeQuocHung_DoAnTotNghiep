@@ -9,7 +9,7 @@ import { moiTruong } from '../../cau-hinh/moi-truong.js'
 import { kiemTraBieuMauSach } from './dich-vu-sach.js'
 
 export default function BieuMauSach({ sach, dangGui, duQuyen, loiServer, onSave: luu, onCancel: huy }) {
-  const [giaTri, datGiaTri] = useState(() => ({ title: sach?.title ?? '', author: sach?.author ?? '', publisher: sach?.publisher ?? null,
+  const [giaTri, datGiaTri] = useState(() => ({ isbn: sach?.isbn ?? '', title: sach?.title ?? '', author: sach?.author ?? '', publisher: sach?.publisher ?? null,
     category_id: sach?.category_id ?? null, series_id: sach?.series_id ?? null, description: sach?.description ?? null, publication_year: sach?.publication_year ?? null }))
   const [loi, datLoi] = useState({})
   const [tuKhoa, datTuKhoa] = useState('')
@@ -38,6 +38,7 @@ export default function BieuMauSach({ sach, dangGui, duQuyen, loiServer, onSave:
     <div className="book-form-grid">
       <ONhap label="Tên sách" required value={giaTri.title} onChange={suKien => doiTruong('title', suKien.target.value)} error={loiCuaTruong('title')} disabled={dangKhoa} />
       <ONhap label="Tác giả" required value={giaTri.author} onChange={suKien => doiTruong('author', suKien.target.value)} error={loiCuaTruong('author')} disabled={dangKhoa} />
+      <ONhap label="ISBN" value={giaTri.isbn} onChange={suKien => doiTruong('isbn', suKien.target.value)} error={loiCuaTruong('isbn')} disabled={dangKhoa} />
       <ONhap label="Nhà xuất bản" value={giaTri.publisher ?? ''} onChange={suKien => doiTruong('publisher', suKien.target.value)} error={loiCuaTruong('publisher')} disabled={dangKhoa} />
       <ONhap label="Năm xuất bản" type="number" min={0} max={65535} step={1} value={giaTri.publication_year ?? ''} onChange={suKien => doiTruong('publication_year', suKien.target.value)} error={loiCuaTruong('publication_year')} disabled={dangKhoa} />
       <div className="book-category-picker">

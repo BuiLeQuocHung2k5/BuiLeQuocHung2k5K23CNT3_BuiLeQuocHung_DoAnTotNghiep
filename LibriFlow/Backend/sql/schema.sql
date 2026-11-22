@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS Sach (
  book_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
  category_id BIGINT UNSIGNED NULL,
  series_id BIGINT UNSIGNED NULL,
+ isbn VARCHAR(20) NULL UNIQUE,
  title VARCHAR(255) NOT NULL,
  author VARCHAR(150) NOT NULL,
  publisher VARCHAR(150),
@@ -77,7 +78,6 @@ CREATE TABLE IF NOT EXISTS Sach (
 CREATE TABLE IF NOT EXISTS BanSaoSach (
  copy_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
  book_id BIGINT UNSIGNED NOT NULL,
- isbn VARCHAR(20) NULL UNIQUE,
  barcode VARCHAR(50) NOT NULL UNIQUE,
  condition_status ENUM('good','damaged') NOT NULL DEFAULT 'good',
  availability_status ENUM('available','borrowed','lost','maintenance') NOT NULL DEFAULT 'available',
