@@ -1,5 +1,35 @@
 # Theo dõi task
 
+## HOTFIX ADMIN-01 — Quản lý người dùng · 22/11/2026
+
+- Hoàn tất API và giao diện quản trị theo quyền. File chính gồm [router](../Backend/src/routes/nguoi-dung.routes.js), [model](../Backend/src/models/nguoi-dung.model.js), app-factory, validator dùng chung, [màn hình quản trị](../Frontend/src/chuc-nang/quan-tri/TrangNguoiDung.jsx), lối tắt Admin, cấu hình tuyến, làm mới hồ sơ của phiên và test FE/BE. [Hợp đồng đã cập nhật](../Backend/docs/frontend-api-handover.md).
+- `npm test` trong Backend đạt 185/185. Frontend `npm run test:run -- --maxWorkers=2` đạt 318/318. ESLint và production build đạt.
+- MySQL demo kiểm tra JWT/quyền, lọc theo tên/email, vai trò, trạng thái, phân trang, chi tiết, trường công khai, email trùng, băm bcrypt, đổi vai trò, đăng nhập và phiên cũ khi vô hiệu hóa. Tài khoản thử duy nhất ID 10 kết thúc với vai trò reader và trạng thái inactive. Thử vô hiệu hóa người đã có phiếu trong transaction rollback và đối chiếu số phiếu. Fingerprint tài khoản cũ, quyền và checksum sách, bản sao, phiếu/chi tiết và dự báo giữ nguyên. Database chính chưa truy cập.
+- Chrome headless kiểm tra bảng thật, chi tiết, lọc, dialog, nút mật khẩu ở 1366×768 và 1920×1080. Đã đổi vai trò, kích hoạt và vô hiệu hóa fixture qua xác nhận trên giao diện. Tạo mới/trùng email kiểm qua API thật, chưa bấm lưu tạo tài khoản thứ hai trên Chrome. Chờ nghiệm thu.
+
+## HOTFIX UI-06 — Nút mật khẩu và ảnh bìa (2026-11-22)
+
+- Trạng thái: đã căn chỉnh nút mật khẩu, phần upload bìa chưa triển khai. Thay ONhapMatKhau.jsx để nút nằm trong wrapper của chính input và sửa xac-thuc.css căn giữa theo chiều cao input. Giữ label, helper/error, thuộc tính accessibility và trạng thái nhập.
+- Đã đọc source Backend/src/models/sach.model.js, routes/sach.routes.js, Frontend/src/chuc-nang/sach/AnhBiaSach.jsx, Backend/sql/schema.sql. GET/CRUD sách chưa có trường ảnh hoặc endpoint upload. SELECT information_schema sau xác minh UUID/schema demo cho thấy bảng Sach không có cột ảnh. Cần thiết kế lưu đường dẫn liên kết book_id trong MySQL và thay schema demo trước khi thử thật. Database chính chưa truy cập.
+- Kiểm tra: Frontend auth `npm.cmd run test:run -- src/chuc-nang/xac-thuc/xac-thuc.test.jsx --maxWorkers=1` 35/35 đạt, `npm.cmd run lint` và `npm.cmd run build -- --logLevel=warn` đạt. Chưa kiểm browser/desktop, upload hoặc MySQL ghi. Không tạo dữ liệu hoặc sửa database.
+- Bước tiếp: cần chỉ dẫn rõ ràng cho phép thay schema database demo theo AGENTS.md, sau đó thiết kế migration và tích hợp upload có phân quyền. Không sửa database chính hoặc FE15.
+
+## HOTFIX AUTH-03 — Đồng bộ hai tài khoản demo (2026-11-22)
+
+- Hoàn tất. Đối chiếu `DATABASE()` và UUID với cấu hình demo, khóa từng dòng và xác nhận librarian/reader active, mỗi tài khoản đúng role trước khi cập nhật. Ghi hash bcrypt12 cho đúng hai tài khoản theo JSON trong một transaction. Hash cũ đã sao lưu vào `Backend/.demo-local/auth03-demo-hash-backup.json`, thư mục được ignore. Không ghi thông tin xác thực vào tài liệu.
+- Xác minh bcrypt sau commit, đối chiếu hash Admin trước/sau và fingerprint các trường hồ sơ khác. CHECKSUM sách, bản sao, phiếu, chi tiết phiếu, lịch sử, dự báo, liên kết role và bảng quyền giữ nguyên. Không đổi schema hoặc database chính.
+- API HTTP thật qua app factory với MySQL demo, hook ghi nhận login thay bằng no-op để giữ lịch sử theo yêu cầu. Admin, librarian và reader đều trả login200, me200 với role/quyền phù hợp và logout200. Mật khẩu sai401. Kiểm lại checksum sau HTTP khớp. Kiểm tra này không chứng minh giao diện Chrome.
+- Không đổi source. Chỉ cập nhật TASKS/HANDOFF, giữ thay đổi có sẵn, không commit/push. Không chạy test/lint/build vì không sửa code. Chrome chưa kiểm được do browser host/native pipe unavailable. Chờ người dùng nghiệm thu, không FE15.
+
+## HOTFIX AUTH-02 — Hiện mật khẩu và xác minh demo (2026-11-22)
+
+- Đã thêm ONhapMatKhau.jsx dùng chung cho đăng nhập, đăng ký và xác nhận, cùng CSS scoped trong xac-thuc.css. Nút độc lập, type button, nhãn Hiện/Ẩn mật khẩu, không xóa giá trị. Cập nhật TrangDangNhap.jsx, TrangDangKy.jsx và xac-thuc.test.jsx.
+- Đối chiếu MySQL demo bằng SELECT sau kiểm tra DATABASE()/UUID với cấu hình demo. Tài khoản admin/librarian/reader đều active, có role và permissions phù hợp, song cả ba mật khẩu JSON đều không khớp hash. chay.mjs chỉ đọc cau-hinh.json, tai-khoan.json dùng khi khoi-tao/seed và để tham khảo. Frontend gửi email/password theo contract.
+- Đã đồng bộ duy nhất hash Admin bằng bcrypt12 theo yêu cầu, với bản sao hash cũ trong Backend/.demo-local/auth02-admin-hash-backup.json (ignored, không ghi giá trị vào tài liệu). Khóa row, xác minh role admin và kiểm tra bcrypt sau commit. CHECKSUM sách/bản sao/phiếu/chi tiết/lịch sử/dự báo/RBAC không đổi. Không thay mật khẩu thủ thư/độc giả hay account đăng ký, không seed/migration.
+- HTTP test với app factory và MySQL demo thật, chỉ thay hook ghi log login thành no-op để giữ lịch sử theo yêu cầu: Admin login200/me đúng role/logout200, password sai401; librarian và reader trả401 INVALID_CREDENTIALS vì JSON không khớp. Chưa thể kết luận vì sao các hash lệch ban đầu. Cần chỉ dẫn rõ ràng trước khi đồng bộ hai account còn lại.
+- npm.cmd run dev tại gốc khởi động MySQL/Backend/Vite; đã dừng process của task. Backend auth tests 18/18, Frontend auth/admin 42/42, lint/build đạt. Chrome chưa kiểm vì browser host/native pipe unavailable; không thử login thật qua server demo thông thường vì login ghi lịch sử.
+- Chưa commit/push/FE15. Giữ các thay đổi trước task. Bước tiếp: người dùng đăng nhập Admin với JSON và quyết định phạm vi đồng bộ hai account còn lại.
+
 ## HOTFIX UI-05 — CSS đăng nhập, đăng ký và Footer (2026-11-22)
 
 - Khi tiếp tục, kiểm tra Git và giữ nguyên thay đổi có sẵn. Không có file staged hoặc xung đột trong index. Nội dung chưa lưu trong editor chưa xác minh. Kết quả build/lint trước gián đoạn đạt, kết quả lần test dang dở không còn trong phiên chạy.

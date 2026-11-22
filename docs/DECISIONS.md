@@ -1,5 +1,9 @@
 # Quyết định và căn cứ
 
+## HOTFIX ADMIN-01 · 22/11/2026
+
+Đã triển khai theo yêu cầu bảo vệ quyền quản trị cuối cùng. Mọi thao tác quản trị cần `user_manage`. Khi ghi, các transaction cùng khóa bản ghi quyền rồi đọc lại principal. Người thực hiện chỉ có thể cấp các vai trò có tập quyền nằm trong quyền của mình. Tài khoản cần có vai trò Admin để quản lý một Admin khác. Người thực hiện luôn giữ nguyên vai trò và trạng thái hoạt động của chính mình. Vì vậy từng thay đổi đều giữ được ít nhất một người quản trị đang hoạt động. Khóa tài khoản giữ nguyên mã người dùng và quan hệ phiếu mượn. [Model](../Backend/src/models/nguoi-dung.model.js)
+
 ## HOTFIX UI-04 — Hồ sơ tự phục vụ (2026-11-22)
 
 Theo phạm vi người dùng giao, cập nhật hồ sơ chỉ theo ID phiên JWT và dùng các cột hiện hữu. Upload nhị phân JPEG/PNG/WebP giúp giữ dữ liệu ảnh trong kho cục bộ và chỉ ghi URL vào MySQL. `/admin` là đường dẫn chuyển tiếp qua cùng guard đang dùng. Phần code đã triển khai, chờ nghiệm thu Chrome. [Hợp đồng API](../Backend/docs/xac-thuc-api.md).

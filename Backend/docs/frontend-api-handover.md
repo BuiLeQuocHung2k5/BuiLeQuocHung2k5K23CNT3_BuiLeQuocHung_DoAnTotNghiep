@@ -1,5 +1,18 @@
 # Hợp đồng bàn giao API cho Frontend — TASK-018
 
+## HOTFIX ADMIN-01 · 22/11/2026
+
+Bốn endpoint dưới đây yêu cầu JWT và quyền MySQL `user_manage`.
+
+| Endpoint | Dữ liệu và kết quả |
+| --- | --- |
+| GET /api/admin/users | `page`, `limit` (tối đa 100), `search` theo tên/email, `role`, `status`. Trả danh sách theo ID giảm dần, `pagination` và `assignable_roles` cho người gọi. |
+| GET /api/admin/users/:id | Trả `user_id` dạng chuỗi, `name`, `email`, `phone`, `roles`, `status`, `created_at`. |
+| POST /api/admin/users | `name`, `email`, `password` theo validation đăng ký, `role`, tùy chọn `phone`, `status` mặc định active. Trả 201 sau transaction tạo và gán vai trò. |
+| PATCH /api/admin/users/:id | Gửi riêng trường cần đổi trong `name/email/phone/role/status`. Bỏ qua `role` để giữ toàn bộ vai trò cũ. Gửi `role` để thay bằng một vai trò. Trả DTO đã cập nhật. |
+
+Trùng email trả 409 `EMAIL_ALREADY_EXISTS`. Tự đổi vai trò hoặc tự khóa trả 409 `SELF_ACCESS_CHANGE`. Backend kiểm tra tập quyền có thể cấp sau khi lấy khóa ghi quản trị. Chỉ người đang mang vai trò Admin và đủ quyền mới quản lý được Admin khác. [Router](../src/routes/nguoi-dung.routes.js) · [Model](../src/models/nguoi-dung.model.js)
+
 Xác minh **2026-11-07** từ `src/app-factory.js`, stack router thực tế, controller/validation/service/model và test. **40 cặp method/path**, không đổi URL hoặc JSON keys. Chi tiết kiểm thử: [báo cáo cuối](backend-final-report.md); điều kiện triển khai: [tồn đọng](backend-known-issues.md). Chưa triển khai React trong task này.
 
 ## Quy ước dùng chung

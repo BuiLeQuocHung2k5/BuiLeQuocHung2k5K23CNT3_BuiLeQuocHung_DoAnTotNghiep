@@ -11,7 +11,7 @@ export const cacTrangTrongKhung = [
   { id: 'my-borrows', path: 'lich-su-muon', to: `${DUONG_DAN_UNG_DUNG}/lich-su-muon`, title: 'Lịch sử mượn của tôi', icon: History, status: 'implemented', yeuCauTruyCap: { vaiTro: ['reader'] } },
   { id: 'account', path: 'tai-khoan', to: `${DUONG_DAN_UNG_DUNG}/tai-khoan`, title: 'Tài khoản', icon: UserRound, status: 'implemented' },
   { id: 'admin', path: 'admin', to: `${DUONG_DAN_UNG_DUNG}/admin`, title: 'Tổng quan Admin', icon: ShieldCheck, status: 'implemented', yeuCauTruyCap: { vaiTro: ['admin'] } },
-  { id: 'users', path: 'nguoi-dung', to: `${DUONG_DAN_UNG_DUNG}/nguoi-dung`, title: 'Quản lý người dùng', icon: Users, status: 'unavailable', yeuCauTruyCap: { quyen: ['user_manage'] } },
+  { id: 'users', path: 'nguoi-dung', to: `${DUONG_DAN_UNG_DUNG}/nguoi-dung`, title: 'Quản lý người dùng', icon: Users, status: 'implemented', yeuCauTruyCap: { quyen: ['user_manage'] } },
   { id: 'statistics', path: 'thong-ke', to: `${DUONG_DAN_UNG_DUNG}/thong-ke`, title: 'Thống kê', icon: ChartColumn, status: 'implemented', yeuCauTruyCap: { quyen: ['report_view'] } },
   { id: 'forecasts', path: 'du-bao', to: `${DUONG_DAN_UNG_DUNG}/du-bao`, title: 'Dự báo tần suất', icon: TrendingUp, status: 'implemented', yeuCauTruyCap: { quyen: ['forecast_view'] } },
   { id: 'layouts', path: 'layouts', to: `${DUONG_DAN_UNG_DUNG}/layouts`, title: 'Bố cục theo vai trò', icon: LayoutTemplate, status: 'preview', congKhaiKyThuat: true },

@@ -41,27 +41,26 @@ it.each([
   expect(guiYeuCau).not.toHaveBeenCalled()
 })
 
-it('shows real admin identity and authorized shortcuts; user management clearly reports unsupported operations without fake lists or API calls', async () => {
+it('shows real admin identity and authorized shortcuts; user management reads the protected API', async () => {
   hienThi()
   expect(await screen.findByRole('heading', { name: 'Xin chào, Admin kiểm thử' }, { timeout: 3000 })).toBeVisible()
   const loiTat = screen.getByLabelText('Lối tắt quản trị')
   expect(within(loiTat).getByRole('link', { name: 'Mở quản lý sách' })).toHaveAttribute('href', '/app/sach')
   expect(within(loiTat).getByRole('link', { name: 'Mở quản lý mượn/trả' })).toHaveAttribute('href', '/app/muon-tra')
   expect(screen.queryByRole('link', { name: /thống kê/i })).not.toBeInTheDocument()
-  await userEvent.click(within(loiTat).getByRole('link', { name: 'Xem tình trạng hỗ trợ quản lý người dùng' }))
+  guiYeuCau.mockResolvedValue({ status: 200, data: { data: [nguoiDungThu], assignable_roles: ['reader'], pagination: {total:1,totalPages:1} } })
+  await userEvent.click(within(loiTat).getByRole('link', { name: 'Mở quản lý người dùng' }))
   expect(await screen.findByRole('heading', { name: 'Quản lý người dùng', level: 1 })).toBeVisible()
-  expect(screen.getByText('Dịch vụ quản lý người dùng chưa được hỗ trợ')).toBeVisible()
-  expect(screen.queryByRole('table')).not.toBeInTheDocument()
-  expect(screen.queryByRole('textbox')).not.toBeInTheDocument()
-  expect(screen.queryByRole('button', { name: /thêm|tạo|sửa|xóa|kích hoạt|vô hiệu hóa/i })).not.toBeInTheDocument()
+  expect(await screen.findByRole('cell',{name:nguoiDungThu.email})).toBeVisible()
+  expect(screen.getByRole('button',{name:'Thêm người dùng'})).toBeVisible()
   for (const value of ['khong-hien-password', 'khong-hien-hash', 'token-test-fe12']) expect(document.body).not.toHaveTextContent(value)
-  expect(guiYeuCau).not.toHaveBeenCalled()
+  expect(guiYeuCau.mock.calls[0][0].url).toBe('/admin/users')
 })
 it('never grants user or borrowing management just from the admin role', async () => {
   hienThi('/app/admin', { ...nguoiDungThu, permissions: [] })
   await screen.findByRole('heading', { name: 'Xin chào, Admin kiểm thử' })
   expect(screen.queryByRole('link', { name: 'Quản lý người dùng' })).not.toBeInTheDocument()
-  expect(screen.queryByRole('link', { name: 'Xem tình trạng hỗ trợ quản lý người dùng' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('link', { name: 'Mở quản lý người dùng' })).not.toBeInTheDocument()
   expect(screen.queryByRole('link', { name: 'Mở quản lý mượn/trả' })).not.toBeInTheDocument()
   expect(screen.getByRole('link', { name: 'Mở quản lý sách' })).toBeVisible()
   expect(screen.getByRole('link', { name: 'Xem hồ sơ của tôi' })).toBeVisible()
@@ -80,7 +79,7 @@ it('protects URLs and menus for anonymous/reader users, and requires user_manage
   hienThi('/app/nguoi-dung', { ...nguoiDungThu, roles: ['librarian'], permissions: ['user_manage'] })
   expect(await screen.findByRole('heading', { name: 'Quản lý người dùng', level: 1 })).toBeVisible()
   expect(screen.queryByRole('link', { name: 'Tổng quan Admin' })).not.toBeInTheDocument()
-  expect(guiYeuCau).not.toHaveBeenCalled()
+  expect(guiYeuCau.mock.calls[0][0].url).toBe('/admin/users')
 })
 
 it('reads only aggregate counts with report_view and handles API 403 safely without using statistics as a user list', async () => {

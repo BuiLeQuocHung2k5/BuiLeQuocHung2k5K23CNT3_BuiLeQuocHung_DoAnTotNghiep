@@ -1,5 +1,27 @@
 # Bàn giao hiện tại
 
+## HOTFIX ADMIN-01 — Sẵn sàng nghiệm thu · 22/11/2026
+
+Đăng nhập bằng tài khoản có `user_manage`, vào **Quản lý người dùng**. Trang cho phép tìm, lọc, phân trang, xem chi tiết, tạo, sửa và kích hoạt/vô hiệu hóa. API quản trị bảo vệ vai trò và trạng thái của người đang thực hiện. Lịch sử mượn giữ nguyên khi tài khoản bị khóa. Không có thao tác xóa cứng hoặc đặt lại mật khẩu ở màn hình này.
+
+Kiểm thử MySQL demo và Chrome đã đạt. Tài khoản kiểm thử ID 10 đã vô hiệu hóa. Backend 185/185, Frontend 318/318, lint và build đạt. Theo lựa chọn nghiệm thu, giữ tiến trình cũ ở 5173/3000. Bản nghiệm thu đang chạy tại [cổng 5189](http://127.0.0.1:5189/app/nguoi-dung) và gọi Express cổng 3109. [Kết quả, file và giới hạn](TASKS.md) · [API](../Backend/docs/frontend-api-handover.md)
+
+## HOTFIX UI-06 — Đang thực hiện (2026-11-22)
+
+Đã căn icon hiện/ẩn mật khẩu theo vùng input và giữ các tính năng của form. Auth tests 35/35, lint/build đạt. Upload bìa chưa triển khai. Metadata demo xác nhận Sach không có cột ảnh; cần chỉ dẫn rõ ràng trước khi đổi schema theo AGENTS.md. Chưa ghi database hoặc kiểm Chrome. [Chi tiết](TASKS.md).
+
+## HOTFIX AUTH-03 — Đồng bộ tài khoản demo (2026-11-22)
+
+Đã đồng bộ bcrypt cho librarian và reader theo JSON sau khi xác minh database demo, role và trạng thái. Hash cũ được sao lưu trong thư mục demo-local được ignore. Hash Admin, hồ sơ khác và checksum dữ liệu nghiệp vụ/lịch sử/phân quyền được giữ nguyên.
+
+Ba vai trò đều login/me/logout thành công qua HTTP dùng MySQL demo, mật khẩu sai trả 401. Hook ghi lịch sử được thay bằng no-op trong app factory kiểm thử để giữ dữ liệu lịch sử. Chrome chưa kiểm do browser host/native pipe unavailable. [Chi tiết và cách kiểm](TASKS.md).
+
+## HOTFIX AUTH-02 — Xác thực demo (2026-11-22)
+
+Admin demo đã được đồng bộ hash theo tài khoản JSON và kiểm bằng bcrypt cùng HTTP login/me/logout thật trên MySQL demo. Bản sao hash cũ nằm trong thư mục demo-local được ignore. Các bảng nghiệp vụ/lịch sử/RBAC giữ checksum. Thủ thư và độc giả có mật khẩu JSON không khớp hash, hiện trả 401. Chưa đồng bộ hai tài khoản vì yêu cầu giới hạn thao tác vào tài khoản demo được chỉ định. [Chi tiết](TASKS.md).
+
+Đăng nhập và đăng ký có nút Hiện/Ẩn mật khẩu. Backend auth 18/18, Frontend auth/admin 42/42, lint/build đạt. Chrome chưa kiểm do browser host/native pipe không khả dụng.
+
 ## HOTFIX UI-05 — CSS xác thực (2026-11-22)
 
 CSS toàn cục nạp trước Footer để Tailwind base đứng trước Design System. Đăng nhập và đăng ký dùng bố cục hai cột hiện có với khoảng đệm được cân lại, Footer nằm dưới nội dung. Frontend 317/317, ESLint, build, thứ tự CSS production và Vite HTTP smoke đạt. [Nguyên nhân, file và cách kiểm](TASKS.md).

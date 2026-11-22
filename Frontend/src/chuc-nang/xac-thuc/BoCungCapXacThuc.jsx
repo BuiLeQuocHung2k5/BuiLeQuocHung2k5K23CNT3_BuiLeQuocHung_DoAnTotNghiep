@@ -146,6 +146,7 @@ export default function BoCungCapXacThuc({ children }) {
 
   return <NguCanhXacThuc.Provider value={{ tokenTruyCap: phien?.tokenTruyCap ?? null, nguoiDung: phien?.nguoiDung ?? null,
     daDangNhap: Boolean(phien), dangDangNhap, thongBaoPhien, dangNhap, dangXuat,
+    lamMoiHoSo: () => capNhatHoSo((_, token, signal) => layNguoiDung(token, signal)),
     capNhatSoDienThoai: phone => capNhatHoSo(guiSoDienThoai, phone),
     capNhatAnhDaiDien: tep => capNhatHoSo(guiAnhDaiDien, tep),
   }}>{children}</NguCanhXacThuc.Provider>

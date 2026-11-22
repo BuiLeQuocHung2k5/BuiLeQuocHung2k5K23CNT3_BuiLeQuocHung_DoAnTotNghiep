@@ -18,7 +18,7 @@
   .auth-form { display: grid; gap: var(--space-5); }
   .auth-password { position: relative; min-width: 0; }
   .auth-password .ui-control { padding-right: 52px; }
-  .auth-password-toggle { position: absolute; top: 28px; right: 4px; width: 40px; height: 40px; display: grid; place-items: center; color: var(--foreground-muted); background: transparent; border: 0; border-radius: var(--radius-md); }
+  .auth-password-toggle { position: absolute; top: 50%; right: 4px; transform: translateY(-50%); width: 40px; height: 40px; display: grid; place-items: center; color: var(--foreground-muted); background: transparent; border: 0; border-radius: var(--radius-md); }
   .auth-password-toggle:hover:not(:disabled) { color: var(--primary); background: var(--secondary); }
   .auth-form > .ui-button { width: 100%; margin-top: var(--space-2); }
   .auth-session-note { font-size: var(--text-caption); color: var(--foreground-muted); margin: var(--space-6) 0 0; }

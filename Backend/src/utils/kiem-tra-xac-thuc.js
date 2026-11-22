@@ -4,12 +4,12 @@ function baoDuLieuKhongHopLe(tenTruong, thongBao) {
     throw new LoiHttp(400, "VALIDATION_ERROR", "Dữ liệu xác thực không hợp lệ.", [{ field: tenTruong, message: thongBao }]);
 }
 
-function kiemTraDoiTuong(noiDung, cacTruongChoPhep) {
+export function kiemTraDoiTuong(noiDung, cacTruongChoPhep) {
     if (!noiDung || typeof noiDung !== "object" || Array.isArray(noiDung)) baoDuLieuKhongHopLe("body", "Phải là JSON object.");
     for (const khoa of Object.keys(noiDung)) if (!cacTruongChoPhep.includes(khoa)) baoDuLieuKhongHopLe(khoa, "Trường không được phép gửi.");
 }
 
-function kiemTraVanBan(giaTri, tenTruong, toiDa, batBuoc = true) {
+export function kiemTraVanBan(giaTri, tenTruong, toiDa, batBuoc = true) {
     if (!batBuoc && (giaTri === undefined || giaTri === null)) return null;
     if (typeof giaTri !== "string" || !giaTri.isWellFormed()) baoDuLieuKhongHopLe(tenTruong, "Phải là chuỗi Unicode hợp lệ.");
     giaTri = giaTri.trim();
@@ -17,13 +17,13 @@ function kiemTraVanBan(giaTri, tenTruong, toiDa, batBuoc = true) {
     return giaTri;
 }
 
-function kiemTraEmail(giaTri) {
+export function kiemTraEmail(giaTri) {
     giaTri = kiemTraVanBan(giaTri, "email", 150).toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(giaTri)) baoDuLieuKhongHopLe("email", "Email không đúng định dạng.");
     return giaTri;
 }
 
-function kiemTraMatKhau(giaTri, ketQuaDangKy) {
+export function kiemTraMatKhau(giaTri, ketQuaDangKy) {
     if (typeof giaTri !== "string" || !giaTri.isWellFormed() || [...giaTri].length < (ketQuaDangKy ? 4 : 1) || (ketQuaDangKy && [...giaTri].length > 12) || Buffer.byteLength(giaTri, "utf8") > 72) {
         baoDuLieuKhongHopLe("password", ketQuaDangKy ? "Mật khẩu từ 4 đến 12 ký tự." : "Mật khẩu phải có từ 1 đến 72 byte UTF-8.");
     }

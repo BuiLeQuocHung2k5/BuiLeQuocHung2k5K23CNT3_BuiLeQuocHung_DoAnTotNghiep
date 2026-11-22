@@ -1,3 +1,4 @@
+import { taoTuyenNguoiDung } from './routes/nguoi-dung.routes.js';
 import express from "express";
 import cors from "cors";
 import { taoMoHinhSach } from "./models/sach.model.js";
@@ -56,6 +57,7 @@ export function dungUngDung({
         try { await coSoDuLieu.query("SELECT 1");res.status(200).json({ success: true, database: "connected" }); }
         catch { res.status(503).json({ success: false, database: "disconnected" }); }
     });
+    ungDung.use("/api/admin/users", taoTuyenNguoiDung(coSoDuLieu, xacThuc));
     ungDung.use("/api/auth", taoBoDinhTuyenXacThuc(dichVuXacThuc, xacThuc, khoAnh));
     ungDung.use("/api/usage-history", taoBoDinhTuyenLichSuSuDung(moHinhLichSuSuDung, xacThuc));
     ungDung.use("/api/statistics", taoBoDinhTuyenThongKe(moHinhThongKe, xacThuc));

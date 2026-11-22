@@ -36,7 +36,7 @@ export default function TrangAdmin() {
     </section>}
     <div className="app-overview-grid" aria-label="Lối tắt quản trị">
       {xemDuBao && <The><DauThe><TieuDeThe as="h2">Dự báo tần suất</TieuDeThe></DauThe><NoiDungThe><p className="app-muted">Xem mức ước lượng phiếu mượn theo ngày khi dữ liệu đủ điều kiện.</p><Link className="app-text-link" to="/app/du-bao">Xem dự báo tần suất</Link></NoiDungThe></The>}
-      {quanLyNguoiDung && <The><DauThe><TieuDeThe as="h2">Quản lý người dùng</TieuDeThe><MoTaThe>Dịch vụ quản lý tài khoản chưa sẵn sàng.</MoTaThe></DauThe><NoiDungThe><p className="app-muted">Chưa thể tải danh sách hoặc thay đổi tài khoản người dùng.</p><Link className="app-text-link" to="/app/nguoi-dung">Xem tình trạng hỗ trợ quản lý người dùng</Link></NoiDungThe></The>}
+      {quanLyNguoiDung && <The><DauThe><TieuDeThe as="h2">Quản lý người dùng</TieuDeThe></DauThe><NoiDungThe><p className="app-muted">Tra cứu, thêm tài khoản và quản lý quyền truy cập thư viện.</p><Link className="app-text-link" to="/app/nguoi-dung">Mở quản lý người dùng</Link></NoiDungThe></The>}
       <The><DauThe><TieuDeThe as="h2">Danh mục sách</TieuDeThe><MoTaThe>Tra cứu đầu sách, ảnh bìa và bản sao.</MoTaThe></DauThe><NoiDungThe><p className="app-muted">Các thao tác thêm, sửa, xóa tiếp tục yêu cầu quyền tương ứng.</p><Link className="app-text-link" to="/app/sach">Mở quản lý sách</Link></NoiDungThe></The>
       {quanLyMuonTra && <The><DauThe><TieuDeThe as="h2">Mượn / Trả sách</TieuDeThe><MoTaThe>Theo dõi phiếu mượn và tình trạng trả sách.</MoTaThe></DauThe><NoiDungThe><p className="app-muted">Ghi nhận trả sách cần được cấp thêm quyền trả.</p><Link className="app-text-link" to="/app/muon-tra">Mở quản lý mượn/trả</Link></NoiDungThe></The>}
     </div>

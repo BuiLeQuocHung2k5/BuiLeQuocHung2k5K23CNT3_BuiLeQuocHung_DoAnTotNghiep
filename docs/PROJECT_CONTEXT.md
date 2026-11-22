@@ -1,5 +1,7 @@
 # Ngữ cảnh dự án
 
+**HOTFIX ADMIN-01 · 22/11/2026.** Trang `/app/nguoi-dung` đã dùng API quản trị thật cho danh sách, chi tiết, tạo và cập nhật tài khoản. MySQL demo xác nhận quyền `user_manage` thuộc vai trò Admin. [Hợp đồng API](../Backend/docs/frontend-api-handover.md) · [Bàn giao](HANDOFF.md)
+
 **HOTFIX UI-04, xác minh 2026-11-22.** Footer chung trong AppShell và trang xác thực. `/admin` dùng khu vực quản trị hiện có. Trang Tài khoản cập nhật số điện thoại và ảnh của người đăng nhập qua API, MySQL lưu đường dẫn ảnh cục bộ. Đã kiểm lưu và đọc lại bằng MySQL demo. [Bàn giao và giới hạn](HANDOFF.md).
 
 **HOTFIX-UI-02, xác minh 2026-11-22:** homepage Hero/sách API/lối tắt theo quyền, Sidebar chỉ nghiệp vụ; technical routes giữ trực tiếp để bảo trì. Đăng ký demo local đồng bộ4–12 ký tự FE/BE, login/hash/JWT/role/account cũ giữ nguyên. MySQL demo kiểm1fixture mới ID7; visual desktop chưa xác minh do browser host unavailable. [Task và phạm vi](TASKS.md), [bàn giao mới](HANDOFF.md). Các snapshot dưới giữ ngày xác minh riêng.
