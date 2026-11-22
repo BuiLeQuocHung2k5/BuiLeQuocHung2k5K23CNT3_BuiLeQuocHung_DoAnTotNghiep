@@ -24,6 +24,7 @@ import { taoMoHinhThongKe } from "./models/thong-ke.model.js";
 import { taoBoDinhTuyenThongKe } from "./routes/thong-ke.routes.js";
 import { taoMoHinhDuBao } from "./models/du-bao.model.js";
 import { taoBoDinhTuyenDuBao } from "./routes/du-bao.routes.js";
+import { taoKhoAnhDaiDien } from "./utils/anh-dai-dien.js";
 
 // Không nạp cấu hình DB tại đây; mọi model và truy vấn health dùng kết nối được truyền vào.
 // Giữ khóa cấu hình tiêm phụ thuộc; biến sử dụng bên trong được đặt bằng tiếng Việt.
@@ -41,10 +42,12 @@ export function dungUngDung({
     statisticsModel: moHinhThongKe = taoMoHinhThongKe(coSoDuLieu),
     forecastModel: moHinhDuBao = taoMoHinhDuBao(coSoDuLieu),
     forecastOptions: tuyChonDuBao,
+    avatarDirectory: thuMucAvatar,
 } = {}) {
     if (!coSoDuLieu || typeof coSoDuLieu.query !== "function") throw new Error("An explicit database dependency is required.");
     const ungDung = express();
-    const dichVuXacThuc = taoDichVuXacThuc(moHinhXacThuc, dichVuToken);
+    const khoAnh = taoKhoAnhDaiDien(thuMucAvatar);
+    const dichVuXacThuc = taoDichVuXacThuc(moHinhXacThuc, dichVuToken, khoAnh);
     const xacThuc = taoMiddlewareXacThuc(dichVuToken, dichVuXacThuc);
     ungDung.use(cors());
     ungDung.use(express.json({ limit: "256kb" }));
@@ -53,7 +56,7 @@ export function dungUngDung({
         try { await coSoDuLieu.query("SELECT 1");res.status(200).json({ success: true, database: "connected" }); }
         catch { res.status(503).json({ success: false, database: "disconnected" }); }
     });
-    ungDung.use("/api/auth", taoBoDinhTuyenXacThuc(dichVuXacThuc, xacThuc));
+    ungDung.use("/api/auth", taoBoDinhTuyenXacThuc(dichVuXacThuc, xacThuc, khoAnh));
     ungDung.use("/api/usage-history", taoBoDinhTuyenLichSuSuDung(moHinhLichSuSuDung, xacThuc));
     ungDung.use("/api/statistics", taoBoDinhTuyenThongKe(moHinhThongKe, xacThuc));
     ungDung.use("/api/forecasts", taoBoDinhTuyenDuBao(moHinhDuBao, xacThuc, tuyChonDuBao));

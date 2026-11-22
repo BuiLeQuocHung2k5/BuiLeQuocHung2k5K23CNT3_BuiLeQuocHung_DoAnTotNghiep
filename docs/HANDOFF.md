@@ -1,5 +1,41 @@
 # Bàn giao hiện tại
 
+## HOTFIX UI-05 — CSS xác thực (2026-11-22)
+
+CSS toàn cục nạp trước Footer để Tailwind base đứng trước Design System. Đăng nhập và đăng ký dùng bố cục hai cột hiện có với khoảng đệm được cân lại, Footer nằm dưới nội dung. Frontend 317/317, ESLint, build, thứ tự CSS production và Vite HTTP smoke đạt. [Nguyên nhân, file và cách kiểm](TASKS.md).
+
+MySQL demo được kiểm chỉ đọc, có 11 sách, 22 bản sao, 37 phiếu và 7 tài khoản. Chờ kiểm trực quan và đăng nhập demo qua Chrome khi môi trường trình duyệt khả dụng. Các mục dưới là lịch sử.
+
+## HOTFIX UI-04 — Footer, Admin và hồ sơ cá nhân (2026-11-22)
+
+Footer dùng chung trong AppShell, đăng nhập và đăng ký. `/admin` chuyển qua guard của `/app/admin`. Trang Tài khoản lưu số Việt Nam dạng chuỗi và ảnh JPEG/PNG/WebP vào Backend. Hồ sơ MySQL được đồng bộ với Header ngay sau khi lưu. [Danh sách file và kiểm tra](TASKS.md).
+
+MySQL demo đã lưu và đọc lại số điện thoại/ảnh của fixture ID 9 sau khi khởi động lại. PNG trả đúng byte và MIME. Đã kiểm giới hạn tải, từ chối định dạng sai, quyền sở hữu và thay ảnh. Schema hiện hữu đáp ứng. 11 sách, 22 bản sao và 37 phiếu mượn giữ nguyên trong kiểm chứng. Frontend 317/317, Backend 183/183, ESLint và production build đạt.
+
+Chrome và hộp thoại chọn ảnh Windows chưa kiểm được do kết nối công cụ browser. Có thể nghiệm thu trên dev sau khi khởi động lại Backend. Các bàn giao dưới đây giữ theo ngày xác minh riêng.
+
+## HOTFIX-UI-02 — Trang chủ và đăng ký demo · 22/11/2026
+
+Sidebar mọi role đã bỏ Công cụ phát triển/5link kỹ thuật; giữ route/component trực tiếp để bảo trì. `/app` có Hero chào theo tên/minh họa CSS,4sách từ API thật/ảnh hiện hữu, lối tắt theo quyền, loading/empty/error/retry; card mở chi tiết/bản sao FE08–09 bằng `?sach=ID`. Layout riêng trang chủ tối đa1440px, palette/tokens/Sidebar/Header/logout giữ nguyên. [File và lệnh kiểm](TASKS.md).
+
+Đăng ký Frontend+Backend: **4–12 ký tự Unicode**, không complexity, xác nhận phải khớp; bcrypt12/reader/JWT giữ nguyên, không đổi mật khẩu cũ hoặc giới hạn login. **Frontend310/310 tại21file, Backend179/179**, lint/build/diff-check đạt. MySQL demo xác nhận tài khoản thử **ID7**, chỉ reader/book_view, đăng ký4ký tự/login thật đạt; giữ11sách/22bản sao/37phiếu và checksum nghiệp vụ. Chỉ thêm1user/reader mapping/1login event (users5→6 ở baseline thực), không main/schema/resetdemo.
+
+Chưa nghiệm thu visual1366×768/1920×1080 vì browser host/native pipe unavailable; HTTP module/ảnh/API200 không thay browser QA. Khởi động lại Backend/dev để nhận validator mới khi kiểm tra. Không commit/push hoặc FE15; chờ người dùng nghiệm thu. Các mục dưới là lịch sử.
+
+## HOTFIX-AUTH-01 — Trang chủ/đăng ký · 22/11/2026
+
+`/` chuyển đến `/dang-nhap` khi chưa đăng nhập và `/app` khi có phiên memory; trang FE02 chuyển sang `/kiem-tra-nen-tang`. Login giữ thiết kế, có **Đăng ký ngay**; `/dang-ky` gửi name/email/password đến API auth/register hiện có, thành công trở về login. Không Backend/schema/README hoặc JWT persistence changes; các route/permission FE08–14 giữ nguyên. [File/cách kiểm tra](TASKS.md).
+
+Đã đăng ký thật một fixture **user_id=4**, marker HOTFIX-AUTH-01, trong demo; chỉ reader/book_view, bcrypt12, login/me/logout/duplicate/role-injection/owner/401/403 đều đạt. Admin/thủ thư/độc giả demo cũ login/me đạt. Demo giữ11sách/22bản sao/37phiếu; checksum nghiệp vụ/dự báo và fingerprint account cũ giữ nguyên. User3→4; thêm4login events, không kết nối main. Không ghi password/token vào tài liệu.
+
+**Frontend305/305 tại20file**,0fail/skip; lint/build và Backend179/179 đạt. Chrome chưa kiểm được do CUA host/native pipe unavailable. Dịch vụ3000/5173 có sẵn trả200, root runner mới báo EADDRINUSE nên giữ nguyên tiến trình người dùng; kiểm API trên backend demo3001 do mình mở và đã dừng. Không commit/push; chờ nghiệm thu, không FE15. Các mục dưới là lịch sử.
+
+## HOTFIX-CONFLICT-01 — Khởi động Frontend sau conflict · 22/11/2026
+
+Đã gỡ đúng 7 đoạn conflict trong Sidebar, CSS khung và 4 docs, bảo toàn nội dung FE10–14. Source Frontend/Backend/chung sau sửa không có diff so với bản FE14 `29ab8e2`; role/permission `/auth/me`, route sách+bản sao, mượn/trả, độc giả/Admin và thống kê/dự báo giữ nguyên. [Chi tiết file/cách đối chiếu](TASKS.md).
+
+**302/302 tests tại20file**, 0 fail/skip; ESLint/build/diff-check đạt, toàn cây không còn marker (bỏ .git/node_modules/dist). `npm.cmd run dev` từ gốc lên MySQL/Express/Vite, HTTP shells/module/health đều200, Ctrl+C đã dừng cả hai listener. Không thay Backend/database/dữ liệu demo, không login/CRUD E2E hoặc browser tương tác trong hotfix. Giữ settings có sẵn, không commit/push hay thao tác merge/rebase/reset. Bước tiếp: người dùng kiểm tra lại từ gốc; dừng chờ, không FE15. Các bàn giao dưới giữ lịch sử.
+
 ## FE-14 — Demo sẵn sàng nghiệm thu · 22/11/2026
 
 Chạy `npm run dev` tại gốc rồi mở `http://127.0.0.1:5173/dang-nhap`. Dữ liệu giữ trong schema demo riêng. Đã dừng Express/Vite bằng Ctrl+C sau kiểm tra. Bản demo hiện có 11 đầu sách, 22 bản sao, 3 tài khoản và 37 phiếu. Ngày 22/11, preview từ 10 phiếu trong 7 ngày cho ra 1,43 phiếu/người/ngày. Database chính vẫn dùng cấu trúc ISBN cũ.

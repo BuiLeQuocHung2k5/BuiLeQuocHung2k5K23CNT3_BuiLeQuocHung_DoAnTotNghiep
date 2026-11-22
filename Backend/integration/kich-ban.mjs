@@ -48,7 +48,7 @@ test("real MySQL: isolated auth/catalog/circulation lifecycle", { timeout: 12000
         });
     }
     function xacNhanMaHttp(phanHoi, trangThai) { assert.equal(phanHoi.status, trangThai, "Unexpected HTTP status (response deliberately not logged).");return phanHoi.body.data; }
-    const matKhau = randomBytes(24).toString("hex");
+    const matKhau = randomBytes(6).toString("hex");
     const cacNguoiDung = {}, dichVuToken = {};
     let maDanhMuc, maSach, banSaoDuyNhat, phieuMotBanSao, phieuMuonNhieuBanSao, cacBanSaoTrongLo, phieuCanhTranh, banSaoCanhTranh, phieuRiengTu;
     const hanTra = () => new Date(Date.now() + 7 * 86400000).toISOString().replace(/\.\d{3}Z$/, "Z");

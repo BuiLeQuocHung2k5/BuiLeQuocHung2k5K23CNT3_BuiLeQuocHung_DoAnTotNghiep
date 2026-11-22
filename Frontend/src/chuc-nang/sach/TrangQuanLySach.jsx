@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Plus, Search } from 'lucide-react'
@@ -35,12 +36,13 @@ function NoiDungChiTietSach({ sach, tenTheLoai }) {
 }
 
 export default function TrangQuanLySach({ title }) {
+  const [truyVanUrl, datTruyVanUrl] = useSearchParams()
   const phien = useXacThuc()
   const trinhTruyVan = useQueryClient()
   const [thamSo, datThamSo] = useState({ page: 1, limit: 10, search: '' })
   const [tuKhoa, datTuKhoa] = useState('')
   const [loiTim, datLoiTim] = useState('')
-  const [hopThoai, datHopThoai] = useState(null)
+  const [hopThoai, datHopThoai] = useState(() => truyVanUrl.get('sach') ? { loai: 'chi-tiet', ma: truyVanUrl.get('sach') } : null)
   const [dangGui, datDangGui] = useState(false)
   const [dangGhiBanSao, datDangGhiBanSao] = useState(false)
   const [loiThaoTac, datLoiThaoTac] = useState(null)
@@ -71,6 +73,7 @@ export default function TrangQuanLySach({ title }) {
   }
   function dongHopThoai() {
     if (yeuCauGhi.current || dangGhiBanSao) return
+    if (truyVanUrl.has('sach')) datTruyVanUrl(cu => { const moi = new URLSearchParams(cu); moi.delete('sach'); return moi }, { replace: true })
     if (loiThaoTac?.chuaRo) capNhatDanhSach()
     datHopThoai(null); datLoiThaoTac(null)
   }

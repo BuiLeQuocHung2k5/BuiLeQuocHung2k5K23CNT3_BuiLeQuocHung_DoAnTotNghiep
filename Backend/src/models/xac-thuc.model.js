@@ -18,8 +18,34 @@ export function taoMoHinhXacThuc(boKetNoi) {
         const { role_name: tenVaiTro, permission_name: tenQuyen, ...nguoiDung } = cacDong[0];
         return { ...nguoiDung, user_id: String(nguoiDung.user_id), roles: [...new Set(cacDong.map(dongDuLieu => dongDuLieu.role_name).filter(Boolean))], permissions: [...new Set(cacDong.map(dongDuLieu => dongDuLieu.permission_name).filter(Boolean))] };
     }
+    async function capNhatHoSo(ma, truong, giaTri) {
+        const cauLenh = {
+            phone: "UPDATE NguoiDung SET phone = ? WHERE user_id = ? AND status = 'active'",
+            avatar: "UPDATE NguoiDung SET avatar = ? WHERE user_id = ? AND status = 'active'",
+        }[truong];
+        if (!cauLenh || !["phone", "avatar"].includes(truong)) throw new Error("Unsupported profile field.");
+        const ketNoi = await boKetNoi.getConnection();
+        let daGuiCommit = false;
+        try {
+            await ketNoi.beginTransaction();
+            const [cacDong] = await ketNoi.execute("SELECT status, avatar FROM NguoiDung WHERE user_id = ? FOR UPDATE", [ma]);
+            const cu = cacDong[0];
+            if (!cu) throw new LoiHttp(401, "INVALID_TOKEN", "Tài khoản của token không còn tồn tại.");
+            if (cu.status !== "active") throw new LoiHttp(403, "ACCOUNT_INACTIVE", "Tài khoản không còn hoạt động.");
+            await ketNoi.execute(cauLenh, [giaTri, ma]);
+            const nguoiDung = await layNguoiDungXacThuc(ma, ketNoi);
+            daGuiCommit = true;
+            await ketNoi.commit();
+            return { nguoiDung, avatarCu: cu.avatar };
+        } catch (loi) {
+            try { await ketNoi.rollback(); } catch { /* Giữ nguyên lỗi ban đầu. */ }
+            if (daGuiCommit) loi.ketQuaHoSoChuaRo = true;
+            throw loi;
+        } finally { ketNoi.release(); }
+    }
     return {
         layNguoiDungXacThuc: layNguoiDungXacThuc,
+        capNhatHoSo,
         async ghiNhanDangNhap(ma) { await lichSuSuDung.ghiNhan({ user_id: ma, copy_id: null, action_type: "login" }); },
         async layThongTinDangNhap(thuDienTu) {
             const [cacDong] = await boKetNoi.execute("SELECT user_id, password, status FROM NguoiDung WHERE email = ? LIMIT 1", [thuDienTu]);

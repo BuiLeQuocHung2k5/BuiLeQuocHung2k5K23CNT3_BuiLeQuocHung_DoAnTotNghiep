@@ -16,7 +16,7 @@ test("real MySQL: isolated authentication and JWT lifecycle", { timeout: 120000 
     const runId = randomBytes(12).toString("hex");
     const tienTo = `auth_${runId.slice(0, 16)}`;
     const khoa = randomBytes(48).toString("base64url");
-    const matKhau = randomBytes(24).toString("base64url");
+    const matKhau = randomBytes(6).toString("hex");
     const dichVuToken = taoDichVuJwt({ getSecret: () => khoa });
     const bangKe = { purpose: "BE-AUTH-SETUP-01", users: [], scenarios: [] };
     const taiKhoan = {};

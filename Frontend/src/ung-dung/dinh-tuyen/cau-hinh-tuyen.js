@@ -28,7 +28,7 @@ export const dieuHuongNenTang = [
   { id: 'application', label: 'Không gian ứng dụng', items: cacTrangTrongKhung.filter(trang => !trang.congKhaiKyThuat).map(taoMucDieuHuong) },
   { id: 'tools', label: 'Công cụ phát triển', items: [
     ...cacTrangTrongKhung.filter(trang => trang.congKhaiKyThuat).map(taoMucDieuHuong),
-    { id: 'health', label: 'Kiểm tra nền tảng', to: '/', icon: HeartPulse, end: true },
+    { id: 'health', label: 'Kiểm tra nền tảng', to: '/kiem-tra-nen-tang', icon: HeartPulse, end: true },
     { id: 'design-system', label: 'Design System', to: '/design-system', icon: Palette, end: true },
   ] },
 ]

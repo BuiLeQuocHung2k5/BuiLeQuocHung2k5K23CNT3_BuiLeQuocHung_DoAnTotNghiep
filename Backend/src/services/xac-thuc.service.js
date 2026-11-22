@@ -15,7 +15,7 @@ function locNguoiDungCongKhai(nguoiDung) {
     return { user_id: String(maNguoiDung), name: ten, email: thuDienTu, phone: soDienThoai, avatar: anhDaiDien, status: trangThai, created_at: ngayTao, updated_at: ngayCapNhat, roles: cacVaiTro, permissions: cacQuyen };
 }
 
-export function taoDichVuXacThuc(moHinh, dichVuToken) {
+export function taoDichVuXacThuc(moHinh, dichVuToken, khoAnh) {
     return {
         async dangKy(duLieu) {
             dichVuToken.kiemTraDaCauHinh(); // Dừng trước khi băm mật khẩu hoặc ghi database nếu thiếu cấu hình.
@@ -41,6 +41,23 @@ export function taoDichVuXacThuc(moHinh, dichVuToken) {
             if (!nguoiDung) throw new LoiHttp(401, "INVALID_TOKEN", "Tài khoản của token không còn tồn tại.");
             if (nguoiDung.status !== "active") throw new LoiHttp(403, "ACCOUNT_INACTIVE", "Tài khoản không còn hoạt động.");
             return locNguoiDungCongKhai(nguoiDung);
+        },
+        async capNhatSoDienThoai(ma, phone) {
+            const { nguoiDung } = await moHinh.capNhatHoSo(ma, "phone", phone);
+            return locNguoiDungCongKhai(nguoiDung);
+        },
+        async capNhatAnhDaiDien(ma, duLieu, mime) {
+            const url = await khoAnh.luu(duLieu, mime);
+            let ketQua;
+            try {
+                ketQua = await moHinh.capNhatHoSo(ma, "avatar", url);
+            } catch (loi) {
+                // Không xóa ảnh nếu driver không thể xác nhận kết quả COMMIT.
+                if (!loi.ketQuaHoSoChuaRo) await khoAnh.xoa(url).catch(() => {});
+                throw loi;
+            }
+            await khoAnh.xoa(ketQua.avatarCu).catch(() => {});
+            return locNguoiDungCongKhai(ketQua.nguoiDung);
         },
     };
 }

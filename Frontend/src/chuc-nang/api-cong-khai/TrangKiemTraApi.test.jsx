@@ -30,7 +30,7 @@ describe('Public API check page', () => {
     render(<App />)
     expect(await screen.findByRole('heading', { level: 1, name: 'Kiểm tra API công khai' })).toBeVisible()
     expect(screen.getByRole('banner')).toBeVisible()
-    expect(screen.getByRole('link', { name: 'Kiểm tra API công khai', exact: true })).toHaveAttribute('aria-current', 'page')
+    expect(screen.queryByRole('link', { name: 'Kiểm tra API công khai', exact: true })).not.toBeInTheDocument()
     expect(screen.getAllByRole('button', { name: /^Kiểm tra (Health|Books|Categories)$/ })).toHaveLength(3)
     expect(ketNoiHttp.defaults.adapter).not.toHaveBeenCalled()
   })

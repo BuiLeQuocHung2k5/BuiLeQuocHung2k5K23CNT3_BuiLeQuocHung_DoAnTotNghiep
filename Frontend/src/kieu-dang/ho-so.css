@@ -1,0 +1,29 @@
+@layer components {
+  .profile-avatar {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 36px;
+    height: 36px;
+    overflow: hidden;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border);
+    color: var(--primary);
+    background: var(--secondary);
+  }
+  .profile-avatar--large { width: 90px; height: 90px; }
+  .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .profile-intro { background: linear-gradient(115deg, var(--secondary), var(--surface) 75%); }
+  .profile-identity { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-6); }
+  .profile-name { flex: 1 1 240px; min-width: 0; }
+  .profile-name h2, .profile-name p { overflow-wrap: anywhere; }
+  .profile-name > p { margin: var(--space-2) 0; color: var(--foreground-muted); }
+  .profile-name > .ui-error { color: var(--danger); }
+  .profile-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-block: var(--space-3); }
+  .profile-details { display: grid; gap: var(--space-6); }
+  .profile-phone { display: grid; max-width: 30rem; gap: var(--space-3); }
+  .profile-phone .profile-actions { margin: 0; }
+  @media (max-width: 760px) {
+    .profile-details .reader-profile > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
+  }
+}

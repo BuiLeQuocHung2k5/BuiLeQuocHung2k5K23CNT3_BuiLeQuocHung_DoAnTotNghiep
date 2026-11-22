@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router'
+import { MemoryRouter, useLocation } from 'react-router'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { beforeEach, afterEach, it, expect, vi } from 'vitest'
 import { NguCanhXacThuc } from '../xac-thuc/useXacThuc.js'
@@ -20,11 +20,26 @@ beforeEach(() => {
   ketNoiHttp.defaults.adapter = guiYeuCau
 })
 afterEach(() => { trinhTruyVan.clear(); ketNoiHttp.defaults.adapter = boVanChuyenGoc; vi.restoreAllMocks() })
+function DiaChiKiemThu() {
+  return <span data-testid="route-path" hidden>{useLocation().pathname}</span>
+}
+
 function hienThi(path = '/app/admin', nguoiDung = nguoiDungThu) {
   return render(<QueryClientProvider client={trinhTruyVan}><NguCanhXacThuc.Provider value={{ nguoiDung, daDangNhap: Boolean(nguoiDung), tokenTruyCap: 'token-test-fe12', dangXuat: vi.fn() }}>
-    <MemoryRouter initialEntries={[path]}><DinhTuyenUngDung /></MemoryRouter>
+    <MemoryRouter initialEntries={[path]}><DiaChiKiemThu /><DinhTuyenUngDung /></MemoryRouter>
   </NguCanhXacThuc.Provider></QueryClientProvider>)
 }
+
+it.each([
+  ['admin', nguoiDungThu, '/app/admin', 'Xin chào, Admin kiểm thử'],
+  ['guest', null, '/dang-nhap', 'Đăng nhập'],
+  ['reader', { ...nguoiDungThu, roles: ['reader'], permissions: ['book_view'] }, '/app/admin', /^403/],
+])('routes /admin through the existing guard for %s', async (_, nguoiDung, dichDen, tieuDe) => {
+  hienThi('/admin', nguoiDung)
+  expect(await screen.findByRole('heading', { name: tieuDe }, { timeout: 3000 })).toBeVisible()
+  expect(screen.getByTestId('route-path')).toHaveTextContent(dichDen)
+  expect(guiYeuCau).not.toHaveBeenCalled()
+})
 
 it('shows real admin identity and authorized shortcuts; user management clearly reports unsupported operations without fake lists or API calls', async () => {
   hienThi()

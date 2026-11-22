@@ -52,7 +52,7 @@ Tạo environment: `baseUrl = http://127.0.0.1:3000`, `accessToken` (token của
 {
   "name": "Test reader",
   "email": "reader@example.test",
-  "password": "test-only-password-2026",
+  "password": "demo123",
   "phone": null
 }
 ```
@@ -61,7 +61,7 @@ Các giá trị trên là fixture minh họa, không dùng làm thông tin đăn
 
 - name: trim, không rỗng, tối đa 100 ký tự Unicode.
 - email: trim/lowercase, tối đa 150 ký tự, kiểm tra định dạng cơ bản; chưa xác minh quyền sở hữu email.
-- password: không trim, tối thiểu 12 ký tự, tối đa 72 byte UTF-8, Unicode hợp lệ; từ chối quá dài thay vì để bcrypt cắt ngầm.
+- password đăng ký: không trim, từ 4 đến 12 ký tự Unicode hợp lệ (đếm code point), không yêu cầu chữ hoa/số/ký tự đặc biệt. Quy tắc demo local theo HOTFIX UI-02 ngày 2026-11-22, không phải chính sách cho triển khai Internet. Bcrypt12 giữ nguyên; không đổi mật khẩu cũ. Login tiếp tục nhận 1–72 byte UTF-8.
 - phone: tùy chọn/null, trim, tối đa 20 ký tự; không suy diễn định dạng quốc gia từ schema.
 - Chuỗi name/email/phone không nhận ký tự điều khiển.
 
@@ -70,7 +70,7 @@ Thành công 201: `{ "success": true, "data": { "user_id": "...", "name": "...",
 ### POST /api/auth/login
 
 ```json
-{ "email": "reader@example.test", "password": "test-only-password-2026" }
+{ "email": "reader@example.test", "password": "demo123" }
 ```
 
 Thành công 200:
@@ -97,6 +97,16 @@ JWT HS256 hết hạn sau 15 phút, payload chỉ có sub/iat/exp/iss/aud. Verif
 Authorization → Bearer Token → `{{accessToken}}`.
 
 Trả 200 với profile của chính người dùng cùng roles/permissions lấy từ DB; không có password/hash. Thiếu token, sai chữ ký, hết hạn, sai issuer/audience/algorithm hoặc tài khoản đã bị xóa trả 401. Tài khoản inactive/locked trả 403, kể cả JWT chưa hết hạn.
+
+### PATCH /api/auth/me
+
+Gửi Bearer của tài khoản đang hoạt động và JSON chỉ có trường `phone`. Số điện thoại là chuỗi nội địa Việt Nam bắt đầu bằng 0. API nhận số di động 10 chữ số với đầu 03/05/07/08/09, số cố định 11 chữ số với đầu 02, hoặc `null` để bỏ số hiện tại. Server dùng ID từ phiên đã xác thực. Nếu body chứa `user_id` hoặc trường hồ sơ khác, API trả 400.
+
+### PUT /api/auth/me/avatar
+
+Gửi Bearer và file ở dạng **binary** trong Postman. Đặt `Content-Type` khớp ảnh JPEG, PNG hoặc WebP tĩnh. Giới hạn 2 MiB và tối đa 4096 × 4096 pixel. Server kiểm tra cấu trúc ảnh trước khi tạo tên UUID. API trả 400 nếu cấu trúc ảnh sai, 413 nếu quá dung lượng và 415 nếu định dạng yêu cầu không được hỗ trợ. Cả hai thao tác cập nhật trả 200 với hồ sơ mới theo cùng envelope như GET `/api/auth/me`.
+
+MySQL lưu đường dẫn `/api/auth/avatars/<tên ảnh>`. URL này phục vụ file ảnh tại Backend và trình duyệt có thể tải qua thẻ ảnh. File demo nằm trong `Backend/.demo-local/avatars/`. Khi chạy Backend thông thường, file nằm trong `Backend/uploads/avatars/`. Có thể đặt thư mục tuyệt đối bằng `LIBRIFLOW_AVATAR_DIR`.
 
 ### POST /api/auth/logout
 
