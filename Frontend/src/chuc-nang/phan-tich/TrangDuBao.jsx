@@ -9,7 +9,8 @@ import ONhap from '../../thanh-phan/giao-dien/ONhap.jsx'
 import NutBam from '../../thanh-phan/giao-dien/NutBam.jsx'
 import Bang from '../../thanh-phan/giao-dien/Bang.jsx'
 import ThongBao from '../../thanh-phan/giao-dien/ThongBao.jsx'
-import { layDuBao, layChuoiMuon, loiPhanTich } from './dich-vu-phan-tich.js'
+import { LichSuDuBao, TraCuuDuBao } from './LichSuDuBao.jsx'
+import { layDuBao, loiPhanTich, cotDuBao } from './dich-vu-phan-tich.js'
 import '../../kieu-dang/phan-tich.css'
 
 const lyDoThieu = {
@@ -30,10 +31,11 @@ function BieuDoDuBao({ duBao, lichSu }) {
     return cacDiem.map((m, i) => `${i && Date.parse(m.ngay) - Date.parse(cacDiem[i - 1].ngay) === 86400000 ? 'L' : 'M'}${x(m)},${y(m)}`).join(' ')
   }
   return <figure className="forecast-figure"><figcaption>Phiếu mượn/người/ngày · trục thời gian UTC</figcaption>
-    <p className="analytics-legend"><span>━━ Lịch sử thực tế (nếu được cung cấp)</span><span className="forecast-label">┄┄ Dự báo SMA7</span></p>
+    <p className="analytics-legend"><span>━━ Lịch sử thực tế</span><span className="forecast-label">┄┄ Dự báo SMA7</span></p>
     <svg viewBox="0 0 820 290" role="img" aria-label="Biểu đồ lịch sử và dự báo, hai đường tách biệt; không nối qua ngày thiếu">
       <path className="forecast-axis" d="M64 40V235H764" /><text x="14" y="56">{toiDa}</text><text x="40" y="239">0</text>
       <text x="64" y="267">{tatCa[0].ngay}</text><text x="764" y="267" textAnchor="end">{tatCa.at(-1).ngay}</text>
+      <line x1={x({ngay:duBao.cutoff_date})} x2={x({ngay:duBao.cutoff_date})} y1="40" y2="235" stroke="currentColor" strokeDasharray="4 4"><title>Ngày cắt UTC</title></line>
       <path className="forecast-history" d={veDuong(cacNgayCu)} /><path className="forecast-prediction" d={veDuong(cacDuBao)} />
       {cacNgayCu.map(m => <circle className="forecast-history-point" key={m.ngay} cx={x(m)} cy={y(m)} r="4"><title>{m.ngay}: {m.so} phiếu thực tế</title></circle>)}
       {cacDuBao.map(m => <circle className="forecast-prediction-point" key={m.ngay} cx={x(m)} cy={y(m)} r="4"><title>{m.ngay}: {m.so} phiếu dự báo</title></circle>)}
@@ -47,26 +49,21 @@ export default function TrangDuBao() {
   const [ma, datMa] = useState('')
   const [loi, datLoi] = useState('')
   const duocXem = coQuyenTruyCap(phien.nguoiDung, { quyen: ['forecast_view'] })
-  const duocDocLichSu = coQuyenTruyCap(phien.nguoiDung, { quyen: ['report_view'] })
-  const duBao = useQuery({ queryKey: ['phan-tich', phien.nguoiDung?.user_id, 'du-bao', ma], queryFn: ({ signal }) => layDuBao(phien, ma, { signal }), enabled: phien.daDangNhap && duocXem && !moiTruong.error, retry: false, staleTime: 0, refetchOnWindowFocus: false })
+  const duBao = useQuery({ queryKey: ['phan-tich', phien.nguoiDung?.user_id, 'du-bao', ma], queryFn: ({ signal }) => layDuBao(phien, ma, { signal }), enabled: phien.daDangNhap && !moiTruong.error, retry: false, staleTime: 0, refetchOnWindowFocus: false })
   const duLieu = duBao.data
-  const lichSu = useQuery({ queryKey: ['phan-tich', phien.nguoiDung?.user_id, 'lich-su-du-bao', duLieu?.user_id, duLieu?.cutoff_date],
-    queryFn: ({ signal }) => layChuoiMuon(phien, { start_date: duLieu.training.start_date, end_date: duLieu.training.end_date, group_by: 'day', user_id: duLieu.user_id }, { signal }),
-    enabled: Boolean(duLieu?.status === 'ready' && duocDocLichSu && duocXem) && !duBao.isError && !moiTruong.error, retry: false, staleTime: 0, refetchOnWindowFocus: false })
   function chonNguoiDung(e) { e.preventDefault(); const moi = maNhap.trim(); if (moi && !maHopLe(moi)) { datLoi('Nhập mã người dùng hợp lệ hoặc để trống để xem của tôi.'); return } datLoi(''); if (moi === ma) void duBao.refetch(); else datMa(moi) }
   return <div className="app-page"><div className="app-page-intro"><p className="app-eyebrow">DỰ BÁO TẦN SUẤT</p><h1>Dự báo tần suất người dùng</h1><p>Số phiếu mượn không hủy/người/ngày, không phải số bản sao hay số lượt đến thư viện.</p></div>
-    <The className="analytics-filter"><form onSubmit={chonNguoiDung}><ONhap label="Mã người dùng dự báo" value={maNhap} onChange={e => datMaNhap(e.target.value)} helperText="Để trống để xem của tôi. Chỉ nhập mã thực tế đã biết; hiện chưa có dịch vụ tra cứu tên người dùng." error={loi} /><NutBam type="submit" disabled={Boolean(moiTruong.error) || duBao.isFetching}>Xem dự báo</NutBam></form></The>
+    {duocXem && <The className="analytics-filter"><TraCuuDuBao phien={phien} chon={id=>{datMa(id);datMaNhap(id);datLoi('')}}/><form onSubmit={chonNguoiDung}><ONhap label="Mã người dùng dự báo" value={maNhap} onChange={e => datMaNhap(e.target.value)} helperText="Để trống để xem của tôi. Có thể nhập trực tiếp mã người dùng." error={loi} /><NutBam type="submit" disabled={Boolean(moiTruong.error) || duBao.isFetching}>Xem dự báo</NutBam></form></The>}
     {moiTruong.error ? <ThongBao variant="warning" title="Chưa kết nối dịch vụ dự báo">Chưa thể xem dữ liệu.</ThongBao> : duBao.isError ? <ThongBao variant="error" role="alert" title="Chưa tải được dự báo"><p>{loiPhanTich(duBao.error)}</p><NutBam onClick={() => void duBao.refetch()}>Thử tải dự báo</NutBam></ThongBao> : duBao.isPending ? <p role="status">Đang tải dự báo…</p> : duLieu && <>
-      <The><DauThe><TieuDeThe as="h2">{duLieu.user_id === phien.nguoiDung.user_id ? `Dự báo của tôi — ${phien.nguoiDung.name}` : `Người dùng #${duLieu.user_id}`}</TieuDeThe></DauThe><NoiDungThe>
-        <p>Ngày cắt dữ liệu: {duLieu.cutoff_date} (UTC). Phương pháp: trung bình trượt 7 ngày (SMA7).</p><p>Bản xem trước từ Backend, chưa lưu. Hiện chưa hỗ trợ tạo/lưu kết quả dự báo.</p>
-        {duLieu.status === 'insufficient_data' ? <ThongBao variant="warning" title="Chưa đủ điều kiện dự báo">{lyDoThieu[duLieu.reason] ?? 'Backend chưa đủ dữ liệu hợp lệ để dự báo.'} Không có giá trị dự báo để hiển thị.</ThongBao> : <>
+      <The><DauThe><TieuDeThe as="h2">{duLieu.user_id === phien.nguoiDung.user_id ? `Dự báo của tôi — ${phien.nguoiDung.name}` : `${duLieu.name || "Người dùng"} #${duLieu.user_id}`}</TieuDeThe></DauThe><NoiDungThe>
+        <p>Ngày cắt dữ liệu: {duLieu.cutoff_date} (UTC). Phương pháp: trung bình trượt 7 ngày (SMA7).</p>
+        {duLieu.status === 'insufficient_data' ? <ThongBao variant="warning" title="Chưa đủ điều kiện dự báo">{lyDoThieu[duLieu.reason] ?? 'Backend chưa đủ dữ liệu hợp lệ để dự báo.'} {duLieu.observed_days != null ? `Đã xác minh ${duLieu.observed_days}/7 ngày trong khoảng huấn luyện.` : "Chưa xác định được số ngày quan sát hợp lệ."}</ThongBao> : <>
           <p>Cơ sở huấn luyện: {duLieu.training.start_date} – {duLieu.training.end_date}, {duLieu.training.observed_days} ngày hoàn chỉnh, tổng {duLieu.training.borrow_count} phiếu. Bỏ ngày cắt chưa kết thúc; dự báo 7 ngày từ hôm sau.</p>
-          {!duocDocLichSu && <p>Chưa có quyền xem chuỗi lịch sử thống kê; chỉ hiển thị tổng huấn luyện mà API dự báo cung cấp.</p>}
-          {duocDocLichSu && (lichSu.isFetching ? <p role="status">Đang tải chuỗi lịch sử…</p> : lichSu.isError ? <ThongBao variant="warning" title="Chưa tải được chuỗi lịch sử"><p>{loiPhanTich(lichSu.error)}</p><NutBam onClick={() => void lichSu.refetch()}>Thử tải lịch sử dự báo</NutBam></ThongBao> : <p>Chỉ vẽ các ngày lịch sử Backend trả về; không tự điền ngày thiếu bằng số 0.</p>)}
-          <BieuDoDuBao duBao={duLieu} lichSu={duocDocLichSu && !lichSu.isError ? lichSu.data?.data ?? [] : []} />
-          <Bang caption="Kết quả dự báo từ Backend" rows={duLieu.predictions} rowKey="forecast_date" columns={[{ key: 'forecast_date', header: 'Ngày dự báo (UTC)' }, { key: 'predicted_count', header: 'Số phiếu dự kiến/ngày' }]} />
-          {duocDocLichSu && lichSu.isSuccess && <Bang caption="Lịch sử phiếu mượn thực tế" rows={lichSu.data.data} rowKey="period_start" columns={[{ key: 'period_start', header: 'Ngày (UTC)' }, { key: 'borrow_count', header: 'Số phiếu thực tế' }]} emptyTitle="API chưa trả ngày phát sinh trong khoảng huấn luyện" />}
+          <p>Trung bình {(duLieu.training.borrow_count/7).toLocaleString('vi-VN',{maximumFractionDigits:2})} phiếu/ngày.</p>
+          <BieuDoDuBao duBao={duLieu} lichSu={duLieu.history.map(d=>({period_start:d.day,borrow_count:d.count}))}/>
+          <Bang caption="Kết quả dự báo từ Backend" rows={duLieu.predictions} rowKey="forecast_date" columns={cotDuBao}/>
         </>}
+        <LichSuDuBao key={duLieu.user_id} ma={duLieu.user_id} phien={phien} choLuu={duLieu.status==="ready" && duocXem && phien.nguoiDung.permissions.includes("user_manage")}/>
       </NoiDungThe></The>
       <The><DauThe><TieuDeThe as="h2">Đánh giá và giới hạn</TieuDeThe></DauThe><NoiDungThe>
         {duLieu.evaluation.status === 'evaluated' ? <p>MAE: {duLieu.evaluation.mae} phiếu/ngày, trên {duLieu.evaluation.sample_count} mẫu; đánh giá theo các khối thời gian 7 ngày, bỏ ngày gốc giữa huấn luyện và kiểm tra.</p> : <p>Chưa đủ dữ liệu đánh giá MAE; không có tỷ lệ chính xác được xác nhận.</p>}

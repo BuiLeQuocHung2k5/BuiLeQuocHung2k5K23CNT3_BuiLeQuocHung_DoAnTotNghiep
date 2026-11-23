@@ -72,6 +72,11 @@ export async function taoDuLieu(db, taiKhoan, homNay) {
   if (!moc || moc.description !== homQua) {
     await db.execute("INSERT INTO NhatKyHeThong(action,description) VALUES('fe14_seed_day',?)", [homQua])
   }
+  await doiChieuLichSu(db, ngayDau, homNay)
+  return { start_date: ngayDau, end_date: homQua }
+}
+
+export async function doiChieuLichSu(db, ngayDau, homNay) {
   // Đối chiếu hai chiều giữa sổ phiếu và sự kiện mượn trong schema demo do script sở hữu.
   const [[audit]] = await db.execute(`SELECT
     (SELECT COUNT(*) FROM PhieuMuon p WHERE p.borrow_date >= ? AND p.borrow_date < ? AND p.status <> 'cancelled'
@@ -84,5 +89,4 @@ export async function taoDuLieu(db, taiKhoan, homNay) {
        WHERE p.borrow_id=l.details->>'$.borrow_id' AND d.copy_id=l.copy_id AND p.user_id=l.user_id)) AS du`,
     [ngayDau, homNay, ngayDau, homNay])
   if (Number(audit.thieu) || Number(audit.du)) throw Error('DEMO_COVERAGE_MISMATCH')
-  return { start_date: ngayDau, end_date: homQua }
 }

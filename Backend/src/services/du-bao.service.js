@@ -11,10 +11,10 @@ export function taoDichVuDuBao(moHinh, { coverageProvider: boCungCapDoPhu = taoB
             if (!laNgayUtcHopLe(ngayCat)) throw new LoiHttp(503, "FORECAST_CLOCK_UNAVAILABLE", "Chưa xác định được ngày UTC hợp lệ từ database.");
             const doPhu = await boCungCapDoPhu(nguCanh);
             const cacDong = doPhu?.verified === true && nguoiDung.status === "active" ? await moHinh.demTheoNgay(ma, dichNgayUtc(ngayCat, -SO_NGAY_LICH_SU_DU_BAO), ngayCat) : [];
-            return { user_id: String(nguoiDung.user_id), cutoff_date: ngayCat, ...duBaoLuotMuonTheoNgay({ cutoff_date: ngayCat, user_created_at: nguoiDung.created_at, user_status: nguoiDung.status, rows: cacDong, coverage: doPhu }), persisted: false };
+            return { user_id: String(nguoiDung.user_id), name: nguoiDung.name, cutoff_date: ngayCat, ...duBaoLuotMuonTheoNgay({ cutoff_date: ngayCat, user_created_at: nguoiDung.created_at, user_status: nguoiDung.status, rows: cacDong, coverage: doPhu }), persisted: false };
         },
-        async taoDuBao() {
-            throw new LoiHttp(503, "FORECAST_GENERATION_NOT_CONFIGURED", "Chưa có quyền tạo/lưu dự báo được phê duyệt. Chỉ hỗ trợ xem baseline, không ghi kết quả.");
+        async taoDuBao(ma) {
+            return moHinh.luu(ma, model => taoDichVuDuBao(model, { coverageProvider: boCungCapDoPhu }).xemTruoc(ma));
         },
     };
 }

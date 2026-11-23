@@ -120,8 +120,12 @@ test("unverified coverage never queries a filled-in daily series or saves insuff
     assert.equal(ketQua.status, "insufficient_data"); assert.deepEqual(ketQua.predictions, []); assert.equal(ketQua.persisted, false); assert.ok(!moHinh.calls.some(c => c[0] === "counts"));
 });
 
-test("generation is fail-closed without any model call or inferred write permission", async () => {
-    const moHinh = taoMoHinhMau(); await assert.rejects(taoDichVuDuBao(moHinh).taoDuBao(), { status: 503, code: "FORECAST_GENERATION_NOT_CONFIGURED" }); assert.equal(moHinh.calls.length, 0);
+test("generation recomputes preview with the transaction model", async () => {
+    const model = taoMoHinhMau();
+    model.luu = async (ma, tinh) => ({ ma, preview: await tinh(model) });
+    const result = await taoDichVuDuBao(model, {coverageProvider:async()=>DO_PHU}).taoDuBao("30");
+    assert.equal(result.ma,"30");
+    assert.equal(result.preview.predictions.length,7);
 });
 
 async function voiUngDungKiemThu(congViec, { verified: daXacMinh = true } = {}) {
@@ -162,11 +166,11 @@ test("forecast_view authorizes staff read, while reader, role-only admin and rep
     });
 });
 
-test("generate gate returns safe 503 even to forecast_view, never writes or fabricates persistence", async () => {
+test("forecast_view alone cannot persist a forecast", async () => {
     await voiUngDungKiemThu(async (guiYeuCau, moHinh) => {
         for (const vaiTro of ["admin", "librarian"]) {
             const phanHoi = await guiYeuCau("/api/forecasts/users/30/generate", vaiTro, "POST", { amount: 999, coverage: XAC_NHAN_DO_PHU });
-            assert.equal(phanHoi.status, 503); assert.equal(phanHoi.body.error.code, "FORECAST_GENERATION_NOT_CONFIGURED"); assert.ok(!JSON.stringify(phanHoi.body).includes(NGU_CANH.server_uuid));
+            assert.equal(phanHoi.status, 403); assert.equal(phanHoi.body.error.code, "FORBIDDEN"); assert.ok(!JSON.stringify(phanHoi.body).includes(NGU_CANH.server_uuid));
         }
         assert.equal(moHinh.calls.length, 0);
     });

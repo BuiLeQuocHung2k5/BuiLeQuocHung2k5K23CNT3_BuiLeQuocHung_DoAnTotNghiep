@@ -30,9 +30,12 @@ export function duBaoLuotMuonTheoNgay({ cutoff_date: ngayCatDuLieu, user_created
     if (!Number.isFinite(ketQuaTao) || new Date(ketQuaTao).toISOString().slice(0, 19).replace("T", " ") !== ngayTaoNguoiDung) return taoKetQuaThieuDuLieu("INVALID_USER_CREATION_DATE");
     try {
         const ngayCuoi = dichNgayUtc(ngayCatDuLieu, -1), ngayBatDauTrain = dichNgayUtc(ngayCatDuLieu, -7), ngayBatDauLichSu = dichNgayUtc(ngayCatDuLieu, -SO_NGAY_LICH_SU_DU_BAO);
-        if (doPhu.end_date < ngayCuoi || doPhu.start_date > ngayBatDauTrain) return taoKetQuaThieuDuLieu("INCOMPLETE_COVERAGE");
         const ngayDayDuDauTien = ngayTaoNguoiDung.endsWith("00:00:00") ? ngayTaoNguoiDung.slice(0, 10) : dichNgayUtc(ngayTaoNguoiDung.slice(0, 10), 1);
-        if (ngayDayDuDauTien > ngayBatDauTrain) return taoKetQuaThieuDuLieu("USER_HISTORY_TOO_SHORT");
+        const dau = [ngayBatDauTrain, ngayDayDuDauTien, doPhu.start_date].sort().at(-1);
+        const cuoi = [ngayCuoi, doPhu.end_date].sort()[0];
+        const observed_days = Math.max(0, (Date.parse(cuoi)-Date.parse(dau))/86400000 + 1);
+        if (doPhu.end_date < ngayCuoi || doPhu.start_date > ngayBatDauTrain) return taoKetQuaThieuDuLieu("INCOMPLETE_COVERAGE", {observed_days});
+        if (ngayDayDuDauTien > ngayBatDauTrain) return taoKetQuaThieuDuLieu("USER_HISTORY_TOO_SHORT", {observed_days});
         if (!Array.isArray(cacDong) || cacDong.length > SO_NGAY_LICH_SU_DU_BAO) return taoKetQuaThieuDuLieu("INVALID_HISTORY");
         const cacSoDem = new Map();
         for (const dongDuLieu of cacDong) {
@@ -44,20 +47,21 @@ export function duBaoLuotMuonTheoNgay({ cutoff_date: ngayCatDuLieu, user_created
         const tapHuanLuyenCuoi = chuoiDuLieu.slice(-7), duBaoPhanTram = tinhTrungBinhPhanTram(tapHuanLuyenCuoi.map(diemDuLieu => diemDuLieu.count));
         // Bỏ hôm nay chưa kết thúc; bảy ngày dự báo bắt đầu từ ngày mai đến hôm nay + 7.
         const cacDuBao = Array.from({ length: 7 }, (_, chiSo) => ({ forecast_date: dichNgayUtc(ngayCatDuLieu, chiSo + 1), predicted_count: dinhDangSoThapPhan(duBaoPhanTram) }));
-        const cacDotDanhGia = []; let saiSoPhanTram = 0n, soMau = 0;
+        const cacDotDanhGia = []; let tongSaiSoBayPhan = 0n, soMau = 0;
         // Khớp API: bảy ngày train đã kết thúc, bỏ một ngày origin rồi đánh giá bảy ngày tiếp theo.
         for (let viTriBatDauTest = chuoiDuLieu.length - 7; viTriBatDauTest >= 8; viTriBatDauTest -= 7) {
-            const tapHuanLuyen = chuoiDuLieu.slice(viTriBatDauTest - 8, viTriBatDauTest - 1), tapKiemTra = chuoiDuLieu.slice(viTriBatDauTest, viTriBatDauTest + 7), giaTriUocLuong = tinhTrungBinhPhanTram(tapHuanLuyen.map(diemDuLieu => diemDuLieu.count));
+            const tapHuanLuyen = chuoiDuLieu.slice(viTriBatDauTest - 8, viTriBatDauTest - 1), tapKiemTra = chuoiDuLieu.slice(viTriBatDauTest, viTriBatDauTest + 7), tongBayNgay = tapHuanLuyen.reduce((tong, diem) => tong + BigInt(diem.count), 0n);
             let saiSoDot = 0n;
-            for (const diemDuLieu of tapKiemTra) { const chenhLech = giaTriUocLuong - BigInt(diemDuLieu.count) * 100n; saiSoDot += chenhLech < 0n ? -chenhLech : chenhLech; }
-            saiSoPhanTram += saiSoDot; soMau += tapKiemTra.length;
-            cacDotDanhGia.unshift({ train_start: tapHuanLuyen[0].day, train_end: tapHuanLuyen.at(-1).day, excluded_origin_date: chuoiDuLieu[viTriBatDauTest - 1].day, test_start: tapKiemTra[0].day, test_end: tapKiemTra.at(-1).day, sample_count: tapKiemTra.length, mae: Number((Number(saiSoDot) / (100 * tapKiemTra.length)).toFixed(6)) });
+            for (const diemDuLieu of tapKiemTra) { const chenhLech = tongBayNgay - BigInt(diemDuLieu.count) * 7n; saiSoDot += chenhLech < 0n ? -chenhLech : chenhLech; }
+            tongSaiSoBayPhan += saiSoDot; soMau += tapKiemTra.length;
+            cacDotDanhGia.unshift({ train_start: tapHuanLuyen[0].day, train_end: tapHuanLuyen.at(-1).day, excluded_origin_date: chuoiDuLieu[viTriBatDauTest - 1].day, test_start: tapKiemTra[0].day, test_end: tapKiemTra.at(-1).day, sample_count: tapKiemTra.length, mae: Number((Number(saiSoDot) / (7 * tapKiemTra.length)).toFixed(6)) });
         }
         return {
             status: "ready", model_version: PHIEN_BAN_MO_HINH_DU_BAO, target: MUC_TIEU_DU_BAO, timezone: "UTC", horizon_days: 7,
+            history: tapHuanLuyenCuoi,
             training: { start_date: tapHuanLuyenCuoi[0].day, end_date: ngayCuoi, observed_days: 7, borrow_count: tapHuanLuyenCuoi.reduce((tong, diemDuLieu) => tong + diemDuLieu.count, 0) },
             coverage: { status: "verified", start_date: doPhu.start_date, end_date: doPhu.end_date }, predictions: cacDuBao,
-            evaluation: soMau ? { status: "evaluated", method: "rolling_origin_7_day_blocks_gap1", sample_count: soMau, mae: Number((Number(saiSoPhanTram) / (100 * soMau)).toFixed(6)), folds: cacDotDanhGia } : { status: "insufficient_data", reason: "NEED_15_COVERED_DAYS", sample_count: 0, mae: null, folds: [] },
+            evaluation: soMau ? { status: "evaluated", method: "rolling_origin_7_day_blocks_gap1", sample_count: soMau, mae: Number((Number(tongSaiSoBayPhan) / (7 * soMau)).toFixed(6)), folds: cacDotDanhGia } : { status: "insufficient_data", reason: "NEED_15_COVERED_DAYS", sample_count: 0, mae: null, folds: [] },
         };
     } catch { return taoKetQuaThieuDuLieu("INVALID_HISTORY"); }
 }

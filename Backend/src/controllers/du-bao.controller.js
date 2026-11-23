@@ -6,6 +6,6 @@ export function taoBoDieuKhienDuBao(dichVu) {
     return {
         async layCuaToi(req, res) { kiemTraKhongCoTruyVan(req); res.json({ success: true, data: await dichVu.xemTruoc(req.auth.user_id) }); },
         async layTheoNguoiDung(req, res) { kiemTraKhongCoTruyVan(req); res.json({ success: true, data: await dichVu.xemTruoc(kiemTraMa(req.params.id)) }); },
-        async taoDuBao(req, res) { kiemTraKhongCoTruyVan(req); kiemTraMa(req.params.id); await dichVu.taoDuBao(); },
+        async taoDuBao(req, res) { kiemTraKhongCoTruyVan(req); const data = await dichVu.taoDuBao(kiemTraMa(req.params.id)); res.status(data.created ? 201 : 200).json({success:true,data}); },
     };
 }

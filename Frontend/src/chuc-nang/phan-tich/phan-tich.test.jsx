@@ -16,6 +16,7 @@ const tong = { books_total: 18, copies_total: 42, users_total: 3, borrows_total:
 function duBaoMau(user_id) {
   return { user_id, cutoff_date: '2026-11-21', status: trangThaiDuBao === 'insufficient_data' ? 'insufficient_data' : 'ready', reason: 'COVERAGE_UNVERIFIED', target: 'borrow_receipts_per_user_per_day', model_version: 'borrow_daily_sma7_v1', timezone: 'UTC', horizon_days: 7, persisted: false,
     training: { start_date: '2026-11-14', end_date: '2026-11-20', observed_days: 7, borrow_count: 5 }, coverage: { status: 'verified', start_date: '2026-11-01', end_date: '2026-11-20' },
+    history: [2,0,3,0,0,0,0].map((count,i)=>({day:"2026-11-"+(14+i),count})),
     predictions: trangThaiDuBao === 'insufficient_data' ? [] : Array.from({ length: 7 }, (_, i) => ({ forecast_date: `2026-11-${22 + i}`, predicted_count: trangThaiDuBao === 'negative' && i === 0 ? '-1.00' : '0.71' })),
     evaluation: { status: 'insufficient_data', sample_count: 0, mae: null, folds: [] } }
 }
@@ -32,6 +33,10 @@ beforeEach(() => {
         p.user_id ? [{ period_start: '2026-11-14', borrow_count: 2, borrowed_copy_count: 2 }, { period_start: '2026-11-16', borrow_count: 3, borrowed_copy_count: 3 }] : [{ period_start: p.start_date, borrow_count: 2, borrowed_copy_count: 5 }]
       return tra({ success: true, data, period: { ...period, group_by: p.group_by } })
     }
+    if (config.url === '/admin/users' || config.url === '/forecasts/lookup') return tra({data:[{user_id:'42',name:'Độc giả thử',roles:['reader']}]})
+    if (config.url.endsWith('/generate')) return tra({data:{created:true}})
+    if (config.url.endsWith('/history')) return tra({data:[{cutoff_date:'2026-11-21',created_at:'2026-11-21T09:00:00Z'}]})
+    if (config.url.endsWith('/history/2026-11-21')) return tra({data:duBaoMau('42').predictions})
     if (config.url.startsWith('/forecasts/')) return tra({ success: true, data: duBaoMau(config.url === '/forecasts/me' ? '5' : config.url.split('/').at(-1)) })
     throw Error('Unexpected analytics endpoint')
   }
@@ -62,12 +67,11 @@ it('shows server predictions and authorized history as separate series, without 
   const forecast = await screen.findByRole('table', { name: 'Kết quả dự báo từ Backend' }, { timeout: 3000 })
   expect(within(forecast).getAllByRole('row')).toHaveLength(8)
   expect(within(forecast).getAllByRole('cell', { name: '0.71' })).toHaveLength(7)
-  const history = await screen.findByRole('table', { name: 'Lịch sử phiếu mượn thực tế' })
-  expect(within(history).getAllByRole('row')).toHaveLength(3)
-  expect(container.querySelector('.forecast-history').getAttribute('d').match(/M/g)).toHaveLength(2)
+  expect(container.querySelectorAll('.forecast-history-point')).toHaveLength(7)
+  expect(container.querySelector('.forecast-history').getAttribute('d').match(/L/g)).toHaveLength(6)
   expect(container.querySelector('.forecast-prediction').getAttribute('d').match(/L/g)).toHaveLength(6)
   expect(screen.getByText(/Chưa đủ dữ liệu đánh giá MAE/)).toBeVisible()
-  expect(goi.find(c => c.url === '/statistics/borrows').params).toEqual({ start_date: '2026-11-14', end_date: '2026-11-20', group_by: 'day', user_id: '5' })
+  expect(goi.some(c => c.url === '/statistics/borrows')).toBe(false)
   expect(goi.every(c => c.method === 'get')).toBe(true)
 })
 it('shows insufficient_data as an explanation instead of invented zero predictions or a generation action', async () => {
@@ -104,8 +108,8 @@ it('does not turn missing statistics into zero; handles empty series and rejects
 })
 it('requires each real permission, preserves the admin session on 403, and adds only authorized admin shortcuts', async () => {
   const first = hienThi('/app/du-bao', ['report_view'])
-  expect(await screen.findByRole('heading', { name: /^403/ })).toBeVisible(); expect(goi).toHaveLength(0)
-  first.unmount()
+  expect(await screen.findByRole('table', { name: 'Kết quả dự báo từ Backend' })).toBeVisible(); expect(screen.queryByLabelText('Mã người dùng dự báo')).toBeNull()
+  first.unmount(); goi = []
   const second = hienThi('/app/thong-ke', [])
   expect(await screen.findByRole('heading', { name: /^403/ })).toBeVisible(); expect(goi).toHaveLength(0)
   second.unmount()
@@ -115,4 +119,21 @@ it('requires each real permission, preserves the admin session on 403, and adds 
   third.unmount(); client.clear(); loiDoc = true; hienThi('/app/thong-ke')
   expect(await screen.findByRole('alert')).toHaveTextContent('Không có quyền')
   expect(screen.getByText('Admin kiểm thử')).toBeVisible(); expect(document.body).not.toHaveTextContent('private SQL')
+})
+
+it.each([[['forecast_view'],'/forecasts/lookup'],[['forecast_view','user_manage'],'/admin/users']])('selects a target with allowed lookup and reads the saved run',async (permissions,url)=>{
+  hienThi('/app/du-bao',permissions)
+  await userEvent.type(screen.getByLabelText('Tên hoặc email người dùng'),'doc')
+  await userEvent.click(screen.getByRole('button',{name:'Tìm người dùng'}))
+  await userEvent.click(await screen.findByRole('button',{name:/Độc giả thử · #42/}))
+  await screen.findByRole('heading',{name:'Người dùng #42'})
+  expect(goi.some(c=>c.url===url && c.params.search==='doc')).toBe(true)
+  if(permissions.includes('user_manage')) await userEvent.click(screen.getByRole('button',{name:'Lưu dự báo'}))
+  else {
+    expect(screen.queryByRole('button',{name:'Lưu dự báo'})).toBeNull()
+    await userEvent.click(screen.getByRole('button',{name:'Xem lịch sử'}))
+  }
+  await userEvent.click(await screen.findByRole('button',{name:/Ngày cắt 2026-11-21/}))
+  const bang=await screen.findByRole('table',{name:'Dự báo đã lưu ngày 2026-11-21'})
+  expect(within(bang).getAllByRole('row')).toHaveLength(8)
 })

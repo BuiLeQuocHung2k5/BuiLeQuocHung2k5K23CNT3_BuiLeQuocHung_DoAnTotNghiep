@@ -24,7 +24,7 @@ function kiemTra(dung) {
   if (!dung) throw Object.assign(new Error('Phản hồi phân tích không hợp lệ.'), { code: 'ANALYTICS_RESPONSE_INVALID' })
 }
 function cauHinh(phien, quyen, signal) {
-  if (!phien?.daDangNhap || !phien.tokenTruyCap || !coQuyenTruyCap(phien.nguoiDung, { quyen: [quyen] })) throw Object.assign(new Error('Không đủ quyền.'), { code: 'ANALYTICS_FORBIDDEN' })
+  if (!phien?.daDangNhap || !phien.tokenTruyCap || (quyen && !coQuyenTruyCap(phien.nguoiDung, { quyen: [quyen] }))) throw Object.assign(new Error('Không đủ quyền.'), { code: 'ANALYTICS_FORBIDDEN' })
   return { signal, headers: { Authorization: `Bearer ${phien.tokenTruyCap}` } }
 }
 function kyHopLe(ky) { return ky && ngayHopLe(ky.start_date) && ngayHopLe(ky.end_date) && ky.start_date <= ky.end_date && ky.timezone === 'UTC' }
@@ -45,7 +45,7 @@ export async function layChuoiMuon(phien, thamSo, { signal } = {}) {
   return noiDung
 }
 export async function layDuBao(phien, ma, { signal } = {}) {
-  const config = cauHinh(phien, 'forecast_view', signal)
+  const config = cauHinh(phien, ma ? 'forecast_view' : null, signal)
   kiemTra(!ma || maHopLe(ma))
   const phanHoi = await ketNoiHttp.get(ma ? `/forecasts/users/${ma}` : '/forecasts/me', config)
   const duLieu = phanHoi.data?.data
@@ -54,6 +54,7 @@ export async function layDuBao(phien, ma, { signal } = {}) {
   kiemTra(danhGia && ['evaluated', 'insufficient_data'].includes(danhGia.status) && soDem(danhGia.sample_count) && Array.isArray(danhGia.folds) &&
     (danhGia.status === 'insufficient_data' ? danhGia.mae === null : Number.isFinite(danhGia.mae) && danhGia.mae >= 0 && danhGia.sample_count > 0))
   if (duLieu.status === 'ready') {
+    kiemTra(Array.isArray(duLieu.history) && duLieu.history.length === 7 && duLieu.history.every((d,i) => ngayHopLe(d.day) && soDem(d.count) && Date.parse(d.day) === Date.parse(duLieu.cutoff_date)-(7-i)*86400000) && duLieu.history.reduce((n,d)=>n+d.count,0) === duLieu.training?.borrow_count)
     kiemTra(duLieu.training && ngayHopLe(duLieu.training.start_date) && ngayHopLe(duLieu.training.end_date) && Date.parse(duLieu.training.start_date) === Date.parse(duLieu.cutoff_date) - 7 * 86400000 && Date.parse(duLieu.training.end_date) === Date.parse(duLieu.cutoff_date) - 86400000 && duLieu.training.observed_days === 7 && soDem(duLieu.training.borrow_count) && duLieu.coverage?.status === 'verified' && ngayHopLe(duLieu.coverage.start_date) && ngayHopLe(duLieu.coverage.end_date) && duLieu.predictions.length === 7 && duLieu.predictions.every((muc, i) =>
       ngayHopLe(muc.forecast_date) && Date.parse(muc.forecast_date) === Date.parse(duLieu.cutoff_date) + (i + 1) * 86400000 && typeof muc.predicted_count === 'string' && /^\d+\.\d{2}$/.test(muc.predicted_count) && Number.isFinite(Number(muc.predicted_count)) && Number(muc.predicted_count) >= 0 && Number(muc.predicted_count) <= 9999999999))
   } else kiemTra(typeof duLieu.reason === 'string' && duLieu.predictions.length === 0)
@@ -64,3 +65,5 @@ export function loiPhanTich(loi) {
   if (loi?.code === 'ANALYTICS_FORBIDDEN') return 'Bạn không có quyền xem nội dung này.'
   return chuanHoaLoiApi(loi).message
 }
+
+export const cotDuBao = [{key:'forecast_date',header:'Ngày dự báo (UTC)'},{key:'predicted_count',header:'Số phiếu dự kiến/ngày'}]

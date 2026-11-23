@@ -113,7 +113,7 @@ describe('FE-07 — sidebar desktop lọc theo principal', () => {
   it.each(['admin', 'librarian', 'reader'])('shows only permitted business menus without development tools for %s', vaiTro => {
     render(<NguCanhXacThuc.Provider value={{ nguoiDung: { ...nguoiDungThu, roles: [vaiTro] }, daDangNhap: true }}><MemoryRouter><ThanhBen groups={dieuHuongNenTang} /></MemoryRouter></NguCanhXacThuc.Provider>)
     const menu = screen.getByRole('navigation', { name: 'Điều hướng chính' })
-    expect(within(menu).getAllByRole('link')).toHaveLength(vaiTro === 'reader' ? 5 : vaiTro === 'admin' ? 4 : 3)
+    expect(within(menu).getAllByRole('link')).toHaveLength(vaiTro === 'reader' ? 6 : vaiTro === 'admin' ? 5 : 4)
     expect(within(menu).getByText('Không gian ứng dụng')).toBeVisible()
     expect(within(menu).queryByText('Công cụ phát triển')).not.toBeInTheDocument()
     for (const ten of ['Bố cục theo vai trò', 'Khu vực nội dung', 'Kiểm tra API công khai', 'Kiểm tra nền tảng', 'Design System']) expect(within(menu).queryByRole('link', { name: ten, exact: true })).not.toBeInTheDocument()

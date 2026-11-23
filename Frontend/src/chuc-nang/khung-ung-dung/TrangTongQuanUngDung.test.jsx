@@ -38,7 +38,7 @@ it('shows API books and reader shortcuts, then opens the existing detail/copies 
   expect(within(screen.getByRole('main')).getByRole('link', { name: 'Khám phá sách' })).toHaveAttribute('href', '/app/sach')
   expect(bia).toHaveAttribute('href', `/app/sach?sach=${sach.book_id}`)
   expect(screen.getByRole('img', { name: 'Bìa sách Don Quijote' })).toHaveAttribute('src', '/Anh/BiaSach/don-quijote.jpg')
-  expect(screen.queryByRole('link', { name: /Lập phiếu|Mở tổng quan quản trị|Xem trước tần suất/ })).not.toBeInTheDocument()
+  expect(screen.queryByRole('link', { name: /Lập phiếu|Mở tổng quan quản trị/ })).not.toBeInTheDocument()
   expect(screen.queryByText('Công cụ phát triển')).not.toBeInTheDocument()
   expect(cacYeuCau[0].params).toEqual({ page: 1, limit: 12, search: '' })
   await userEvent.click(bia)
@@ -55,7 +55,7 @@ it('does not invent management/statistics grants for Admin and renders a real em
   expect(await screen.findByText('Những trang sách đang chờ được lấp đầy')).toBeVisible()
   const main = screen.getByRole('main')
   expect(within(main).getByRole('link', { name: /Mở tổng quan quản trị/ })).toHaveAttribute('href', '/app/admin')
-  expect(within(main).queryByRole('link', { name: /Lập phiếu|Khám phá hoạt động|Xem trước tần suất/ })).not.toBeInTheDocument()
+  expect(within(main).queryByRole('link', { name: /Lập phiếu|Khám phá hoạt động/ })).not.toBeInTheDocument()
   expect(within(main).queryByRole('article')).not.toBeInTheDocument()
 })
 it('shows safe errors and loads books only after explicit retry', async () => {
