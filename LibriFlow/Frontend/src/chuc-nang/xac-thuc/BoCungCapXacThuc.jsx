@@ -3,9 +3,22 @@ import { useQueryClient } from '@tanstack/react-query'
 import { CanceledError } from 'axios'
 import { ketNoiHttp } from '../../thu-vien/api/ket-noi-http.js'
 import { NguCanhXacThuc } from './useXacThuc.js'
-import { guiDangNhap, guiDangXuat, layNguoiDung } from './dich-vu-xac-thuc.js'
+import { guiDangNhap, guiDangXuat, layNguoiDung, guiSoDienThoai, guiAnhDaiDien } from './dich-vu-xac-thuc.js'
 
 const THONG_BAO_HET_PHIEN = 'Phiên đăng nhập đã hết hạn hoặc không còn hợp lệ. Vui lòng đăng nhập lại.'
+
+function docHoSo(phanHoi, maNguoiDung) {
+  const nguoiDung = phanHoi.data?.data
+  if (phanHoi.data?.success !== true || typeof nguoiDung?.user_id !== 'string' || typeof nguoiDung.name !== 'string' ||
+    (maNguoiDung !== undefined && nguoiDung.user_id !== maNguoiDung) ||
+    !Array.isArray(nguoiDung.roles) || !nguoiDung.roles.every(vaiTro => typeof vaiTro === 'string') ||
+    !Array.isArray(nguoiDung.permissions) || !nguoiDung.permissions.every(quyen => typeof quyen === 'string')) {
+    throw Object.assign(new Error('Phản hồi người dùng không hợp lệ.'), {
+      code: maNguoiDung === undefined ? 'AUTH_RESPONSE_INVALID' : 'PROFILE_RESPONSE_INVALID',
+    })
+  }
+  return nguoiDung
+}
 
 export default function BoCungCapXacThuc({ children }) {
   const trinhTruyVan = useQueryClient()
@@ -13,9 +26,12 @@ export default function BoCungCapXacThuc({ children }) {
   const [dangDangNhap, datDangDangNhap] = useState(false)
   const [thongBaoPhien, datThongBaoPhien] = useState('')
   const hienTai = useRef({ ma: 0, token: null, hetHanLuc: 0, boDieuKhien: null })
+  const yeuCauHoSo = useRef(null)
 
   const xoaPhien = useCallback((thongBao = '') => {
     hienTai.current.boDieuKhien?.abort()
+    yeuCauHoSo.current?.abort()
+    yeuCauHoSo.current = null
     hienTai.current = { ma: hienTai.current.ma + 1, token: null, hetHanLuc: 0, boDieuKhien: null }
     datPhien(null)
     datDangDangNhap(false)
@@ -51,6 +67,8 @@ export default function BoCungCapXacThuc({ children }) {
       ketNoiHttp.interceptors.request.eject(maYeuCau)
       ketNoiHttp.interceptors.response.eject(maPhanHoi)
       hienTai.current.boDieuKhien?.abort()
+      yeuCauHoSo.current?.abort()
+      yeuCauHoSo.current = null
       hienTai.current = { ma: hienTai.current.ma + 1, token: null, hetHanLuc: 0, boDieuKhien: null }
     }
   }, [xoaPhien])
@@ -84,12 +102,7 @@ export default function BoCungCapXacThuc({ children }) {
         throw Object.assign(new Error('Phản hồi xác thực không hợp lệ.'), { code: 'AUTH_RESPONSE_INVALID' })
       }
       const phanHoiToi = await layNguoiDung(duLieu.accessToken, boDieuKhien.signal)
-      const nguoiDung = phanHoiToi.data?.data
-      if (phanHoiToi.data?.success !== true || typeof nguoiDung?.user_id !== 'string' || typeof nguoiDung.name !== 'string' ||
-        !Array.isArray(nguoiDung.roles) || !nguoiDung.roles.every(vaiTro => typeof vaiTro === 'string') ||
-        !Array.isArray(nguoiDung.permissions) || !nguoiDung.permissions.every(quyen => typeof quyen === 'string')) {
-        throw Object.assign(new Error('Phản hồi người dùng không hợp lệ.'), { code: 'AUTH_RESPONSE_INVALID' })
-      }
+      const nguoiDung = docHoSo(phanHoiToi)
       const hetHanLuc = batDauLuc + duLieu.expiresIn * 1000
       if (hienTai.current.ma !== ma || boDieuKhien.signal.aborted) throw new CanceledError()
       if (Date.now() >= hetHanLuc) throw Object.assign(new Error('Phiên chưa hợp lệ.'), { code: 'AUTH_RESPONSE_INVALID' })
@@ -110,6 +123,31 @@ export default function BoCungCapXacThuc({ children }) {
     return yeuCau
   }
 
+  async function capNhatHoSo(gui, duLieu) {
+    const phienLucGui = hienTai.current
+    if (!phien || !phienLucGui.token || phien.ma !== phienLucGui.ma) throw new CanceledError()
+    if (yeuCauHoSo.current) throw Object.assign(new Error('Đang lưu hồ sơ.'), { code: 'PROFILE_BUSY' })
+
+    const boDieuKhien = new AbortController()
+    yeuCauHoSo.current = boDieuKhien
+    try {
+      const phanHoi = await gui(duLieu, phienLucGui.token, boDieuKhien.signal)
+      if (hienTai.current.ma !== phienLucGui.ma || boDieuKhien.signal.aborted) throw new CanceledError()
+      if (Date.now() >= phienLucGui.hetHanLuc) {
+        xoaPhien(THONG_BAO_HET_PHIEN)
+        throw new CanceledError()
+      }
+      const nguoiDung = docHoSo(phanHoi, phien.nguoiDung.user_id)
+      datPhien(cu => cu?.ma === phienLucGui.ma ? { ...cu, nguoiDung } : cu)
+    } finally {
+      if (yeuCauHoSo.current === boDieuKhien) yeuCauHoSo.current = null
+    }
+  }
+
   return <NguCanhXacThuc.Provider value={{ tokenTruyCap: phien?.tokenTruyCap ?? null, nguoiDung: phien?.nguoiDung ?? null,
-    daDangNhap: Boolean(phien), dangDangNhap, thongBaoPhien, dangNhap, dangXuat }}>{children}</NguCanhXacThuc.Provider>
+    daDangNhap: Boolean(phien), dangDangNhap, thongBaoPhien, dangNhap, dangXuat,
+    lamMoiHoSo: () => capNhatHoSo((_, token, signal) => layNguoiDung(token, signal)),
+    capNhatSoDienThoai: phone => capNhatHoSo(guiSoDienThoai, phone),
+    capNhatAnhDaiDien: tep => capNhatHoSo(guiAnhDaiDien, tep),
+  }}>{children}</NguCanhXacThuc.Provider>
 }

@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
 import { MemoryRouter, Route, Routes, BrowserRouter } from 'react-router'
-import { render, screen, within } from '@testing-library/react'
+import { act, render as renderGoc, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
 import { AxiosError } from 'axios'
 import { BookOpen } from 'lucide-react'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { taoTrinhTruyVan } from '../../thu-vien/trinh-truy-van.js'
 import BaoVeDangNhap from './BaoVeDangNhap.jsx'
 import { NguCanhXacThuc } from './useXacThuc.js'
 import DinhTuyenUngDung from '../../ung-dung/dinh-tuyen/DinhTuyenUngDung.jsx'
@@ -19,9 +21,21 @@ const nguoiDungThu = { user_id: '18446744073709551614', name: 'Người dùng ki
   created_at: '2026-11-21T00:00:00.000Z', updated_at: '2026-11-21T00:00:00.000Z', status: 'active', roles: ['reader'], permissions: ['book_view'] }
 const noiDungDaMount = vi.fn()
 const boVanChuyenGoc = ketNoiHttp.defaults.adapter
+let cacClient = []
+const sachRong = { success: true, data: [], pagination: { page: 1, limit: 4, total: 0, totalPages: 0 } }
 
-beforeEach(() => { noiDungDaMount.mockClear() })
-afterEach(() => { ketNoiHttp.defaults.adapter = boVanChuyenGoc; vi.restoreAllMocks() })
+beforeEach(() => {
+  noiDungDaMount.mockClear()
+  cacClient = []
+  ketNoiHttp.defaults.adapter = async config => ({ config, status: 200, headers: {}, data: config.url === '/books' ? sachRong : { success: true, data: null } })
+})
+afterEach(() => { cacClient.forEach(client => client.clear()); ketNoiHttp.defaults.adapter = boVanChuyenGoc; vi.restoreAllMocks() })
+
+function render(noiDung) {
+  const client = taoTrinhTruyVan()
+  cacClient.push(client)
+  return renderGoc(<QueryClientProvider client={client}>{noiDung}</QueryClientProvider>)
+}
 
 function NoiDungBaoVe() {
   useEffect(() => { noiDungDaMount() }, [])
@@ -51,7 +65,7 @@ describe('FE-07 — guard, trang 403 và điều hướng qua principal mock đ�
     expect(noiDungDaMount).not.toHaveBeenCalled()
     expect(document.title).toBe('403 · LibriFlow')
     await userEvent.click(screen.getByRole('button', { name: 'Về trang chính' }))
-    expect(await screen.findByRole('heading', { name: 'Khung ứng dụng' })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: 'Trang chủ thư viện' })).toBeVisible()
     expect(screen.getByText('Người dùng kiểm thử')).toBeVisible()
   })
 
@@ -88,7 +102,7 @@ describe('FE-07 — guard, trang 403 và điều hướng qua principal mock đ�
     const lanDau = render(<NguCanhXacThuc.Provider value={{ nguoiDung: nguoiDungThu, daDangNhap: true, dangXuat: vi.fn() }}><MemoryRouter initialEntries={['/403']}><DinhTuyenUngDung /></MemoryRouter></NguCanhXacThuc.Provider>)
     expect(screen.getByRole('heading', { name: /^403/ })).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Về trang chính' }))
-    expect(await screen.findByRole('heading', { name: 'Khung ứng dụng' })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: 'Trang chủ thư viện' })).toBeVisible()
     lanDau.unmount()
     render(<NguCanhXacThuc.Provider value={{ nguoiDung: null, daDangNhap: false }}><MemoryRouter initialEntries={['/403']}><DinhTuyenUngDung /></MemoryRouter></NguCanhXacThuc.Provider>)
     expect(await screen.findByRole('heading', { name: 'Đăng nhập' })).toBeVisible()
@@ -96,12 +110,13 @@ describe('FE-07 — guard, trang 403 và điều hướng qua principal mock đ�
 })
 
 describe('FE-07 — sidebar desktop lọc theo principal', () => {
-  it.each(['admin', 'librarian', 'reader'])('shows real shared menus and separate tools for %s', vaiTro => {
+  it.each(['admin', 'librarian', 'reader'])('shows only permitted business menus without development tools for %s', vaiTro => {
     render(<NguCanhXacThuc.Provider value={{ nguoiDung: { ...nguoiDungThu, roles: [vaiTro] }, daDangNhap: true }}><MemoryRouter><ThanhBen groups={dieuHuongNenTang} /></MemoryRouter></NguCanhXacThuc.Provider>)
     const menu = screen.getByRole('navigation', { name: 'Điều hướng chính' })
-    expect(within(menu).getAllByRole('link')).toHaveLength(7)
+    expect(within(menu).getAllByRole('link')).toHaveLength(vaiTro === 'reader' ? 5 : vaiTro === 'admin' ? 4 : 3)
     expect(within(menu).getByText('Không gian ứng dụng')).toBeVisible()
-    expect(within(menu).getByText('Công cụ phát triển')).toBeVisible()
+    expect(within(menu).queryByText('Công cụ phát triển')).not.toBeInTheDocument()
+    for (const ten of ['Bố cục theo vai trò', 'Khu vực nội dung', 'Kiểm tra API công khai', 'Kiểm tra nền tảng', 'Design System']) expect(within(menu).queryByRole('link', { name: ten, exact: true })).not.toBeInTheDocument()
     expect(within(menu).getByRole('link', { name: 'Quản lý sách' })).toHaveAttribute('href', '/app/sach')
   })
 
@@ -132,6 +147,7 @@ it('FE-07 regression: real provider keeps user on API 403, displays safe feedbac
     let data = { success: true, data: null }
     if (cauHinh.url === '/auth/login') data = { success: true, data: { accessToken: 'token-mock-fe07', tokenType: 'Bearer', expiresIn: 900 } }
     if (cauHinh.url === '/auth/me') data = { success: true, data: nguoiDungThu }
+    if (cauHinh.url === '/books') data = sachRong
     if (cauHinh.url === '/health') throw new AxiosError('Mock forbidden', 'ERR_BAD_REQUEST', cauHinh, null, { status: 403, data: { success: false, error: { code: 'FORBIDDEN', message: 'private details' } }, config: cauHinh, headers: {} })
     return { data, status: 200, headers: {}, config: cauHinh }
   }
@@ -140,7 +156,7 @@ it('FE-07 regression: real provider keeps user on API 403, displays safe feedbac
   await userEvent.type(screen.getByLabelText(/^Mật khẩu/), 'mat khau test')
   await userEvent.click(screen.getByRole('button', { name: 'Đăng nhập', exact: true }))
   await screen.findByText('Người dùng kiểm thử')
-  await userEvent.click(screen.getByRole('link', { name: 'Kiểm tra API công khai', exact: true }))
+  act(() => { window.history.pushState({}, '', '/app/api-check'); window.dispatchEvent(new PopStateEvent('popstate')) })
   await screen.findByRole('heading', { name: 'Kiểm tra API công khai', level: 1 })
   await userEvent.click(screen.getByRole('button', { name: 'Kiểm tra Health', exact: true }))
   expect(await screen.findByText('Không có quyền thực hiện yêu cầu.')).toBeVisible()
@@ -149,5 +165,5 @@ it('FE-07 regression: real provider keeps user on API 403, displays safe feedbac
   expect(window.location.pathname).toBe('/app/api-check')
   await userEvent.click(screen.getByRole('button', { name: 'Đăng xuất' }))
   expect(await screen.findByRole('heading', { name: 'Đăng nhập' })).toBeVisible()
-  expect(daGoi).toEqual(['/auth/login', '/auth/me', '/health', '/auth/logout'])
+  expect(daGoi).toEqual(['/auth/login', '/auth/me', '/books', '/health', '/auth/logout'])
 })

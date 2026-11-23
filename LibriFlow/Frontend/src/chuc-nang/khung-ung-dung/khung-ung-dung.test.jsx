@@ -29,31 +29,46 @@ describe('Application Shell and routing', () => {
     expect(screen.getByRole('navigation', { name: 'Điều hướng chính' })).toBeVisible()
     expect(screen.getByRole('navigation', { name: 'Đường dẫn trang' })).toBeVisible()
     expect(screen.getAllByRole('main')).toHaveLength(1)
-    expect(screen.getByRole('main')).toContainElement(screen.getByRole('heading', { level: 1, name: 'Khung ứng dụng' }))
+    expect(screen.getByRole('main')).toContainElement(screen.getByRole('heading', { level: 1, name: 'Trang chủ thư viện' }))
     expect(screen.getByText('Bạn đọc kiểm thử')).toBeVisible()
     expect(screen.getByRole('button', { name: /đăng xuất/i })).toBeVisible()
     expect(kiemTraSucKhoe).not.toHaveBeenCalled()
+  })
+
+  it('shows shared credits after the main content with safe contact links', async () => {
+    await hienThiKhung()
+    const chanTrang = screen.getByRole('contentinfo')
+    expect(screen.getByRole('main').nextElementSibling).toBe(chanTrang)
+    expect(within(chanTrang).getByText('LibriFlow — Thư viện tri thức')).toBeVisible()
+    expect(within(chanTrang).getByText('Hà Nội, Việt Nam')).toBeVisible()
+    expect(within(chanTrang).getByRole('link', { name: 'Hotline 0327048118' })).toHaveAttribute('href', 'tel:0327048118')
+    for (const [ten, url] of [['Facebook', 'https://www.facebook.com/'], ['X', 'https://x.com/']]) {
+      const lienKet = within(chanTrang).getByRole('link', { name: ten })
+      expect(lienKet).toHaveAttribute('href', url)
+      expect(lienKet).toHaveAttribute('target', '_blank')
+      expect(lienKet).toHaveAttribute('rel', 'noopener noreferrer')
+    }
   })
 
   it('marks exactly the matching navigation link active and changes the Outlet without losing layout', async () => {
     const nguoiThaoTac = userEvent.setup()
     await hienThiKhung()
     const vungDieuHuong = screen.getByRole('navigation', { name: 'Điều hướng chính' })
-    expect(within(vungDieuHuong).getByRole('link', { name: 'Khung ứng dụng', exact: true })).toHaveAttribute('aria-current', 'page')
-    await nguoiThaoTac.click(within(vungDieuHuong).getByRole('link', { name: 'Khu vực nội dung' }))
-    expect(await screen.findByRole('heading', { name: 'Khu vực nội dung', level: 1 })).toBeVisible()
-    expect(window.location.pathname).toBe('/app/workspace')
-    expect(within(vungDieuHuong).getByRole('link', { name: 'Khung ứng dụng', exact: true })).not.toHaveAttribute('aria-current')
-    expect(within(vungDieuHuong).getByRole('link', { name: 'Khu vực nội dung' })).toHaveAttribute('aria-current', 'page')
+    expect(within(vungDieuHuong).getByRole('link', { name: 'Trang chủ thư viện', exact: true })).toHaveAttribute('aria-current', 'page')
+    await nguoiThaoTac.click(within(vungDieuHuong).getByRole('link', { name: 'Tài khoản', exact: true }))
+    expect(await screen.findByRole('heading', { name: 'Tài khoản của tôi', level: 1 })).toBeVisible()
+    expect(window.location.pathname).toBe('/app/tai-khoan')
+    expect(within(vungDieuHuong).getByRole('link', { name: 'Trang chủ thư viện', exact: true })).not.toHaveAttribute('aria-current')
+    expect(within(vungDieuHuong).getByRole('link', { name: 'Tài khoản', exact: true })).toHaveAttribute('aria-current', 'page')
     expect(screen.getByRole('banner')).toBeVisible()
     expect(screen.getByRole('main')).toHaveFocus()
   })
 
   it.each(['/app', '/app/'])('renders the index route directly at %s without redirects', async duongDanTep => {
     await hienThiKhung(duongDanTep)
-    expect(screen.getByRole('heading', { name: 'Khung ứng dụng', level: 1 })).toBeVisible()
+    expect(screen.getByRole('heading', { name: 'Trang chủ thư viện', level: 1 })).toBeVisible()
     expect(window.location.pathname).toBe(duongDanTep)
-    expect(screen.getByRole('link', { name: 'Khung ứng dụng', exact: true })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('link', { name: 'Trang chủ thư viện', exact: true })).toHaveAttribute('aria-current', 'page')
   })
 
   it('keeps a shell-scoped Not Found page and returns safely to the index', async () => {
@@ -64,7 +79,7 @@ describe('Application Shell and routing', () => {
     expect(within(dieuHuong).getAllByRole('link').every(lienKet => !lienKet.hasAttribute('aria-current'))).toBe(true)
     expect(screen.getByRole('main')).not.toContainElement(screen.getByRole('complementary'))
     await userEvent.click(screen.getByRole('link', { name: 'Về khung ứng dụng' }))
-    expect(await screen.findByRole('heading', { name: 'Khung ứng dụng', level: 1 })).toBeVisible()
+    expect(await screen.findByRole('heading', { name: 'Trang chủ thư viện', level: 1 })).toBeVisible()
   })
 
   it('preserves the global Not Found route outside the shell', async () => {
@@ -72,20 +87,20 @@ describe('Application Shell and routing', () => {
     render(<App />)
     expect(await screen.findByRole('heading', { name: 'Không tìm thấy trang' })).toBeVisible()
     expect(screen.queryByRole('banner')).not.toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Về trang kiểm tra kỹ thuật' })).toHaveAttribute('href', '/')
+    expect(screen.getByRole('link', { name: 'Về trang chủ' })).toHaveAttribute('href', '/')
   })
 
-  it('keeps the existing health page reachable from navigation, with no automatic health request', async () => {
-    await hienThiKhung()
-    await userEvent.click(screen.getByRole('link', { name: 'Kiểm tra nền tảng', exact: true }))
+  it('keeps the maintenance health page reachable directly, with no automatic health request', async () => {
+    window.history.replaceState({}, '', '/kiem-tra-nen-tang')
+    render(<App />)
     expect(await screen.findByRole('heading', { name: 'Nền tảng LibriFlow' })).toBeVisible()
     expect(screen.getByRole('link', { name: 'Mở khung ứng dụng FE-04 →' })).toHaveAttribute('href', '/app')
     expect(kiemTraSucKhoe).not.toHaveBeenCalled()
   })
 
   it('keeps Design System reachable as its existing independent route', async () => {
-    await hienThiKhung()
-    await userEvent.click(screen.getByRole('link', { name: 'Design System', exact: true }))
+    window.history.replaceState({}, '', '/design-system')
+    render(<App />)
     expect(await screen.findByRole('heading', { level: 1, name: /Ấm áp/ })).toHaveTextContent('Ấm áp trongtừng chi tiết.')
     expect(window.location.pathname).toBe('/design-system')
     expect(screen.queryByRole('banner')).not.toBeInTheDocument()
@@ -108,7 +123,7 @@ describe('Application Shell and routing', () => {
     document.title = 'Trang kỹ thuật ban đầu'
     await hienThiKhung('/app/layouts')
     expect(document.title).toBe('Bố cục theo vai trò · LibriFlow')
-    await userEvent.click(screen.getByRole('link', { name: 'Kiểm tra nền tảng', exact: true }))
+    act(() => { window.history.pushState({}, '', '/kiem-tra-nen-tang'); window.dispatchEvent(new PopStateEvent('popstate')) })
     await screen.findByRole('heading', { name: 'Nền tảng LibriFlow' })
     expect(document.title).toBe('Trang kỹ thuật ban đầu')
   })
@@ -126,14 +141,14 @@ it('keeps one desktop sidebar and header mounted when resizing the window, witho
         window.innerWidth = chieuRong
         window.dispatchEvent(new Event('resize'))
       })
-      expect(screen.getAllByRole('complementary')).toEqual([thanhBen])
+      expect(screen.getAllByRole('complementary', { name: 'Điều hướng ứng dụng' })).toEqual([thanhBen])
       expect(screen.getByRole('banner')).toBe(dauTrang)
       expect(screen.queryByRole('button', { name: 'Mở điều hướng' })).not.toBeInTheDocument()
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-      expect(within(thanhBen).getByRole('link', { name: 'Khu vực nội dung' })).toBeVisible()
+      expect(within(thanhBen).getByRole('link', { name: 'Tài khoản', exact: true })).toBeVisible()
     }
-    await userEvent.click(within(thanhBen).getByRole('link', { name: 'Khu vực nội dung' }))
-    expect(await screen.findByRole('heading', { name: 'Khu vực nội dung', level: 1 })).toBeVisible()
+    await userEvent.click(within(thanhBen).getByRole('link', { name: 'Tài khoản', exact: true }))
+    expect(await screen.findByRole('heading', { name: 'Tài khoản của tôi', level: 1 })).toBeVisible()
     expect(screen.getByRole('main')).toHaveFocus()
     expect(screen.getByRole('complementary')).toBe(thanhBen)
   } finally {
@@ -171,8 +186,8 @@ describe('Role layout preview is presentation only', () => {
     await hienThiKhung('/app/layouts')
     await nguoiThaoTac.selectOptions(screen.getByRole('combobox', { name: 'Bố cục dự kiến' }), 'admin')
     const vungDieuHuong = screen.getByRole('navigation', { name: 'Điều hướng chính' })
-    await nguoiThaoTac.click(within(vungDieuHuong).getByRole('link', { name: 'Khung ứng dụng', exact: true }))
-    await nguoiThaoTac.click(within(vungDieuHuong).getByRole('link', { name: 'Bố cục theo vai trò' }))
-    expect(screen.getByRole('combobox', { name: 'Bố cục dự kiến' })).toHaveValue('')
+    await nguoiThaoTac.click(within(vungDieuHuong).getByRole('link', { name: 'Trang chủ thư viện', exact: true }))
+    act(() => { window.history.pushState({}, '', '/app/layouts'); window.dispatchEvent(new PopStateEvent('popstate')) })
+    expect(await screen.findByRole('combobox', { name: 'Bố cục dự kiến' })).toHaveValue('')
   })
 })

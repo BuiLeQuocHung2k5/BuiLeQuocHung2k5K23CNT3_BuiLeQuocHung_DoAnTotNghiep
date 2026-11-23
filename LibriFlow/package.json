@@ -1,0 +1,10 @@
+{
+  "name": "libriflow",
+  "private": true,
+  "scripts": {
+    "dev": "node Backend/demo/chay.mjs",
+    "demo:setup": "node Backend/demo/khoi-tao.mjs",
+    "dev:backend": "node Backend/demo/chay.mjs --backend",
+    "dev:frontend": "node Backend/demo/chay.mjs --frontend"
+  }
+}

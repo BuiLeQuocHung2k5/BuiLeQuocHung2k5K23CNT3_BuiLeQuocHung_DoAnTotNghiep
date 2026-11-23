@@ -13,6 +13,8 @@ import { moiTruong } from '../../cau-hinh/moi-truong.js'
 import { useXacThuc } from './useXacThuc.js'
 
 vi.mock('../../cau-hinh/moi-truong.js', () => ({ moiTruong: { apiBaseUrl: 'http://127.0.0.1:3000/api', error: null } }))
+// Luồng phiên được kiểm độc lập với truy vấn sách của trang chủ; homepage có test riêng.
+vi.mock('../khung-ung-dung/TrangTongQuanUngDung.jsx', () => ({ default: ({ title }) => <h1>{title}</h1> }))
 
 const boVanChuyenGoc = ketNoiHttp.defaults.adapter
 const nguoiDungThu = { user_id: '18446744073709551614', name: 'Bạn đọc kiểm thử', email: 'reader@example.test',
@@ -74,6 +76,104 @@ async function dangNhapThanhCong() {
 }
 
 describe('FE-06 — UI và phiên qua Axios adapter mock, không Backend/MySQL thật', () => {
+  it('toggles password visibility without clearing input on login and registration', async () => {
+    hienThi()
+    const matKhau = screen.getByLabelText(/^Mật khẩu/)
+    await userEvent.type(matKhau, 'demo123')
+    expect(matKhau).toHaveAttribute('type', 'password')
+    await userEvent.click(screen.getByRole('button', { name: 'Hiện mật khẩu' }))
+    expect(matKhau).toHaveAttribute('type', 'text')
+    expect(matKhau).toHaveValue('demo123')
+    await userEvent.click(screen.getByRole('button', { name: 'Ẩn mật khẩu' }))
+    expect(matKhau).toHaveAttribute('type', 'password')
+    await userEvent.click(screen.getByRole('link', { name: 'Đăng ký ngay' }))
+    const cacNut = screen.getAllByRole('button', { name: 'Hiện mật khẩu' })
+    const xacNhan = screen.getByLabelText(/^Xác nhận mật khẩu/)
+    await userEvent.type(xacNhan, 'demo123')
+    await userEvent.click(cacNut[1])
+    expect(xacNhan).toHaveAttribute('type', 'text')
+    expect(xacNhan).toHaveValue('demo123')
+    expect(screen.getByLabelText(/^Mật khẩu/)).toHaveAttribute('type', 'password')
+  })
+  it('redirects root to login anonymously and to app in a live memory session', async () => {
+    window.history.replaceState({}, '', '/')
+    hienThi()
+    expect(await screen.findByRole('heading', { name: 'Đăng nhập' })).toBeVisible()
+    expect(window.location.pathname).toBe('/dang-nhap')
+    await dangNhapThanhCong()
+    await act(async () => { window.history.pushState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')) })
+    await waitFor(() => expect(window.location.pathname).toBe('/app'))
+    expect(screen.queryByText('FE-02 · Trang kiểm tra kỹ thuật')).not.toBeInTheDocument()
+  })
+
+  it('validates registration, submits only the public contract and returns to login without minting a session', async () => {
+    hienThi()
+    await userEvent.click(screen.getByRole('link', { name: 'Đăng ký ngay' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Đăng ký', exact: true }))
+    expect(cacYeuCau).toHaveLength(0)
+    await userEvent.type(screen.getByLabelText(/^Họ tên/), ' Bạn đọc mới ')
+    await userEvent.type(screen.getByLabelText(/^Email/), 'NEW@example.test')
+    await userEvent.type(screen.getByLabelText(/^Mật khẩu/), ' demo123 ')
+    await userEvent.type(screen.getByLabelText(/^Xác nhận mật khẩu/), 'khong khop')
+    await userEvent.click(screen.getByRole('button', { name: 'Đăng ký', exact: true }))
+    expect(screen.getByText('Mật khẩu xác nhận chưa khớp.')).toBeVisible()
+    expect(cacYeuCau).toHaveLength(0)
+    await userEvent.clear(screen.getByLabelText(/^Xác nhận mật khẩu/))
+    await userEvent.type(screen.getByLabelText(/^Xác nhận mật khẩu/), ' demo123 ')
+    xuLyYeuCau = config => phanHoi(config, { success: true, data: { user_id: '9', roles: ['reader'], status: 'active' } }, 201)
+    await userEvent.click(screen.getByRole('button', { name: 'Đăng ký', exact: true }))
+    expect(await screen.findByRole('heading', { name: 'Đăng nhập' })).toBeVisible()
+    expect(screen.getByRole('status')).toHaveTextContent('Đăng ký thành công')
+    expect(cacYeuCau).toHaveLength(1)
+    expect(cacYeuCau[0].url).toBe('/auth/register')
+    expect(JSON.parse(cacYeuCau[0].data)).toEqual({ name: 'Bạn đọc mới', email: 'new@example.test', password: ' demo123 ' })
+    expect(cacYeuCau[0].headers.has('Authorization')).toBe(false)
+    expect(xacThuc.daDangNhap).toBe(false)
+  })
+
+  it('blocks duplicate registration submits and renders safe duplicate-email feedback', async () => {
+    window.history.replaceState({}, '', '/dang-ky'); hienThi()
+    await userEvent.type(screen.getByLabelText(/^Họ tên/), 'Bạn đọc mới')
+    await userEvent.type(screen.getByLabelText(/^Email/), 'new@example.test')
+    await userEvent.type(screen.getByLabelText(/^Mật khẩu/), 'demo123')
+    await userEvent.type(screen.getByLabelText(/^Xác nhận mật khẩu/), 'demo123')
+    let hoanTat
+    xuLyYeuCau = config => new Promise((resolve, reject) => { hoanTat = () => { try { resolve(phanHoi(config, { success: false, error: { code: 'EMAIL_ALREADY_EXISTS', message: 'private SQL' } }, 409)) } catch (loi) { reject(loi) } } })
+    await userEvent.click(screen.getByRole('button', { name: 'Đăng ký', exact: true }))
+    expect(screen.getByRole('button', { name: /Đang đăng ký/ })).toBeDisabled()
+    expect(cacYeuCau).toHaveLength(1)
+    await act(async () => { hoanTat() })
+    expect(await screen.findByRole('alert')).toHaveTextContent('Email đã được sử dụng')
+    expect(document.body).not.toHaveTextContent('private SQL')
+    expect(screen.getByLabelText(/^Mật khẩu/)).toHaveValue('')
+    expect(xacThuc.daDangNhap).toBe(false)
+  })
+
+  it('registers a plain four-character password and rejects lengths outside four to twelve', async () => {
+    window.history.replaceState({}, '', '/dang-ky'); hienThi()
+    await userEvent.type(screen.getByLabelText(/^Họ tên/), 'Bạn đọc mới')
+    await userEvent.type(screen.getByLabelText(/^Email/), 'new@example.test')
+    expect(screen.getByText('Mật khẩu từ 4 đến 12 ký tự')).toBeVisible()
+    for (const password of ['abc', 'a'.repeat(13)]) {
+      await userEvent.clear(screen.getByLabelText(/^Mật khẩu/))
+      await userEvent.clear(screen.getByLabelText(/^Xác nhận mật khẩu/))
+      await userEvent.type(screen.getByLabelText(/^Mật khẩu/), password)
+      await userEvent.type(screen.getByLabelText(/^Xác nhận mật khẩu/), password)
+      await userEvent.click(screen.getByRole('button', { name: 'Đăng ký', exact: true }))
+      expect(screen.getByText('Mật khẩu từ 4 đến 12 ký tự.')).toBeVisible()
+      expect(cacYeuCau).toHaveLength(0)
+    }
+    await userEvent.clear(screen.getByLabelText(/^Mật khẩu/))
+    await userEvent.clear(screen.getByLabelText(/^Xác nhận mật khẩu/))
+    await userEvent.type(screen.getByLabelText(/^Mật khẩu/), '1234')
+    await userEvent.type(screen.getByLabelText(/^Xác nhận mật khẩu/), '1234')
+    xuLyYeuCau = config => phanHoi(config, { success: true, data: { user_id: '9', roles: ['reader'], status: 'active' } }, 201)
+    await userEvent.click(screen.getByRole('button', { name: 'Đăng ký', exact: true }))
+    expect(await screen.findByRole('heading', { name: 'Đăng nhập' })).toBeVisible()
+    expect(JSON.parse(cacYeuCau[0].data).password).toBe('1234')
+    expect(xacThuc.daDangNhap).toBe(false)
+  })
+
   it('renders the real login route without any startup request', () => {
     render(<App />)
     expect(screen.getByRole('heading', { name: 'Đăng nhập' })).toBeVisible()
