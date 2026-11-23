@@ -45,7 +45,7 @@ Các reason chính: COVERAGE_UNVERIFIED, INCOMPLETE_COVERAGE, USER_HISTORY_TOO_S
 
 `MAE = tổng |predicted_count - actual_borrow_count| / số ngày test`
 
-Predicted_count trong đánh giá được làm tròn giống response. Train hoàn toàn trước test; test của fold trước có thể trở thành lịch sử của fold sau theo thời gian. Không đưa dữ liệu tương lai vào train. Response trả train_start/end, excluded_origin_date, test_start/end, sample_count và MAE từng fold/tổng. Ít nhất **15 ngày đã xác nhận** mới có 1 fold/7 mẫu; 28 ngày cho tối đa 2 fold/14 mẫu. Có 7 ngày train nhưng chưa đủ backtest vẫn được dự báo, còn evaluation.status=insufficient_data/MAE=null.
+Từ HOTFIX FORECAST-01 (23/11/2026), MAE dùng giá trị tổng 7 ngày chia 7 trước khi làm tròn để hiển thị. Train hoàn toàn trước test; test của fold trước có thể trở thành lịch sử của fold sau theo thời gian. Không đưa dữ liệu tương lai vào train. Response trả train_start/end, excluded_origin_date, test_start/end, sample_count và MAE từng fold/tổng. Ít nhất **15 ngày đã xác nhận** mới có 1 fold/7 mẫu; 28 ngày cho tối đa 2 fold/14 mẫu. Có 7 ngày train nhưng chưa đủ backtest vẫn được dự báo, còn evaluation.status=insufficient_data/MAE=null.
 
 Fixture unit đã kiểm tra: train 2026-10-23..29 có 1 phiếu/ngày, bỏ 2026-10-30, test 2026-10-31..11-06 có 3 phiếu/ngày → MAE=2. Fixture hằng số 28 ngày → 14 mẫu test/MAE=0. **Đây là kiểm chứng công thức bằng dữ liệu giả lập trong test, không phải chất lượng trên người dùng thật.**
 
@@ -55,4 +55,4 @@ Ngày 2026-11-07 SELECT thực tế: 0 người dùng, 0 phiếu không cancelle
 
 Baseline phẳng không mô hình hóa thứ trong tuần, mùa vụ, lịch nghỉ, xu hướng hoặc cold start. Không có khoảng tin cậy hay cam kết chính xác. Tần suất thưa có thể làm tròn về 0.00, khác việc tạo số 0 khi thiếu quan sát.
 
-PhieuMuon không có lịch sử thay đổi cancelled hoặc snapshot as-of; backtest dùng trạng thái lịch sử đang thấy tại lần đọc, chưa chứng minh tái dựng point-in-time khi dữ liệu từng sửa. Độ phủ, múi giờ legacy, retention, mất dữ liệu và tải SQL cần kiểm chứng trên môi trường test độc lập trước dùng vận hành. Không có cron, thuật toán ML hoặc ghi DuBaoTanSuat trong module hiện tại.
+PhieuMuon không có lịch sử thay đổi cancelled hoặc snapshot as-of; backtest dùng trạng thái lịch sử đang thấy tại lần đọc, chưa chứng minh tái dựng point-in-time khi dữ liệu từng sửa. Độ phủ, múi giờ legacy, retention, mất dữ liệu và tải SQL cần kiểm chứng trên môi trường test độc lập trước dùng vận hành. Bản demo đối soát và gia hạn độ phủ khi khởi động. API lưu và đọc kết quả được mô tả trong [hợp đồng dự báo](du-bao-api.md).

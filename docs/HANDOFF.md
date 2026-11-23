@@ -1,5 +1,19 @@
 # Bàn giao hiện tại
 
+## GIT-004 · Chờ xác nhận đồng bộ an toàn · 23/11/2026
+
+GitHub `main` đang ở `ef72e2d`. Root dự án `C:\Đồ án tốt nghiệp\LibriFlow` khớp commit này; tại thời điểm kiểm tra có 8 file sửa, 3 file mới và không có staged changes. Root cha là repository riêng cùng URL remote nhưng `main` ở `f28381d` (ahead 1/behind 25) và có cấu trúc cây khác. Giữ nguyên commit này, không dùng root cha để push.
+
+Các file `.env`, JSON tài khoản demo và backup database đang bị ignore, không staged; backup có dữ liệu demo nên tiếp tục để ngoài Git. Hai dump schema đã có trên remote không chứa câu lệnh INSERT. Không thao tác đồng bộ, commit hay push trong lượt kiểm tra này. Sau khi người dùng xác nhận: kiểm tra lại `origin/main`, rà soát và chọn file được phép, rồi thao tác từ root dự án; nếu remote vẫn ở `ef72e2d` thì không cần merge/rebase. Chi tiết kiểm tra: [GIT-004](TASKS.md).
+
+## DB-MIGRATION-01 · Chờ nghiệm thu, 23/11/2026
+
+`libriflow_demo` có 18 bảng. Hai bảng mới đang trống. Đã xác minh chạy lại migration, thu đủ phí và phạt, từ chối trùng và rollback. Dump của 16 bảng cũ khớp bản sao lưu. Backend cũ vẫn có đường cập nhật trạng thái phạt trực tiếp; cần tích hợp sổ mới khi triển khai chức năng thu. [Kết quả, backup và kiểm thử](TASKS.md) · [Schema và cách chạy lại](DATABASE.md)
+
+## HOTFIX FORECAST-01 · Chờ nghiệm thu ngày 23/11/2026
+
+Đăng nhập demo tại `/app/du-bao` với độc giả #3 hoặc chọn độc giả này từ tài khoản Admin. Dự báo ngày cắt 23/11 đã được lưu, có thể mở **Xem lịch sử** để kiểm tra. Thủ thư #2 minh họa trường hợp thiếu dữ liệu. Kết quả test, phạm vi và sự cố autoGit được ghi trong [TASKS](TASKS.md).
+
 ## HOTFIX ADMIN-01 — Sẵn sàng nghiệm thu · 22/11/2026
 
 Đăng nhập bằng tài khoản có `user_manage`, vào **Quản lý người dùng**. Trang cho phép tìm, lọc, phân trang, xem chi tiết, tạo, sửa và kích hoạt/vô hiệu hóa. API quản trị bảo vệ vai trò và trạng thái của người đang thực hiện. Lịch sử mượn giữ nguyên khi tài khoản bị khóa. Không có thao tác xóa cứng hoặc đặt lại mật khẩu ở màn hình này.

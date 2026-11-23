@@ -1,5 +1,13 @@
 # Quyết định và căn cứ
 
+## DB-MIGRATION-01 · 23/11/2026
+
+Chính sách được người dùng duyệt gồm phí thẻ 20.000 VNĐ/tháng, cảnh báo trước hạn 7 ngày, trễ hạn 2.000 VNĐ/ngày/bản sao và hư tổn 50.000 VNĐ/bản sao khi điểm quy đổi **lớn hơn 60%**. Giao dịch thu đủ một khoản. Migration triển khai cấu trúc và ràng buộc thu trong demo. Chọn hai phương thức ban đầu là tiền mặt và chuyển khoản, chờ nghiệm thu. Chưa thêm quy định phạt vào bảng cũ vì luồng hiện tại chưa có điểm quy đổi. Ngày lập phí, ngày đến hạn cụ thể và kênh cảnh báo thuộc bước nghiệp vụ sau. [Schema đã kiểm chứng](DATABASE.md)
+
+## HOTFIX FORECAST-01 · Đề xuất nghiệm thu 23/11/2026
+
+Theo yêu cầu lưu dự báo và schema thực tế, dùng hai quyền hiện có `forecast_view` và `user_manage` cho thao tác ghi. Ngày tạo UTC là ngày cắt vì server chỉ chấp nhận ngày hiện hành. Lưu một kết quả mỗi người/ngày/phiên bản bằng khóa hàng và transaction. [Chi tiết và giới hạn](../Backend/docs/du-bao-api.md).
+
 ## HOTFIX ADMIN-01 · 22/11/2026
 
 Đã triển khai theo yêu cầu bảo vệ quyền quản trị cuối cùng. Mọi thao tác quản trị cần `user_manage`. Khi ghi, các transaction cùng khóa bản ghi quyền rồi đọc lại principal. Người thực hiện chỉ có thể cấp các vai trò có tập quyền nằm trong quyền của mình. Tài khoản cần có vai trò Admin để quản lý một Admin khác. Người thực hiện luôn giữ nguyên vai trò và trạng thái hoạt động của chính mình. Vì vậy từng thay đổi đều giữ được ít nhất một người quản trị đang hoạt động. Khóa tài khoản giữ nguyên mã người dùng và quan hệ phiếu mượn. [Model](../Backend/src/models/nguoi-dung.model.js)

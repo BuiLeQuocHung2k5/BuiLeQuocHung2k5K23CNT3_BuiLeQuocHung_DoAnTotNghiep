@@ -1,5 +1,7 @@
 # Hợp đồng bàn giao API cho Frontend — TASK-018
 
+**Cập nhật 23/11/2026.** Hợp đồng dự báo HOTFIX FORECAST-01 thay thế phần forecast của ảnh chụp TASK-018 bên dưới. [Endpoint, quyền, lưu và lịch sử](du-bao-api.md).
+
 ## HOTFIX ADMIN-01 · 22/11/2026
 
 Bốn endpoint dưới đây yêu cầu JWT và quyền MySQL `user_manage`.

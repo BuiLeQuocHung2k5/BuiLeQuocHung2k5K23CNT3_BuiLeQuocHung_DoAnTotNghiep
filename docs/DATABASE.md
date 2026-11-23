@@ -1,5 +1,18 @@
 # Database
 
+## DB-MIGRATION-01 · MySQL demo, 23/11/2026
+
+MySQL 8.0.40, InnoDB, `lower_case_table_names=1`. Đã đối chiếu 16 bảng của `Backend/sql/schema.sql` với metadata thật. Demo sau migration có 18 bảng. Sáu bảng đã kiểm tra cột và quan hệ gồm `NguoiDung`, `Phat`, `QuyDinhPhat`, `ChiTietPhieuMuon`, `LichSuSuDung` và `NhatKyHeThong`.
+
+| Bảng mới | Quy tắc chính |
+| --- | --- |
+| `PhiDuyTriThe` | Một khoản mỗi người và tháng. `billing_month` là ngày đầu tháng. Số tiền bắt buộc 20.000 VNĐ. Ngày đến hạn do bên lập phí chỉ định và từ đầu kỳ trở đi. |
+| `GiaoDichThu` | Một nguồn duy nhất là phí thẻ hoặc phạt. UNIQUE riêng từng nguồn. Số tiền dương và bằng đủ số tiền chưa thanh toán. Lưu người thu, phương thức và thời gian. FK RESTRICT giữ chứng từ. |
+
+Trigger sau INSERT chốt khoản nguồn trong cùng transaction InnoDB. Hai trigger bảo vệ giao dịch đã ghi khỏi UPDATE và DELETE trực tiếp. Quyền thu của nhân viên phải được kiểm tra ở tầng nghiệp vụ. Các đường cập nhật trực tiếp `Phat.payment_status` của Backend cũ chưa ghi sổ này. Cần thống nhất đường thu trước khi dùng sổ làm báo cáo tổng thu.
+
+Chạy entry point `node Backend/sql/migrations/003_thu_phi_demo.mjs <đường-dẫn-dump-demo>` từ thư mục gốc. Runner đối chiếu schema, UUID, khóa migration, định nghĩa bảng và trigger. Nếu bị gián đoạn giữa các DDL, có thể tiếp tục từ phần đã đúng khi các bảng mới còn trống. Khi đã áp dụng, chạy lại không cần đối số. Schema nguồn vẫn là baseline 16 bảng; demo dựng mới cần áp dụng migration riêng. [DDL](../Backend/sql/migrations/003_thu_phi_demo.sql) · [Kiểm thử rollback](../Backend/integration/kiem-tra-thu-phi.mjs)
+
 ## HOTFIX UI-04 — Hồ sơ demo (2026-11-22)
 
 SELECT metadata tại `libriflow_demo` xác nhận `NguoiDung.phone VARCHAR(20)` và `avatar VARCHAR(255)` đều nullable. MySQL lưu số và URL nội bộ, file ảnh demo nằm tại `Backend/.demo-local/avatars/`. Thử ghi đúng một tài khoản tổng hợp mới ID 9 và đọc lại bằng API sau khi khởi động lại Backend. Fingerprint tài khoản cũ và checksum sách, bản sao, phiếu, dự báo, quyền không đổi trong lượt kiểm lại. Không cần migration. [Cách kiểm](TASKS.md).

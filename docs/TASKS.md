@@ -1,5 +1,26 @@
 # Theo dõi task
 
+## GIT-004 · Kiểm tra lỗi push, chờ xác nhận · 23/11/2026
+
+- Chỉ kiểm tra Git ở chế độ chỉ đọc. Tại `C:\Đồ án tốt nghiệp`, `main` là `f28381d`, ahead 1/behind 25 so với `origin/main` `ef72e2d`; cây commit local đặt dự án dưới `LibriFlow/`, khác cấu trúc gốc trên remote. Commit `f28381d` vẫn được giữ nguyên.
+- Tại `C:\Đồ án tốt nghiệp\LibriFlow`, `main` và `origin/main` đều là `ef72e2d`; `git ls-remote` cũng xác nhận GitHub `main` đang ở commit này. Index hiện không có staged changes; working tree có 8 file sửa và 3 file mới. Không fetch, merge, rebase, commit hoặc push.
+- `Backend/.demo-local/tai-khoan.json`, `Backend/.env` và backup `Backend/.demo-local/backups/.../libriflow_demo.sql` không được track, đang bị ignore. Không đọc nội dung JSON/env/backup; backup có 12 câu lệnh INSERT theo phép đếm không xuất dữ liệu. Hai dump SQL được track trên remote chỉ có 16 câu lệnh CREATE TABLE và 0 INSERT.
+- Đề xuất dùng thư mục dự án làm root chuẩn sau khi được duyệt; kiểm tra lại remote rồi chỉ chọn thay đổi hợp lệ để stage. Không merge/rebase/push nhánh ở thư mục cha và không khôi phục thư mục dự án lồng nhau. [Bàn giao](HANDOFF.md).
+
+## DB-MIGRATION-01 · Chờ nghiệm thu, 23/11/2026
+
+- Thêm [DDL](../Backend/sql/migrations/003_thu_phi_demo.sql), [runner](../Backend/sql/migrations/003_thu_phi_demo.mjs) và [kiểm thử transaction](../Backend/integration/kiem-tra-thu-phi.mjs). Cập nhật DATABASE, DECISIONS, TASKS và HANDOFF.
+- Sao lưu demo bằng mysqldump trước DDL vào `Backend/.demo-local/backups/db-migration-01-1795427868035/libriflow_demo.sql` (Git bỏ qua). Dump sau kiểm thử của đúng 16 bảng cũ giống từng byte với backup. SHA-256 `0b2d4a92d783642b53d2c98250d0cec8425746ae0f8ea7e09d6cf7385f48ed53`. Chưa diễn tập restore sang schema khác.
+- Runner tạo 2 bảng, 3 trigger. Chạy lại thực hiện 0 DDL. Kiểm thử MySQL bằng `node Backend/integration/kiem-tra-thu-phi.mjs` đạt cho cả phí và phạt, gồm thanh toán sai số tiền, thu trùng, khóa ngoại, bảo toàn chứng từ và rollback. Sau kiểm tra có đúng 18 bảng và 0 dòng ở cả hai bảng mới. Backend `npm test` đạt 185/185. Chưa chạy kiểm thử Frontend hoặc tải đồng thời. Chưa triển khai tính điểm hư tổn, cảnh báo hay sửa luồng thu của Backend.
+
+## HOTFIX FORECAST-01 · 23/11/2026
+
+- Sửa việc độ phủ demo dừng ở ngày 21/11 khi ngày cắt đã là 23/11. `Backend/demo/chay.mjs` kiểm tra đúng database, UUID và chứng nhận trước khi dùng phép đối soát ở `du-lieu.mjs` để gia hạn. Không chạy seed, không bổ sung phiếu. Database chính không được truy cập.
+- Thay đổi model, service, controller, router, thuật toán và test dự báo Backend. Frontend sửa `TrangDuBao.jsx`, thêm `LichSuDuBao.jsx`, cập nhật dịch vụ phân tích, cấu hình tuyến và test phân tích, trang chủ, phân quyền. [API và chính sách lưu](../Backend/docs/du-bao-api.md).
+- MySQL demo, độc giả #3, ngày 16–22/11 UTC có 1, 2, 1, 0, 3, 3, 0 phiếu. SQL độc lập đếm 10. SMA7 cho 24–30/11 là 1,43 mỗi ngày. Thủ thư #2 không có phiếu và chỉ đủ 2/7 ngày. Kiểm thử API với ba vai trò, lưu/đọc bảy dòng, gọi lại không trùng. Trường hợp cancelled dùng CTE giả lập trên MySQL vì dữ liệu hiện hữu không có phiếu hủy.
+- `npm run dev`, Backend `npm test` (185/185), Frontend `npm run test:run -- --maxWorkers=2` (320/320), ESLint và build đạt. Chrome headless đăng nhập độc giả, kiểm tra bảy điểm lịch sử, bảy điểm dự báo và bảng ở 1366×768, 1920×1080. Chưa đo độ chính xác trên độc giả ngoài demo.
+- autoGit đã tạo và push `ef72e2d` trong khi kiểm thử (reflog origin/main). Đã đặt `vscode-autoGit.enabled=false` ở workspace. Không viết lại lịch sử. Chờ nghiệm thu.
+
 ## HOTFIX ADMIN-01 — Quản lý người dùng · 22/11/2026
 
 - Hoàn tất API và giao diện quản trị theo quyền. File chính gồm [router](../Backend/src/routes/nguoi-dung.routes.js), [model](../Backend/src/models/nguoi-dung.model.js), app-factory, validator dùng chung, [màn hình quản trị](../Frontend/src/chuc-nang/quan-tri/TrangNguoiDung.jsx), lối tắt Admin, cấu hình tuyến, làm mới hồ sơ của phiên và test FE/BE. [Hợp đồng đã cập nhật](../Backend/docs/frontend-api-handover.md).
